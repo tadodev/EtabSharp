@@ -1,0 +1,11 @@
+﻿<Project>
+	<PropertyGroup>
+		<LangVersion>preview</LangVersion>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+
+		<!-- IDE0130: Namespace does not match folder structure -->
+		<!-- NU5104: A stable release of a package should not have a prerelease depedency. -->
+		<NoWarn>IDE0130;NU5104</NoWarn>
+	</PropertyGroup>
+</Project>
