@@ -18,4 +18,26 @@
 	  <NoWarn>$(NoWarn);IDE0065;IDE0055;IDE0011;S3881</NoWarn>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Core\Interface\" />
+    <Folder Include="Elements\" />
+    <Folder Include="Models\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="Enums\" />
+    <Folder Include="Loads\" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ETABSv1">
+      <HintPath>C:\Program Files\Computers and Structures\ETABS 22\ETABSv1.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
