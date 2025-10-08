@@ -1,4 +1,5 @@
-﻿using EtabSharp.Interface;
+﻿using EtabSharp.Exceptions;
+using EtabSharp.Interface;
 using ETABSv1;
 using Microsoft.VisualBasic;
 using System.Runtime.InteropServices;
@@ -17,13 +18,10 @@ public class EtabsApplication: IDisposable
     private cSapModel _sapModel;
     private bool _disposed;
 
-    /// <inheritdoc />
     public IEtabsModel Model { get; private set; }
 
-    /// <inheritdoc />
     public bool IsConnected { get; private set; }
 
-    /// <inheritdoc />
     public string Version { get; private set; } = string.Empty;
 
     /// <summary>
