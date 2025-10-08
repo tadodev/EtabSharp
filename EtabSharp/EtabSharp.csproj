@@ -19,20 +19,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="NewFolder\**" />
-    <EmbeddedResource Remove="NewFolder\**" />
-    <None Remove="NewFolder\**" />
+	  <Folder Include="Properties\" />	  
+	  <Folder Include="Core\" />
+	  <Folder Include="Elements\" />
+	  <Folder Include="Enums\" />
+	  <Folder Include="Exceptions\" />
+	  <Folder Include="Interface\" />
+	  <Folder Include="Loads\" />
+	  <Folder Include="Models\" />
+	  <Folder Include="Utilities\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Core\Interface\" />
-    <Folder Include="Elements\" />
-    <Folder Include="Models\" />
-    <Folder Include="Exceptions\" />
-    <Folder Include="Enums\" />
-    <Folder Include="Loads\" />
-    <Folder Include="Properties\" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Logging"/>
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
+
+	</ItemGroup>
 
   <ItemGroup>
     <Reference Include="ETABSv1">
