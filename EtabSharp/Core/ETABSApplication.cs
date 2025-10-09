@@ -24,6 +24,11 @@ public class ETABSApplication : IDisposable
     private readonly Lazy<ETABSModel> _model;
 
     /// <summary>
+    /// Gets the ETABS model instance, providing access to the building analysis and design data.
+    /// </summary>
+    public ETABSModel Model => _model.Value;
+
+    /// <summary>
     /// Gets the ETABS major version (e.g., 22 for v22.7.0)
     /// </summary>
     public int MajorVersion => _majorVersion;
@@ -63,7 +68,7 @@ public class ETABSApplication : IDisposable
     internal ETABSApplication(ETABSv1.cOAPI api, int majorVersion, double apiVersion, string fullVersion, ILogger<ETABSApplication>? logger = null)
     {
         _api = api ?? throw new ArgumentNullException(nameof(api));
-        _sapModel = api.SapModel;
+        _sapModel = api.SapModel ?? throw new InvalidOperationException("SapModel is null");
         _majorVersion = majorVersion;
         _apiVersion = apiVersion;
         _fullVersion = fullVersion;

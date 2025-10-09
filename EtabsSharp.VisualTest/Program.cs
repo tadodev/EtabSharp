@@ -37,6 +37,24 @@ using EtabSharp.Core;
 //'assign other properties
 //etabs.Model.PropMaterial.SetORebar_1("Rebar", 62, 93, 70, 102, 1, 1, 0.02, 0.1, -0.1, true);
 
-using var etabs = ETABSWrapper.Connect();
+var etabs = ETABSWrapper.Connect();
 
-var model = etabs.
+try
+{
+    // Modern async/await pattern
+    var concrete = await etabs.Model.Materials.AddConcreteMaterial(
+        name: "C30",
+        fpc: 30.0,  // 30 MPa compressive strength
+        Ec: 30000.0  // 30 GPa elastic modulus
+    );
+
+    Console.WriteLine($"✓ Created: {concrete.Name}");
+    Console.WriteLine($"  f'c = {concrete.fpc} MPa");
+    Console.WriteLine($"  Ec = {concrete.Ec} MPa");
+    Console.WriteLine($"  Poisson's ratio = {concrete.nu}");
+    Console.WriteLine();
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"✗ Error: {ex.Message}");
+}

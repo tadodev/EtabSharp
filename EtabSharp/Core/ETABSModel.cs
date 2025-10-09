@@ -4,7 +4,12 @@ using ETABSv1;
 using Microsoft.Extensions.Logging;
 
 namespace EtabSharp.Core;
-partial class ETABSModel
+
+/// <summary>
+/// High-level wrapper for ETABS model operations
+/// Organizes functionality into logical managers (Materials, Frames, Stories, etc.)
+/// </summary>
+public sealed class ETABSModel
 {
     private readonly cSapModel _sapModel;
     private readonly ILogger _logger;
