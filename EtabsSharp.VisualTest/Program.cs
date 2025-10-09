@@ -42,7 +42,7 @@ var etabs = ETABSWrapper.Connect();
 try
 {
     // Modern async/await pattern
-    var concrete = await etabs.Model.Materials.AddConcreteMaterial(
+    var concrete =  etabs.Model.Materials.AddConcreteMaterial(
         name: "C30",
         fpc: 30.0,  // 30 MPa compressive strength
         Ec: 30000.0  // 30 GPa elastic modulus

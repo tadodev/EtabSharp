@@ -14,11 +14,11 @@ public interface IPropMaterial
     /// Add Default Material from Etabs library.
     /// </summary>
     /// <param name="matType">The type of material (Concrete, Steel, etc.).</param>
-    /// <param name="Region">The region of the material standard (e.g., "USA", "Europe").</param>
+    /// <param name="region">The region of the material standard (e.g., "USA", "Europe").</param>
     /// <param name="standard">The standard (e.g., "ACI", "EN").</param>
     /// <param name="grade">The grade name of the material (e.g., "C30", "A992").</param>
     /// <returns>The name of the added material.</returns>
-    string AddDefaultMaterial(eMatType matType, string Region, string standard, string grade);
+    string AddDefaultMaterial(eMatType matType, string region, string standard, string grade);
 
     /// <summary>
     /// Retrieves the names of all defined material properties of the specified type.

@@ -11,10 +11,13 @@
     <ProjectReference Include="..\EtabSharp\EtabSharp.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="ETABSv1">
-      <HintPath>..\..\..\..\..\Program Files\Computers and Structures\ETABS 22\ETABSv1.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="ETABSv1">
+			<HintPath>C:\Program Files\Computers and Structures\ETABS 22\ETABSv1.dll</HintPath>
+			<Private>True</Private>
+			<SpecificVersion>False</SpecificVersion>
+
+		</Reference>
+	</ItemGroup>
 
 </Project>
