@@ -1,4 +1,5 @@
 ﻿using EtabSharp.Models;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace EtabSharp.Core;
@@ -16,8 +17,9 @@ public class ETABSWrapper
     /// <summary>
     /// Connects to running ETABS instance (v22+)
     /// </summary>
+    /// <param name="logger">Optional logger for diagnostics</param>
     /// <returns>ETABS application wrapper with typed access to API, or null if none found</returns>
-    public static ETABSApplication Connect()
+    public static ETABSApplication Connect(ILogger<ETABSApplication>? logger = null)
     {
         var etabsProcesses = GetETABSProcesses();
 
@@ -35,7 +37,7 @@ public class ETABSWrapper
             return null;
         }
 
-        return ConnectToETABS(activeProcess);
+        return ConnectToETABS(activeProcess, logger);
     }
 
     /// <summary>
@@ -43,8 +45,9 @@ public class ETABSWrapper
     /// </summary>
     /// <param name="programPath">Optional path to ETABS.exe. If null, uses latest installed version</param>
     /// <param name="startApplication">Whether to start the application UI</param>
+    /// <param name="logger">Optional logger for diagnostics</param>
     /// <returns>ETABS application wrapper</returns>
-    public static ETABSApplication CreateNew(string programPath = null, bool startApplication = true)
+    public static ETABSApplication CreateNew(string programPath = null, bool startApplication = true, ILogger<ETABSApplication>? logger = null)
     {
         try
         {
@@ -81,7 +84,7 @@ public class ETABSWrapper
 
             Console.WriteLine($"Created new ETABS instance v{fullVersion}, API Version: {apiVersion}");
 
-            return new ETABSApplication(api, version, apiVersion, fullVersion);
+            return new ETABSApplication(api, version, apiVersion, fullVersion, logger);
         }
         catch (Exception ex)
         {
@@ -135,30 +138,30 @@ public class ETABSWrapper
     /// <summary>
     /// Connects to the ETABS process and returns wrapper
     /// </summary>
-    private static ETABSApplication ConnectToETABS(ETABSProcessInfo processInfo)
+    private static ETABSApplication ConnectToETABS(ETABSProcessInfo processInfo, ILogger<ETABSApplication>? logger)
     {
         if (processInfo.MajorVersion == 0)
         {
-            Console.WriteLine("Unable to determine ETABS version.");
+            logger?.LogWarning("Unable to determine ETABS version.");
             return null;
         }
 
         if (processInfo.MajorVersion < MINIMUM_SUPPORTED_VERSION)
         {
-            Console.WriteLine($"ETABS v{processInfo.FullVersion} is not supported.");
-            Console.WriteLine($"This wrapper requires ETABS v{MINIMUM_SUPPORTED_VERSION} or newer.");
-            Console.WriteLine("Please upgrade your ETABS installation.");
+            logger?.LogWarning($"ETABS v{processInfo.FullVersion} is not supported.");
+            logger?.LogWarning($"This wrapper requires ETABS v{MINIMUM_SUPPORTED_VERSION} or newer.");
+            logger?.LogWarning("Please upgrade your ETABS installation.");
             return null;
         }
 
         try
         {
-            Console.WriteLine($"Connecting to ETABS v{processInfo.FullVersion}...");
-            return CreateETABSApplication(processInfo.MajorVersion, processInfo.FullVersion);
+            logger?.LogInformation($"Connecting to ETABS v{processInfo.FullVersion}...");
+            return CreateETABSApplication(processInfo.MajorVersion, processInfo.FullVersion, logger);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error connecting to ETABS v{processInfo.FullVersion}: {ex.Message}");
+            logger?.LogError(ex, $"Error connecting to ETABS v{processInfo.FullVersion}");
             return null;
         }
     }
@@ -166,7 +169,7 @@ public class ETABSWrapper
     /// <summary>
     /// Creates ETABS application wrapper for v22+ by attaching to running instance
     /// </summary>
-    private static ETABSApplication CreateETABSApplication(int majorVersion, string fullVersion)
+    private static ETABSApplication CreateETABSApplication(int majorVersion, string fullVersion, ILogger<ETABSApplication>? logger)
     {
         try
         {
@@ -179,9 +182,10 @@ public class ETABSWrapper
             // Get the API version number
             double apiVersion = GetApiVersionNumber(helper);
 
+            logger?.LogInformation($"Connected to ETABS v{fullVersion}, API Version: {apiVersion}");
             Console.WriteLine($"Connected to ETABS v{fullVersion}, API Version: {apiVersion}");
 
-            return new ETABSApplication(api, majorVersion, apiVersion, fullVersion);
+            return new ETABSApplication(api, majorVersion, apiVersion, fullVersion, logger);
         }
         catch (Exception ex)
         {

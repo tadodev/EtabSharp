@@ -146,7 +146,7 @@ public class ETABSWrapperTests
 
         // Assert
         Assert.NotNull(etabs.API);
-        Assert.NotNull(etabs.Model);
+        Assert.NotNull(etabs.SapModel);
     }
 
     [Fact]
@@ -275,7 +275,7 @@ public class ETABSWrapperTests
         if (etabs != null)
         {
             Assert.NotNull(etabs.API);
-            Assert.NotNull(etabs.Model);
+            Assert.NotNull(etabs.SapModel);
 
             // Cleanup
             etabs.Close(savePrompt: false);

@@ -19,13 +19,13 @@ public class ETABSWrapperIntegrationTests
 
         // Test API access
         Assert.NotNull(etabs.API);
-        Assert.NotNull(etabs.Model);
+        Assert.NotNull(etabs.SapModel);
 
         // Test getting units (safe operation)
         eUnits ret = 0;
         etabs.ExecuteSafely(() =>
         {
-            ret = etabs.Model.GetPresentUnits();
+            ret = etabs.SapModel.GetPresentUnits();
         }, "GetPresentUnits");
 
         Assert.True(ret >= 0);
@@ -42,7 +42,7 @@ public class ETABSWrapperIntegrationTests
         string filePath = string.Empty;
         etabs.ExecuteSafely(() =>
         {
-            filePath = etabs.Model.GetModelFilename();
+            filePath = etabs.SapModel.GetModelFilename();
         }, "GetModelFilename");
 
         // Assert
@@ -61,8 +61,8 @@ public class ETABSWrapperIntegrationTests
         // Initialize new blank model
         etabs.ExecuteSafely(() =>
         {
-            etabs.Model.InitializeNewModel();
-            etabs.Model.File.NewBlank();
+            etabs.SapModel.InitializeNewModel();
+            etabs.SapModel.File.NewBlank();
         }, "InitializeNewModel");
 
         // Cleanup
