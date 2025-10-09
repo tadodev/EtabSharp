@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtabSharp.Test", "EtabSharp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E1550E01-A197-42F6-BD5D-86F838187C93}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtabsSharp.VisualTest", "EtabsSharp.VisualTest\EtabsSharp.VisualTest.csproj", "{92FB0F2C-5A02-4629-94B7-F582C2060901}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{DDC75713-D699-4276-87CD-16DBA00DE872}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDC75713-D699-4276-87CD-16DBA00DE872}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDC75713-D699-4276-87CD-16DBA00DE872}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92FB0F2C-5A02-4629-94B7-F582C2060901}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92FB0F2C-5A02-4629-94B7-F582C2060901}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92FB0F2C-5A02-4629-94B7-F582C2060901}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92FB0F2C-5A02-4629-94B7-F582C2060901}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A74B6B74-0E7F-4D92-A41B-9A23A0698F4B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{DDC75713-D699-4276-87CD-16DBA00DE872} = {E1550E01-A197-42F6-BD5D-86F838187C93}
+		{92FB0F2C-5A02-4629-94B7-F582C2060901} = {E1550E01-A197-42F6-BD5D-86F838187C93}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0429E9A4-2308-44D8-8595-9C8B5E1D154C}

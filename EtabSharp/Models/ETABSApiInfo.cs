@@ -5,7 +5,8 @@
 /// </summary>
 public class ETABSApiInfo
 {
-    public int Version { get; set; }
+    public int MajorVersion { get; set; }
+    public string FullVersion { get; set; }
     public double ApiVersion { get; set; }
     public string DllName { get; set; }
     public bool IsNetStandard { get; set; }
@@ -13,6 +14,6 @@ public class ETABSApiInfo
     public override string ToString()
     {
         var apiVersionStr = ApiVersion > 0 ? $", API v{ApiVersion}" : "";
-        return $"ETABS v{Version}{apiVersionStr} - {DllName} (.NET Standard 2.0)";
+        return $"ETABS v{FullVersion}{apiVersionStr} - {DllName} (.NET Standard 2.0)";
     }
 }

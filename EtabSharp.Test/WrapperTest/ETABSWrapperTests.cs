@@ -1,7 +1,7 @@
 ﻿using EtabSharp.Core;
 using EtabSharp.Models;
 
-namespace EtabSharp.Test;
+namespace EtabSharp.Test.WrapperTest;
 
 public class ETABSWrapperTests
 {
@@ -29,12 +29,14 @@ public class ETABSWrapperTests
     public void GetActiveVersion_ShouldReturnNullOrString()
     {
         // Act
-        var version = ETABSWrapper.GetActiveVersion();
+        string version = ETABSWrapper.GetActiveVersion();
 
         // Assert
         if (version != null)
         {
-            Assert.Equal(version, 22);
+            Assert.NotEmpty(version);
+            // Version should be in format like "22.7.0"
+            Assert.Matches(@"^\d+\.\d+\.\d+$", version);
         }
     }
 
@@ -46,7 +48,7 @@ public class ETABSWrapperTests
 
         // Assert
         Assert.NotNull(instances);
-        Assert.IsType<System.Collections.Generic.List<ETABSInstanceInfo>>(instances);
+        Assert.IsType<List<ETABSInstanceInfo>>(instances);
     }
 
     [Fact]
@@ -69,7 +71,8 @@ public class ETABSWrapperTests
         {
             Assert.True(instance.ProcessId > 0);
             Assert.NotNull(instance.ProcessName);
-            
+            Assert.NotNull(instance.FullVersion);
+            Assert.True(instance.MajorVersion > 0);
         }
     }
 
@@ -123,7 +126,8 @@ public class ETABSWrapperTests
 
         // Assert
         Assert.NotNull(etabs);
-        
+        Assert.True(etabs.MajorVersion >= 22);
+        Assert.NotNull(etabs.FullVersion);
         Assert.NotNull(etabs.DllName);
         Assert.True(etabs.IsNetStandard);
     }
@@ -161,8 +165,11 @@ public class ETABSWrapperTests
 
         // Assert
         Assert.NotNull(apiInfo);
+        Assert.True(apiInfo.MajorVersion >= 22);
+        Assert.NotNull(apiInfo.FullVersion);
         Assert.Equal("ETABSv1.DLL", apiInfo.DllName);
         Assert.True(apiInfo.IsNetStandard);
+        Assert.IsType<double>(apiInfo.ApiVersion);
     }
 
     [Fact]
@@ -216,6 +223,8 @@ public class ETABSWrapperTests
         {
             ProcessId = 1234,
             ProcessName = "ETABS",
+            MajorVersion = 22,
+            FullVersion = "22.7.0",
             WindowTitle = "Test Model",
             IsSupported = true
         };
@@ -224,7 +233,7 @@ public class ETABSWrapperTests
         var result = instanceInfo.ToString();
 
         // Assert
-        Assert.Contains("22", result);
+        Assert.Contains("22.7.0", result);
         Assert.Contains("1234", result);
         Assert.Contains("Test Model", result);
         Assert.Contains("Supported", result);
@@ -236,7 +245,9 @@ public class ETABSWrapperTests
         // Arrange
         var apiInfo = new ETABSApiInfo
         {
-            ApiVersion = 123,
+            MajorVersion = 22,
+            FullVersion = "22.7.0",
+            ApiVersion = 1.23,
             DllName = "ETABSv1.DLL",
             IsNetStandard = true
         };
@@ -246,7 +257,7 @@ public class ETABSWrapperTests
 
         // Assert
         Assert.Contains("22.7.0", result);
-        Assert.Contains("123", result);
+        Assert.Contains("1.23", result);
         Assert.Contains("ETABSv1.DLL", result);
         Assert.Contains(".NET Standard", result);
     }

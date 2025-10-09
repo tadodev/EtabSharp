@@ -41,8 +41,12 @@
 
   <ItemGroup>
     <Reference Include="ETABSv1">
-      <HintPath>..\..\..\Downloads\Compressed\ETABSv1.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Computers and Structures\ETABS 22\ETABSv1.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="WrapperTest\" />
+	</ItemGroup>
 
 </Project>

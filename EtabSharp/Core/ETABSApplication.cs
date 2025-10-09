@@ -6,18 +6,24 @@ namespace EtabSharp.Core;
 /// ETABS application wrapper for v22 and newer
 /// Provides strongly-typed access to ETABS API using ETABSv1.DLL (.NET Standard 2.0)
 /// </summary>
-public class ETABSApplication: IDisposable
+public class ETABSApplication : IDisposable
 {
     private readonly ETABSv1.cOAPI _api;
     private readonly ETABSv1.cSapModel _model;
-    private readonly int _version;
+    private readonly int _majorVersion;
     private readonly double _apiVersion;
+    private readonly string _fullVersion;
     private bool _disposed = false;
 
     /// <summary>
-    /// Gets the ETABS version (22+)
+    /// Gets the ETABS major version (e.g., 22 for v22.7.0)
     /// </summary>
-    public int Version => _version;
+    public int MajorVersion => _majorVersion;
+
+    /// <summary>
+    /// Gets the full ETABS version (e.g., "22.7.0")
+    /// </summary>
+    public string FullVersion => _fullVersion;
 
     /// <summary>
     /// Gets the API version number
@@ -46,12 +52,13 @@ public class ETABSApplication: IDisposable
     /// </summary>
     public ETABSv1.cSapModel Model => _model;
 
-    internal ETABSApplication(ETABSv1.cOAPI api, int version, double apiVersion)
+    internal ETABSApplication(ETABSv1.cOAPI api, int majorVersion, double apiVersion, string fullVersion)
     {
         _api = api ?? throw new ArgumentNullException(nameof(api));
         _model = api.SapModel;
-        _version = version;
+        _majorVersion = majorVersion;
         _apiVersion = apiVersion;
+        _fullVersion = fullVersion;
     }
 
     /// <summary>
@@ -61,7 +68,8 @@ public class ETABSApplication: IDisposable
     {
         return new ETABSApiInfo
         {
-            Version = Version,
+            MajorVersion = MajorVersion,
+            FullVersion = FullVersion,
             ApiVersion = ApiVersion,
             DllName = DllName,
             IsNetStandard = IsNetStandard

@@ -74,12 +74,14 @@ public class ETABSWrapper
             }
 
             // Get version info
-            int version = GetVersionFromAPI(api);
+            var versionInfo = GetVersionFromAPI(api);
+            int version = versionInfo.majorVersion;
+            string fullVersion = versionInfo.fullVersion;
             double apiVersion = GetApiVersionNumber(helper);
 
-            Console.WriteLine($"Created new ETABS instance v{version}, API Version: {apiVersion}");
+            Console.WriteLine($"Created new ETABS instance v{fullVersion}, API Version: {apiVersion}");
 
-            return new ETABSApplication(api, version, apiVersion);
+            return new ETABSApplication(api, version, apiVersion, fullVersion);
         }
         catch (Exception ex)
         {
@@ -107,12 +109,15 @@ public class ETABSWrapper
             {
                 try
                 {
-                    int version = process.MainModule.FileVersionInfo.FileMajorPart;
+                    var fileVersionInfo = process.MainModule.FileVersionInfo;
 
                     return new ETABSProcessInfo
                     {
                         Process = process,
-                        Version = version,
+                        MajorVersion = fileVersionInfo.FileMajorPart,
+                        MinorVersion = fileVersionInfo.FileMinorPart,
+                        BuildVersion = fileVersionInfo.FileBuildPart,
+                        FullVersion = $"{fileVersionInfo.FileMajorPart}.{fileVersionInfo.FileMinorPart}.{fileVersionInfo.FileBuildPart}",
                         ProcessName = process.ProcessName
                     };
                 }
@@ -132,15 +137,15 @@ public class ETABSWrapper
     /// </summary>
     private static ETABSApplication ConnectToETABS(ETABSProcessInfo processInfo)
     {
-        if (processInfo.Version == 0)
+        if (processInfo.MajorVersion == 0)
         {
             Console.WriteLine("Unable to determine ETABS version.");
             return null;
         }
 
-        if (processInfo.Version < MINIMUM_SUPPORTED_VERSION)
+        if (processInfo.MajorVersion < MINIMUM_SUPPORTED_VERSION)
         {
-            Console.WriteLine($"ETABS v{processInfo.Version} is not supported.");
+            Console.WriteLine($"ETABS v{processInfo.FullVersion} is not supported.");
             Console.WriteLine($"This wrapper requires ETABS v{MINIMUM_SUPPORTED_VERSION} or newer.");
             Console.WriteLine("Please upgrade your ETABS installation.");
             return null;
@@ -148,12 +153,12 @@ public class ETABSWrapper
 
         try
         {
-            Console.WriteLine($"Connecting to ETABS v{processInfo.Version}...");
-            return CreateETABSApplication(processInfo.Version);
+            Console.WriteLine($"Connecting to ETABS v{processInfo.FullVersion}...");
+            return CreateETABSApplication(processInfo.MajorVersion, processInfo.FullVersion);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error connecting to ETABS v{processInfo.Version}: {ex.Message}");
+            Console.WriteLine($"Error connecting to ETABS v{processInfo.FullVersion}: {ex.Message}");
             return null;
         }
     }
@@ -161,7 +166,7 @@ public class ETABSWrapper
     /// <summary>
     /// Creates ETABS application wrapper for v22+ by attaching to running instance
     /// </summary>
-    private static ETABSApplication CreateETABSApplication(int version)
+    private static ETABSApplication CreateETABSApplication(int majorVersion, string fullVersion)
     {
         try
         {
@@ -174,9 +179,9 @@ public class ETABSWrapper
             // Get the API version number
             double apiVersion = GetApiVersionNumber(helper);
 
-            Console.WriteLine($"Connected to ETABS v{version}, API Version: {apiVersion}");
+            Console.WriteLine($"Connected to ETABS v{fullVersion}, API Version: {apiVersion}");
 
-            return new ETABSApplication(api, version, apiVersion);
+            return new ETABSApplication(api, majorVersion, apiVersion, fullVersion);
         }
         catch (Exception ex)
         {
@@ -196,24 +201,28 @@ public class ETABSWrapper
         }
         catch
         {
-            return 0;
+            return 0.0;
         }
     }
 
     /// <summary>
     /// Gets version from API object by examining process
     /// </summary>
-    private static int GetVersionFromAPI(ETABSv1.cOAPI api)
+    private static (int majorVersion, string fullVersion) GetVersionFromAPI(ETABSv1.cOAPI api)
     {
         try
         {
             var processes = GetETABSProcesses();
             var activeProcess = FindActiveProcess(processes);
-            return activeProcess?.Version ?? 22; // Default to 22 if can't determine
+            if (activeProcess != null)
+            {
+                return (activeProcess.MajorVersion, activeProcess.FullVersion);
+            }
+            return (22, "22.0.0"); // Default to 22.0.0 if can't determine
         }
         catch
         {
-            return 22; // Default to 22
+            return (22, "22.0.0"); // Default to 22.0.0
         }
     }
 
@@ -229,16 +238,19 @@ public class ETABSWrapper
         {
             try
             {
-                int version = process.MainModule.FileVersionInfo.FileMajorPart;
+                var fileVersionInfo = process.MainModule.FileVersionInfo;
+                int majorVersion = fileVersionInfo.FileMajorPart;
+                string fullVersion = $"{fileVersionInfo.FileMajorPart}.{fileVersionInfo.FileMinorPart}.{fileVersionInfo.FileBuildPart}";
 
                 instances.Add(new ETABSInstanceInfo
                 {
                     ProcessId = process.Id,
                     ProcessName = process.ProcessName,
-                    Version = version,
+                    MajorVersion = majorVersion,
+                    FullVersion = fullVersion,
                     HasMainWindow = process.MainWindowHandle != IntPtr.Zero,
                     WindowTitle = process.MainWindowTitle,
-                    IsSupported = version >= MINIMUM_SUPPORTED_VERSION
+                    IsSupported = majorVersion >= MINIMUM_SUPPORTED_VERSION
                 });
             }
             catch (Exception ex)
@@ -265,17 +277,17 @@ public class ETABSWrapper
     {
         var processes = GetETABSProcesses();
         var activeProcess = FindActiveProcess(processes);
-        return activeProcess != null && activeProcess.Version >= MINIMUM_SUPPORTED_VERSION;
+        return activeProcess != null && activeProcess.MajorVersion >= MINIMUM_SUPPORTED_VERSION;
     }
 
     /// <summary>
     /// Gets the version of the active ETABS instance
     /// </summary>
-    public static int? GetActiveVersion()
+    public static string GetActiveVersion()
     {
         var processes = GetETABSProcesses();
         var activeProcess = FindActiveProcess(processes);
-        return activeProcess?.Version;
+        return activeProcess?.FullVersion;
     }
 }
 
@@ -284,7 +296,10 @@ public class ETABSWrapper
 /// </summary>
 internal class ETABSProcessInfo
 {
-    public Process Process { get; set; }
-    public int Version { get; set; }
-    public string ProcessName { get; set; }
+    public Process? Process { get; set; }
+    public int MajorVersion { get; set; }
+    public int MinorVersion { get; set; }
+    public int BuildVersion { get; set; }
+    public string? FullVersion { get; set; }
+    public string? ProcessName { get; set; }
 }
