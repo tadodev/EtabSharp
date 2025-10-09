@@ -27,12 +27,22 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit.v3"  />
-    <PackageReference Include="xunit.runner.visualstudio"  />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
 
     <PackageReference Include="Shouldly" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="Moq" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EtabSharp\EtabSharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ETABSv1">
+      <HintPath>..\..\..\Downloads\Compressed\ETABSv1.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
