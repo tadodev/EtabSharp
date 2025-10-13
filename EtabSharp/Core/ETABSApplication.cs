@@ -1,4 +1,4 @@
-﻿using EtabSharp.Models;
+﻿using EtabSharp.Models.SapModelInfor;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -11,8 +11,8 @@ namespace EtabSharp.Core;
 /// </summary>
 public class ETABSApplication : IDisposable
 {
-    private readonly ETABSv1.cOAPI _api;
-    private readonly ETABSv1.cSapModel _sapModel;
+    private readonly cOAPI _api;
+    private readonly cSapModel _sapModel;
     private readonly int _majorVersion;
     private readonly double _apiVersion;
     private readonly string _fullVersion;

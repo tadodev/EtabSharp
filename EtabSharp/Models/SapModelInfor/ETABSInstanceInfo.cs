@@ -1,4 +1,4 @@
-﻿namespace EtabSharp.Models;
+﻿namespace EtabSharp.Models.SapModelInfor;
 
 /// <summary>
 /// Public class containing ETABS instance information

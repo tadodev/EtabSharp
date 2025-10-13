@@ -1,4 +1,4 @@
-﻿using EtabSharp.Models;
+﻿using EtabSharp.Models.SapModelInfor;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 

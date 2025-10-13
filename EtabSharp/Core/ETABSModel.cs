@@ -16,6 +16,7 @@ public sealed class ETABSModel
 
     // Lazy initialization for better performance
     private readonly Lazy<IPropMaterial> _materials;
+    private readonly Lazy<IUnitSystem> _unitSystem;
     //TODO Add more managers here as you create them
     // private readonly Lazy<IStoryManager> _stories;
     // private readonly Lazy<IFrameManager> _frames;
@@ -27,6 +28,7 @@ public sealed class ETABSModel
 
         // Initialize managers with lazy loading
         _materials = new Lazy<IPropMaterial>(() => new PropMaterial(_sapModel, _logger));
+        _unitSystem = new Lazy<IUnitSystem>(() => new UnitSystem.UnitSystem(_sapModel, _logger));
         // _stories = new Lazy<IStoryManager>(() => new StoryManager(_sapModel, _logger));
         // _frames = new Lazy<IFrameManager>(() => new FrameManager(_sapModel, _logger));
     }
@@ -37,6 +39,8 @@ public sealed class ETABSModel
     public IPropMaterial Materials => _materials.Value;
 
     // Add more properties as you create managers
+    public IUnitSystem UnitSystem => _unitSystem.Value;
+
     // public IStoryManager Stories => _stories.Value;
     // public IFrameManager Frames => _frames.Value;
 
