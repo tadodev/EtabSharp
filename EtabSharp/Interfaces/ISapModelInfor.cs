@@ -59,7 +59,8 @@ public interface ISapModelInfor
     /// Initializes a new blank model (clears existing model)
     /// WARNING: This clears all existing data. Save first if needed.
     /// </summary>
-    void InitializeNewModel();
+    /// <param name="units"></param>
+    int InitializeNewModel(eUnits units);
 
 
     #endregion

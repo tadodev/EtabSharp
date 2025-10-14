@@ -1,6 +1,7 @@
 ﻿// Connect to ETABS
 using EtabSharp.Core;
 using EtabSharp.Models.UnitSystem;
+using ETABSv1;
 
 //var etabs = ETABSWrapper.Connect();
 //if (etabs != null)
@@ -59,6 +60,8 @@ catch (Exception ex)
 {
     Console.WriteLine($"✗ Error: {ex.Message}");
 }
+
+var ret = etabs.Model.SapModelInfor.InitializeNewModel(eUnits.kN_m_C);
 
 var unit = etabs.Model.UnitSystem.GetPresentUnits();
 Console.WriteLine(unit);
