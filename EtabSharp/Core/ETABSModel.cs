@@ -16,6 +16,7 @@ public sealed class ETABSModel
     private readonly ILogger _logger;
 
     // Lazy initialization for better performance
+    private readonly Lazy<IFiles> _files;
     private readonly Lazy<ISapModelInfor> _sapModelInfo;
     private readonly Lazy<IPropMaterial> _materials;
     private readonly Lazy<IUnitSystem> _unitSystem;
@@ -31,6 +32,7 @@ public sealed class ETABSModel
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
         // Initialize managers with lazy loading
+        _files = new Lazy<IFiles>(() => new Files.Files(_sapModel, _logger));
         _sapModelInfo = new Lazy<ISapModelInfor>(() => new SapModelInfor(_sapModel, _logger));
         _materials = new Lazy<IPropMaterial>(() => new PropMaterial(_sapModel, _logger));
         _unitSystem = new Lazy<IUnitSystem>(() => new UnitSystem.UnitSystem(_sapModel, _logger));
@@ -41,6 +43,7 @@ public sealed class ETABSModel
     /// <summary>
     /// Gets the material properties manager
     /// </summary>
+    public IFiles Files => _files.Value;
     public IPropMaterial Materials => _materials.Value;
 
     // Add more properties as you create managers

@@ -1,5 +1,6 @@
 ﻿// Connect to ETABS
 using EtabSharp.Core;
+using EtabSharp.Frames.Models;
 using EtabSharp.UnitSystem.Models;
 using ETABSv1;
 
@@ -41,15 +42,11 @@ using ETABSv1;
 
 var etabs = ETABSWrapper.Connect();
 
-var ret = etabs.Model.SapModelInfor.InitializeNewModel(eUnits.kN_m_C);
+var ret = etabs.Model.SapModelInfor.InitializeNewModel(eUnits.kip_ft_F);
+etabs.Model.Files.NewSteelDeckModel(10, 10, 10, 5, 5, 30, 30);
 
 var unit = etabs.Model.UnitSystem.GetPresentUnits();
 Console.WriteLine(unit);
-
-etabs.Model.UnitSystem.SetPresentUnits(Units.US_Kip_Ft);
-
-var unit2 = etabs.Model.UnitSystem.GetPresentUnits();
-Console.WriteLine(unit2);
 
 try
 {
@@ -70,3 +67,5 @@ catch (Exception ex)
 {
     Console.WriteLine($"✗ Error: {ex.Message}");
 }
+
+etabs.Model.PropFrame.AddRectangularSection("MyRectangularSection","5ksi",12, 20);

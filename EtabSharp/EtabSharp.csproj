@@ -50,9 +50,5 @@
 		<SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Files\" />
-  </ItemGroup>
     
 </Project>

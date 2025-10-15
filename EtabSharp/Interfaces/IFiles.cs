@@ -49,23 +49,27 @@ public interface IFiles
     /// </summary>
     /// <param name="numberStories"></param>
     /// <param name="typicalStoryHeight"></param>
+    /// <param name="bottomStoryHeight"></param>
     /// <param name="numberLineX"></param>
     /// <param name="numberLineY"></param>
     /// <param name="spacingX"></param>
     /// <param name="spacingY"></param>
     /// <returns></returns>
-    int NewGridOnlyModel(int numberStories, double typicalStoryHeight, int numberLineX, int numberLineY, double spacingX, double spacingY);
+    int NewGridOnlyModel(int numberStories, double typicalStoryHeight, double bottomStoryHeight, int numberLineX,
+        int numberLineY, double spacingX, double spacingY);
 
     /// <summary>
     /// Add a new steel deck model to the current ETABS instance with specified parameters
     /// </summary>
     /// <param name="numberStories"></param>
     /// <param name="typicalStoryHeight"></param>
+    /// <param name="bottomStoryHeight"></param>
     /// <param name="numberLineX"></param>
     /// <param name="numberLineY"></param>
     /// <param name="spacingX"></param>
     /// <param name="spacingY"></param>
     /// <returns></returns>
-    int NewSteelDeckModel(int numberStories, double typicalStoryHeight, int numberLineX, int numberLineY,
+    int NewSteelDeckModel(int numberStories, double typicalStoryHeight, double bottomStoryHeight, int numberLineX,
+        int numberLineY,
         double spacingX, double spacingY);
 }

@@ -310,15 +310,18 @@ public partial class PropFrame:IPropFrame
         }
     }
 
-    ///<inheritdoc/>
-    public string[] GetAvailableSectionFiles()
+    /// <param name="fileName"></param>
+    /// <param name="propType"></param>
+    /// <inheritdoc/>
+    public string[] GetAvailableSectionFiles(string fileName, eFramePropType propType)
     {
         try
         {
             int numberNames = 0;
             string[] fileNames = null;
+            eFramePropType[] propTypes = null;
 
-            int ret = _sapModel.PropFrame.GetPropFileNameList(ref numberNames, ref fileNames);
+            int ret = _sapModel.PropFrame.GetPropFileNameList(fileName,ref numberNames, ref fileNames,ref propTypes,propType);
 
             if (ret != 0)
             {

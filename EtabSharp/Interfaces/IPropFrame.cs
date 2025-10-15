@@ -150,8 +150,10 @@ public interface IPropFrame
     /// <summary>
     /// Gets available section property files in the ETABS database.
     /// </summary>
+    /// <param name="fileName"></param>
+    /// <param name="propType"></param>
     /// <returns>Array of available property file names.</returns>
-    string[] GetAvailableSectionFiles();
+    string[] GetAvailableSectionFiles(string fileName,eFramePropType propType);
 
     #endregion
 
