@@ -1,6 +1,6 @@
-﻿using EtabSharp.Exceptions;
+﻿using EtabSharp.Core.Models;
+using EtabSharp.Exceptions;
 using EtabSharp.Interfaces;
-using EtabSharp.Models.SapModelInfor;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 

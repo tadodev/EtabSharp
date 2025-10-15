@@ -1,4 +1,4 @@
-﻿using EtabSharp.Models.SapModelInfor;
+﻿using EtabSharp.Core.Models;
 using ETABSv1;
 
 namespace EtabSharp.Interfaces;

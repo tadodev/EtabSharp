@@ -1,6 +1,6 @@
 ﻿// Connect to ETABS
 using EtabSharp.Core;
-using EtabSharp.Models.UnitSystem;
+using EtabSharp.UnitSystem.Models;
 using ETABSv1;
 
 //var etabs = ETABSWrapper.Connect();
@@ -41,13 +41,23 @@ using ETABSv1;
 
 var etabs = ETABSWrapper.Connect();
 
+var ret = etabs.Model.SapModelInfor.InitializeNewModel(eUnits.kN_m_C);
+
+var unit = etabs.Model.UnitSystem.GetPresentUnits();
+Console.WriteLine(unit);
+
+etabs.Model.UnitSystem.SetPresentUnits(Units.US_Kip_Ft);
+
+var unit2 = etabs.Model.UnitSystem.GetPresentUnits();
+Console.WriteLine(unit2);
+
 try
 {
     // Modern async/await pattern
-    var concrete =  etabs.Model.Materials.AddConcreteMaterial(
-        name: "C30",
-        fpc: 30.0,  // 30 MPa compressive strength
-        Ec: 30000.0  // 30 GPa elastic modulus
+    var concrete = etabs.Model.Materials.AddConcreteMaterial(
+        name: "5ksi",
+        fpc: 5,  // 5 ksi compressive strength
+        Ec: 4664  // 47*sqrt(fc) psi elastic modulus
     );
 
     Console.WriteLine($"✓ Created: {concrete.Name}");
@@ -60,13 +70,3 @@ catch (Exception ex)
 {
     Console.WriteLine($"✗ Error: {ex.Message}");
 }
-
-var ret = etabs.Model.SapModelInfor.InitializeNewModel(eUnits.kN_m_C);
-
-var unit = etabs.Model.UnitSystem.GetPresentUnits();
-Console.WriteLine(unit);
-
-etabs.Model.UnitSystem.SetPresentUnits(Units.US_Kip_Ft);
-
-var unit2 = etabs.Model.UnitSystem.GetPresentUnits();
-Console.WriteLine(unit2);

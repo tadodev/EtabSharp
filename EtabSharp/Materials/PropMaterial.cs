@@ -1,7 +1,7 @@
 ﻿using EtabSharp.Constants;
 using EtabSharp.Exceptions;
 using EtabSharp.Interfaces;
-using EtabSharp.Models.Materials;
+using EtabSharp.Materials.Models;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 

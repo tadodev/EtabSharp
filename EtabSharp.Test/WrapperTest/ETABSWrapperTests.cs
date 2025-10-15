@@ -1,5 +1,5 @@
 ﻿using EtabSharp.Core;
-using EtabSharp.Models.SapModelInfor;
+using EtabSharp.Core.Models;
 
 namespace EtabSharp.Test.WrapperTest;
 

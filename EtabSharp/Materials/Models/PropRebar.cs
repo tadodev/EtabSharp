@@ -1,9 +1,9 @@
-﻿namespace EtabSharp.Models.Materials;
+﻿namespace EtabSharp.Materials.Models;
 
 /// <summary>
-/// Minimal Steel material properties in ETABS
+/// Minimal Rebar material properties in ETABS
 /// </summary>
-public record PropSteel
+public record PropRebar
 {
     public required string Name { get; set; }
     public double Fy { get; set; }

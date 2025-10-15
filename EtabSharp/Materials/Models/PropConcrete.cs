@@ -1,4 +1,4 @@
-﻿namespace EtabSharp.Models.Materials;
+﻿namespace EtabSharp.Materials.Models;
 public record PropConcrete
 {
     public string Name { get; set; }
