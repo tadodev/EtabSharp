@@ -1,4 +1,4 @@
-﻿using EtabSharp.Models.Materials;
+﻿using EtabSharp.Materials.Models;
 using ETABSv1;
 
 namespace EtabSharp.Interfaces;

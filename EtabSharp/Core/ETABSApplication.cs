@@ -1,4 +1,4 @@
-﻿using EtabSharp.Models.SapModelInfor;
+﻿using EtabSharp.Core.Models;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;

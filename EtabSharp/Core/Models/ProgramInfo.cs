@@ -1,4 +1,4 @@
-﻿namespace EtabSharp.Models.SapModelInfor;
+﻿namespace EtabSharp.Core.Models;
 
 public class ProgramInfo
 {

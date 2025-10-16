@@ -1,5 +1,5 @@
 ﻿using EtabSharp.Interfaces;
-using EtabSharp.Models.UnitSystem;
+using EtabSharp.UnitSystem.Models;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 

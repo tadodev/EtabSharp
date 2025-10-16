@@ -1,4 +1,4 @@
-﻿using EtabSharp.Models.UnitSystem;
+﻿using EtabSharp.UnitSystem.Models;
 
 namespace EtabSharp.Interfaces;
 

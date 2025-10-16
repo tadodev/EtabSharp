@@ -1,4 +1,4 @@
-﻿namespace EtabSharp.Models.SapModelInfor;
+﻿namespace EtabSharp.Core.Models;
 
 /// <summary>
 /// Contains detailed ETABS API information
