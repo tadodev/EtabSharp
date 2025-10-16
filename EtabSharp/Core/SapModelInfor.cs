@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EtabSharp.Core;
 
-public class SapModelInfor: ISapModelInfor
+public class SapModelInfor : ISapModelInfor
 {
     private readonly cSapModel _sapModel;
     private readonly ILogger _logger;
@@ -108,7 +108,7 @@ public class SapModelInfor: ISapModelInfor
             string programVersion = string.Empty;
             string programLevel = string.Empty;
 
-            int ret = _sapModel.GetProgramInfo(ref programName, ref programVersion,ref programLevel);
+            int ret = _sapModel.GetProgramInfo(ref programName, ref programVersion, ref programLevel);
             if (ret != 0)
             {
                 _logger.LogError("Failed to get program info. Return code: {ReturnCode}", ret);
