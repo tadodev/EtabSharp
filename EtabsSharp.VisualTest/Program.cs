@@ -1,9 +1,4 @@
 ﻿// Connect to ETABS
-using EtabSharp.Core;
-using EtabSharp.Frames.Models;
-using EtabSharp.UnitSystem.Models;
-using ETABSv1;
-
 //var etabs = ETABSWrapper.Connect();
 //if (etabs != null)
 //{
@@ -40,9 +35,13 @@ using ETABSv1;
 //'assign other properties
 //etabs.Model.PropMaterial.SetORebar_1("Rebar", 62, 93, 70, 102, 1, 1, 0.02, 0.1, -0.1, true);
 
+using EtabSharp.Core;
+using EtabSharp.Frames.Models;
+using ETABSv1;
+
 var etabs = ETABSWrapper.Connect();
 
-var ret = etabs.Model.SapModelInfor.InitializeNewModel(eUnits.kip_ft_F);
+var ret = etabs.Model.SapModelInfor.InitializeNewModel(eUnits.lb_in_F);
 etabs.Model.Files.NewSteelDeckModel(10, 10, 10, 5, 5, 30, 30);
 
 var unit = etabs.Model.UnitSystem.GetPresentUnits();
@@ -53,8 +52,8 @@ try
     // Modern async/await pattern
     var concrete = etabs.Model.Materials.AddConcreteMaterial(
         name: "5ksi",
-        fpc: 5,  // 5 ksi compressive strength
-        Ec: 4664  // 47*sqrt(fc) psi elastic modulus
+        fpc: 5000,  // 5 ksi compressive strength
+        Ec: 47 * Math.Sqrt(5000)  // 47*sqrt(fc) psi elastic modulus
     );
 
     Console.WriteLine($"✓ Created: {concrete.Name}");
@@ -68,4 +67,22 @@ catch (Exception ex)
     Console.WriteLine($"✗ Error: {ex.Message}");
 }
 
-etabs.Model.PropFrame.AddRectangularSection("MyRectangularSection","5ksi",12, 20);
+var column = etabs.Model.PropFrame.AddRectangularSection("C_24x24_5ksi", "5ksi", 24, 24);
+
+var rebar = new PropColumnRebarRect
+{
+    MatPropLong = "A615Gr60",
+    MatPropConfine = "A615Gr60",
+    Cover = 2,
+    NumberOfBars3Dir = 6,
+    NumberOfBars2Dir = 6,
+    BarSize = "#8",
+    TieSize = "#4",
+    TieSpacing = 12,
+    TieLegs2Dir = 4,
+    TieLegs3Dir = 4,
+    ToBeDesigned = true
+};
+etabs.Model.PropFrame.SetColumnRebarRectangular(column.Name, rebar);
+
+

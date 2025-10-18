@@ -81,7 +81,7 @@ public record PropColumnRebarRect
     /// <summary>
     /// Confinement type: 1=Ties, 2=Spiral
     /// </summary>
-    public int ConfineType = 1; 
+    public int ConfineType = 1;
 
     /// <summary>
     /// Clear cover to reinforcement
@@ -127,6 +127,7 @@ public record PropColumnRebarRect
     /// Whether this column is to be designed
     /// </summary>
     public bool ToBeDesigned { get; set; } = false;
+
 }
 
 /// <summary>
