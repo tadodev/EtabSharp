@@ -1,9 +1,9 @@
-﻿using EtabSharp.Interfaces;
-using EtabSharp.UnitSystem.Models;
+﻿using EtabSharp.Interfaces.System;
+using EtabSharp.System.Models;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 
-namespace EtabSharp.UnitSystem;
+namespace EtabSharp.System;
 
 public class UnitSystem: IUnitSystem
 {

@@ -36,7 +36,7 @@
 //etabs.Model.PropMaterial.SetORebar_1("Rebar", 62, 93, 70, 102, 1, 1, 0.02, 0.1, -0.1, true);
 
 using EtabSharp.Core;
-using EtabSharp.Frames.Models;
+using EtabSharp.Properties.Frames.Models;
 using ETABSv1;
 
 var etabs = ETABSWrapper.Connect();

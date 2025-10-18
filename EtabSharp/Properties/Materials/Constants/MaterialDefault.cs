@@ -1,4 +1,4 @@
-﻿namespace EtabSharp.Constants;
+﻿namespace EtabSharp.Properties.Materials.Constants;
 
 /// <summary>
 /// Default constraint values for ETABS concrete materials.

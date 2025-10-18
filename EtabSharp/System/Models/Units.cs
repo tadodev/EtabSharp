@@ -1,6 +1,6 @@
 ﻿using ETABSv1;
 
-namespace EtabSharp.UnitSystem.Models;
+namespace EtabSharp.System.Models;
 
 /// <summary>
 /// 

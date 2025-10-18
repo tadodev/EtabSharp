@@ -1,6 +1,6 @@
-﻿using EtabSharp.UnitSystem.Models;
+﻿using EtabSharp.System.Models;
 
-namespace EtabSharp.Interfaces;
+namespace EtabSharp.Interfaces.System;
 
 public interface IUnitSystem
 {

@@ -1,4 +1,4 @@
-﻿namespace EtabSharp.Frames.Models;
+﻿namespace EtabSharp.Properties.Frames.Models;
 
 /// <summary>
 /// Represents a rectangular frame section (beam or column).

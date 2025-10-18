@@ -1,5 +1,6 @@
 ﻿using EtabSharp.Frames;
-using EtabSharp.Interfaces;
+using EtabSharp.Interfaces.Properties;
+using EtabSharp.Interfaces.System;
 using EtabSharp.Materials;
 using ETABSv1;
 using Microsoft.Extensions.Logging;

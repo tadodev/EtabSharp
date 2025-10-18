@@ -1,9 +1,9 @@
 ﻿using EtabSharp.Exceptions;
-using EtabSharp.Interfaces;
+using EtabSharp.Interfaces.System;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 
-namespace EtabSharp.Files;
+namespace EtabSharp.System;
 
 /// <summary>
 /// Handles ETABS file operations (open, save, export, import, new models)

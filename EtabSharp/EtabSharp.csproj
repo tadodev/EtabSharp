@@ -50,5 +50,9 @@
 		<SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\Areas\" />
+  </ItemGroup>
     
 </Project>

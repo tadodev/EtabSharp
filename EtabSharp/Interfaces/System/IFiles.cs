@@ -1,6 +1,6 @@
 ﻿using ETABSv1;
 
-namespace EtabSharp.Interfaces;
+namespace EtabSharp.Interfaces.System;
 
 /// <summary>
 /// Handling file operations (open, save, export, import) and new model creation

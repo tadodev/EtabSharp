@@ -1,11 +1,11 @@
-﻿using EtabSharp.Constants;
-using EtabSharp.Exceptions;
-using EtabSharp.Interfaces;
-using EtabSharp.Materials.Models;
+﻿using EtabSharp.Exceptions;
+using EtabSharp.Interfaces.Properties;
+using EtabSharp.Properties.Materials.Constants;
+using EtabSharp.Properties.Materials.Models;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 
-namespace EtabSharp.Materials;
+namespace EtabSharp.Properties.Materials;
 
 /// <summary>
 /// Handles ETABS material creation (Concrete, Steel, Rebar, etc.)

@@ -1,7 +1,7 @@
-﻿using EtabSharp.Materials.Models;
+﻿using EtabSharp.Properties.Materials.Models;
 using ETABSv1;
 
-namespace EtabSharp.Interfaces;
+namespace EtabSharp.Interfaces.Properties;
 
 /// <summary>
 /// Provides methods for managing material properties in the ETABS model.
@@ -46,7 +46,7 @@ public interface IPropMaterial
     /// </returns>
     /// <exception cref="ArgumentException">If <paramref name="name"/> is invalid.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If <paramref name="fpc"/> or <paramref name="Ec"/> ≤ 0.</exception>
-    /// <exception cref="EtabSharp.Exceptions.EtabsMaterialException">If ETABS API fails to create the material.</exception>
+    /// <exception cref="Exceptions.EtabsMaterialException">If ETABS API fails to create the material.</exception>
     PropConcrete AddConcreteMaterial(string name, double fpc, double Ec);
 
     /// <summary>
@@ -62,7 +62,7 @@ public interface IPropMaterial
     /// </returns>
     /// <exception cref="ArgumentException">If <paramref name="name"/> is invalid.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If <paramref name="fy"/> or <paramref name="fu"/> is invalid.</exception>
-    /// <exception cref="EtabSharp.Exceptions.EtabsMaterialException">If ETABS API fails to create the material.</exception>
+    /// <exception cref="Exceptions.EtabsMaterialException">If ETABS API fails to create the material.</exception>
     PropRebar AddRebarMaterial(string name, double fy, double fu);
 
     /// <summary>
@@ -78,6 +78,6 @@ public interface IPropMaterial
     /// </returns>
     /// <exception cref="ArgumentException">If <paramref name="name"/> is invalid.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If <paramref name="fy"/> or <paramref name="fu"/> is invalid.</exception>
-    /// <exception cref="EtabSharp.Exceptions.EtabsMaterialException">If ETABS API fails to create the material.</exception>
+    /// <exception cref="Exceptions.EtabsMaterialException">If ETABS API fails to create the material.</exception>
     PropSteel AddSteelMaterial(string name, double fy, double fu);
 }

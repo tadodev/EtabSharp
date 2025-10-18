@@ -1,5 +1,5 @@
 ﻿using EtabSharp.Exceptions;
-using EtabSharp.Frames.Models;
+using EtabSharp.Properties.Frames.Models;
 using Microsoft.Extensions.Logging;
 
 namespace EtabSharp.Frames;

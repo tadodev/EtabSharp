@@ -1,7 +1,7 @@
 ﻿using EtabSharp.Core.Models;
 using ETABSv1;
 
-namespace EtabSharp.Interfaces;
+namespace EtabSharp.Interfaces.System;
 
 /// <summary>
 /// SapModel methods like getting and setting unit system,information, grid, initialization, etc.

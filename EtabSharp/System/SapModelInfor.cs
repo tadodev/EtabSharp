@@ -1,10 +1,10 @@
 ﻿using EtabSharp.Core.Models;
 using EtabSharp.Exceptions;
-using EtabSharp.Interfaces;
+using EtabSharp.Interfaces.System;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 
-namespace EtabSharp.Core;
+namespace EtabSharp.System;
 
 public class SapModelInfor : ISapModelInfor
 {
@@ -84,7 +84,7 @@ public class SapModelInfor : ISapModelInfor
     ///<inheritdoc/>
     public string GetVersion()
     {
-        string version = String.Empty;
+        string version = string.Empty;
         double myVersion = 0;
         try
         {

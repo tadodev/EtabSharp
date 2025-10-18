@@ -1,8 +1,8 @@
-﻿using EtabSharp.Frames.Models;
+﻿using EtabSharp.Properties.Frames.Models;
 using ETABSv1;
 using System.Data.Common;
 
-namespace EtabSharp.Interfaces;
+namespace EtabSharp.Interfaces.Properties;
 
 /// <summary>
 /// Provides methods for managing frame(beam and column) properties in the ETABS model.
@@ -48,7 +48,7 @@ public interface IPropFrame
     /// <returns>A <see cref="PropFrameRectangle"/> object containing the section properties.</returns>
     /// <exception cref="ArgumentException">If name or material is invalid.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If depth or width ≤ 0.</exception>
-    /// <exception cref="EtabSharp.Exceptions.EtabsException">If ETABS API fails.</exception>
+    /// <exception cref="Exceptions.EtabsException">If ETABS API fails.</exception>
     PropFrameRectangle AddRectangularSection(string name, string materialName, double depth, double width, int color = -1);
 
     /// <summary>
@@ -72,7 +72,7 @@ public interface IPropFrame
     /// <returns>A <see cref="PropFrameCircle"/> object containing the section properties.</returns>
     /// <exception cref="ArgumentException">If name or material is invalid.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If diameter ≤ 0.</exception>
-    /// <exception cref="EtabSharp.Exceptions.EtabsException">If ETABS API fails.</exception>
+    /// <exception cref="Exceptions.EtabsException">If ETABS API fails.</exception>
     PropFrameCircle AddCircularSection(string name, string materialName, double diameter, int color = -1);
 
     /// <summary>
@@ -144,7 +144,7 @@ public interface IPropFrame
     /// <param name="shapeName">Name of the shape in the file (e.g., "W14X82", "IPE300").</param>
     /// <returns>0 if successful, non-zero otherwise.</returns>
     /// <exception cref="ArgumentException">If any parameter is invalid.</exception>
-    /// <exception cref="EtabSharp.Exceptions.EtabsException">If import fails.</exception>
+    /// <exception cref="Exceptions.EtabsException">If import fails.</exception>
     int ImportSectionFromLibrary(string sectionName, string materialName, string fileName, string shapeName);
 
     /// <summary>
