@@ -50,7 +50,6 @@ public interface ISapModelInfor
     /// </summary>
     ProgramInfo GetProgramInfo();
 
-
     #endregion
 
     #region Initialization
@@ -61,7 +60,6 @@ public interface ISapModelInfor
     /// </summary>
     /// <param name="units"></param>
     int InitializeNewModel(eUnits units);
-
 
     #endregion
 

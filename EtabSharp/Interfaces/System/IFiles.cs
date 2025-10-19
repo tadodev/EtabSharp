@@ -36,7 +36,7 @@ public interface IFiles
     /// <param name="fileType"></param>
     /// <param name="type"></param>
     /// <returns></returns>
-    int ImportFile(string filePath,eFileTypeIO fileType, int type);
+    int ImportFile(string filePath, eFileTypeIO fileType, int type);
 
     /// <summary>
     /// Add a new blank model to the current ETABS instance

@@ -41,7 +41,8 @@ public sealed class PropMaterial : IPropMaterial
             int ret = _sapModel.PropMaterial.SetMaterial(name, eMatType.Concrete);
             if (ret != 0)
             {
-                _logger.LogError("Error setting material {MaterialName} to Concrete. Return code: {ReturnCode}", name, ret);
+                _logger.LogError("Error setting material {MaterialName} to Concrete. Return code: {ReturnCode}", name,
+                    ret);
                 throw new EtabsMaterialException(ret, "SetMaterial", name, "Failed to initialize concrete material.");
             }
 
@@ -49,7 +50,8 @@ public sealed class PropMaterial : IPropMaterial
             ret = _sapModel.PropMaterial.SetMPIsotropic(name, Ec, PropConcreteDefault.U, PropConcreteDefault.Alpha);
             if (ret != 0)
             {
-                _logger.LogError("Error setting isotropic properties for {MaterialName}. Return code: {ReturnCode}", name, ret);
+                _logger.LogError("Error setting isotropic properties for {MaterialName}. Return code: {ReturnCode}",
+                    name, ret);
                 throw new EtabsMaterialException(ret, "SetMPIsotropic", name, "Failed to set isotropic properties.");
             }
 
@@ -70,8 +72,11 @@ public sealed class PropMaterial : IPropMaterial
 
             if (ret != 0)
             {
-                _logger.LogError("Error setting concrete-specific properties for {MaterialName}. Return code: {ReturnCode}", name, ret);
-                throw new EtabsMaterialException(ret, "SetOConcrete_1", name, "Failed to set concrete-specific properties.");
+                _logger.LogError(
+                    "Error setting concrete-specific properties for {MaterialName}. Return code: {ReturnCode}", name,
+                    ret);
+                throw new EtabsMaterialException(ret, "SetOConcrete_1", name,
+                    "Failed to set concrete-specific properties.");
             }
 
             _logger.LogInformation("Successfully created concrete material '{Name}'", name);

@@ -41,7 +41,8 @@ public partial class PropFrame
 
             if (ret != 0)
             {
-                _logger.LogError("Failed to set column rebar for '{SectionName}'. Return code: {ReturnCode}", sectionName, ret);
+                _logger.LogError("Failed to set column rebar for '{SectionName}'. Return code: {ReturnCode}",
+                    sectionName, ret);
                 throw new EtabsException(ret, "SetRebarColumn", $"Failed to set column rebar for '{sectionName}'.");
             }
 
@@ -88,8 +89,10 @@ public partial class PropFrame
 
             if (ret != 0)
             {
-                _logger.LogError("Failed to set circular column rebar for '{SectionName}'. Return code: {ReturnCode}", sectionName, ret);
-                throw new EtabsException(ret, "SetRebarColumn", $"Failed to set circular column rebar for '{sectionName}'.");
+                _logger.LogError("Failed to set circular column rebar for '{SectionName}'. Return code: {ReturnCode}",
+                    sectionName, ret);
+                throw new EtabsException(ret, "SetRebarColumn",
+                    $"Failed to set circular column rebar for '{sectionName}'.");
             }
 
             _logger.LogInformation("Successfully set circular column rebar for '{SectionName}'", sectionName);
@@ -129,7 +132,8 @@ public partial class PropFrame
 
             if (ret != 0)
             {
-                _logger.LogError("Failed to set beam rebar for '{SectionName}'. Return code: {ReturnCode}", sectionName, ret);
+                _logger.LogError("Failed to set beam rebar for '{SectionName}'. Return code: {ReturnCode}", sectionName,
+                    ret);
                 throw new EtabsException(ret, "SetRebarBeam", $"Failed to set beam rebar for '{sectionName}'.");
             }
 
@@ -186,7 +190,8 @@ public partial class PropFrame
 
             if (ret != 0)
             {
-                _logger.LogError("Failed to get column rebar for '{SectionName}'. Return code: {ReturnCode}", sectionName, ret);
+                _logger.LogError("Failed to get column rebar for '{SectionName}'. Return code: {ReturnCode}",
+                    sectionName, ret);
                 throw new EtabsException(ret, "GetRebarColumn", $"Failed to get column rebar for '{sectionName}'.");
             }
 
@@ -255,8 +260,10 @@ public partial class PropFrame
 
             if (ret != 0)
             {
-                _logger.LogError("Failed to get circular column rebar for '{SectionName}'. Return code: {ReturnCode}", sectionName, ret);
-                throw new EtabsException(ret, "GetRebarColumn", $"Failed to get circular column rebar for '{sectionName}'.");
+                _logger.LogError("Failed to get circular column rebar for '{SectionName}'. Return code: {ReturnCode}",
+                    sectionName, ret);
+                throw new EtabsException(ret, "GetRebarColumn",
+                    $"Failed to get circular column rebar for '{sectionName}'.");
             }
 
             return new PropColumnRebarCirc
@@ -310,7 +317,8 @@ public partial class PropFrame
 
             if (ret != 0)
             {
-                _logger.LogError("Failed to get beam rebar for '{SectionName}'. Return code: {ReturnCode}", sectionName, ret);
+                _logger.LogError("Failed to get beam rebar for '{SectionName}'. Return code: {ReturnCode}", sectionName,
+                    ret);
                 throw new EtabsException(ret, "GetRebarBeam", $"Failed to get beam rebar for '{sectionName}'.");
             }
 
@@ -334,5 +342,4 @@ public partial class PropFrame
     }
 
     #endregion
-
 }

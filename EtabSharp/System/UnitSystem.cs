@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EtabSharp.System;
 
-public class UnitSystem: IUnitSystem
+public class UnitSystem : IUnitSystem
 {
     private readonly cSapModel _sapModel;
     private readonly ILogger _logger;

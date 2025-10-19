@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EtabSharp.Frames;
 
-public partial class PropFrame:IPropFrame
+public partial class PropFrame : IPropFrame
 {
     private readonly cSapModel _sapModel;
     private readonly ILogger _logger;
@@ -31,7 +31,8 @@ public partial class PropFrame:IPropFrame
             if (ret != 0)
             {
                 _logger.LogError("Failed to get frame section name list. Return code: {ReturnCode}", ret);
-                throw new EtabsException(ret, "GetNameList", "Failed to retrieve frame section names from ETABS model.");
+                throw new EtabsException(ret, "GetNameList",
+                    "Failed to retrieve frame section names from ETABS model.");
             }
 
             _logger.LogDebug("Retrieved {Count} frame sections", numberOfNames);
@@ -57,7 +58,8 @@ public partial class PropFrame:IPropFrame
             int ret = _sapModel.PropFrame.GetTypeOAPI(name, ref propType);
             if (ret != 0)
             {
-                _logger.LogError("Failed to get section type for '{SectionName}'. Return code: {ReturnCode}", name, ret);
+                _logger.LogError("Failed to get section type for '{SectionName}'. Return code: {ReturnCode}", name,
+                    ret);
                 throw new EtabsException(ret, "GetTypeOAPI", $"Failed to get section type for '{name}'.");
             }
 
@@ -82,7 +84,8 @@ public partial class PropFrame:IPropFrame
             int ret = _sapModel.PropFrame.Delete(name);
             if (ret != 0)
             {
-                _logger.LogWarning("Failed to delete frame section '{SectionName}'. Return code: {ReturnCode}", name, ret);
+                _logger.LogWarning("Failed to delete frame section '{SectionName}'. Return code: {ReturnCode}", name,
+                    ret);
             }
             else
             {
@@ -103,7 +106,8 @@ public partial class PropFrame:IPropFrame
     #region Rectangular Sections
 
     ///<inheritdoc/>
-    public PropFrameRectangle AddRectangularSection(string name, string materialName, double depth, double width, int color = -1)
+    public PropFrameRectangle AddRectangularSection(string name, string materialName, double depth, double width,
+        int color = -1)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Section name cannot be empty.", nameof(name));
@@ -119,13 +123,15 @@ public partial class PropFrame:IPropFrame
 
         try
         {
-            _logger.LogInformation("Creating rectangular section '{Name}' with material={Material}, depth={Depth}, width={Width}",
+            _logger.LogInformation(
+                "Creating rectangular section '{Name}' with material={Material}, depth={Depth}, width={Width}",
                 name, materialName, depth, width);
 
             int ret = _sapModel.PropFrame.SetRectangle(name, materialName, depth, width, color);
             if (ret != 0)
             {
-                _logger.LogError("Error creating rectangular section '{SectionName}'. Return code: {ReturnCode}", name, ret);
+                _logger.LogError("Error creating rectangular section '{SectionName}'. Return code: {ReturnCode}", name,
+                    ret);
                 throw new EtabsException(ret, "SetRectangle", $"Failed to create rectangular section '{name}'.");
             }
 
@@ -163,10 +169,12 @@ public partial class PropFrame:IPropFrame
             string notes = "";
             string guid = "";
 
-            int ret = _sapModel.PropFrame.GetRectangle(name, ref fileName, ref materialName, ref t3, ref t2, ref color, ref notes, ref guid);
+            int ret = _sapModel.PropFrame.GetRectangle(name, ref fileName, ref materialName, ref t3, ref t2, ref color,
+                ref notes, ref guid);
             if (ret != 0)
             {
-                _logger.LogError("Failed to get rectangular section '{SectionName}'. Return code: {ReturnCode}", name, ret);
+                _logger.LogError("Failed to get rectangular section '{SectionName}'. Return code: {ReturnCode}", name,
+                    ret);
                 throw new EtabsException(ret, "GetRectangle", $"Failed to get rectangular section '{name}'.");
             }
 
@@ -210,19 +218,14 @@ public partial class PropFrame:IPropFrame
             int ret = _sapModel.PropFrame.SetCircle(name, materialName, diameter, color);
             if (ret != 0)
             {
-                _logger.LogError("Error creating circular section '{SectionName}'. Return code: {ReturnCode}", name, ret);
+                _logger.LogError("Error creating circular section '{SectionName}'. Return code: {ReturnCode}", name,
+                    ret);
                 throw new EtabsException(ret, "SetCircle", $"Failed to create circular section '{name}'.");
             }
 
             _logger.LogInformation("Successfully created circular section '{Name}'", name);
 
-            return new PropFrameCircle
-            {
-                Name = name,
-                Material = materialName,
-                Diameter = diameter,
-                Color = color
-            };
+            return new PropFrameCircle { Name = name, Material = materialName, Diameter = diameter, Color = color };
         }
         catch (Exception ex) when (ex is not EtabsException && ex is not ArgumentException)
         {
@@ -246,20 +249,16 @@ public partial class PropFrame:IPropFrame
             string notes = "";
             string guid = "";
 
-            int ret = _sapModel.PropFrame.GetCircle(name, ref fileName, ref materialName, ref diameter, ref color, ref notes, ref guid);
+            int ret = _sapModel.PropFrame.GetCircle(name, ref fileName, ref materialName, ref diameter, ref color,
+                ref notes, ref guid);
             if (ret != 0)
             {
-                _logger.LogError("Failed to get circular section '{SectionName}'. Return code: {ReturnCode}", name, ret);
+                _logger.LogError("Failed to get circular section '{SectionName}'. Return code: {ReturnCode}", name,
+                    ret);
                 throw new EtabsException(ret, "GetCircle", $"Failed to get circular section '{name}'.");
             }
 
-            return new PropFrameCircle
-            {
-                Name = name,
-                Material = materialName,
-                Diameter = diameter,
-                Color = color
-            };
+            return new PropFrameCircle { Name = name, Material = materialName, Diameter = diameter, Color = color };
         }
         catch (Exception ex) when (ex is not EtabsException && ex is not ArgumentException)
         {
@@ -296,7 +295,8 @@ public partial class PropFrame:IPropFrame
 
             if (ret != 0)
             {
-                _logger.LogError("Failed to import section '{SectionName}' from library. Return code: {ReturnCode}", sectionName, ret);
+                _logger.LogError("Failed to import section '{SectionName}' from library. Return code: {ReturnCode}",
+                    sectionName, ret);
                 throw new EtabsException(ret, "ImportProp", $"Failed to import section '{sectionName}' from library.");
             }
 
@@ -321,7 +321,8 @@ public partial class PropFrame:IPropFrame
             string[] fileNames = null;
             eFramePropType[] propTypes = null;
 
-            int ret = _sapModel.PropFrame.GetPropFileNameList(fileName,ref numberNames, ref fileNames,ref propTypes,propType);
+            int ret = _sapModel.PropFrame.GetPropFileNameList(fileName, ref numberNames, ref fileNames, ref propTypes,
+                propType);
 
             if (ret != 0)
             {
@@ -370,7 +371,8 @@ public partial class PropFrame:IPropFrame
 
             if (ret != 0)
             {
-                _logger.LogError("Failed to set modifiers for '{SectionName}'. Return code: {ReturnCode}", sectionName, ret);
+                _logger.LogError("Failed to set modifiers for '{SectionName}'. Return code: {ReturnCode}", sectionName,
+                    ret);
                 throw new EtabsException(ret, "SetModifiers", $"Failed to set modifiers for '{sectionName}'.");
             }
 
@@ -398,7 +400,8 @@ public partial class PropFrame:IPropFrame
 
             if (ret != 0)
             {
-                _logger.LogError("Failed to get modifiers for '{SectionName}'. Return code: {ReturnCode}", sectionName, ret);
+                _logger.LogError("Failed to get modifiers for '{SectionName}'. Return code: {ReturnCode}", sectionName,
+                    ret);
                 throw new EtabsException(ret, "GetModifiers", $"Failed to get modifiers for '{sectionName}'.");
             }
 
@@ -422,6 +425,4 @@ public partial class PropFrame:IPropFrame
     }
 
     #endregion
-
-
 }

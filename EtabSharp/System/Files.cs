@@ -8,7 +8,7 @@ namespace EtabSharp.System;
 /// <summary>
 /// Handles ETABS file operations (open, save, export, import, new models)
 /// </summary>
-public sealed class Files:IFiles
+public sealed class Files : IFiles
 {
     private readonly cSapModel _sapModel;
     private readonly ILogger _logger;
@@ -43,7 +43,8 @@ public sealed class Files:IFiles
             _logger.LogInformation("Successfully opened file: {FilePath}", filePath);
             return ret;
         }
-        catch (Exception ex) when (ex is not EtabsException && ex is not ArgumentException && ex is not FileNotFoundException)
+        catch (Exception ex) when (ex is not EtabsException && ex is not ArgumentException &&
+                                   ex is not FileNotFoundException)
         {
             _logger.LogError(ex, "Unexpected error opening file: {FilePath}", filePath);
             throw new EtabsException($"Unexpected error opening file: {filePath}", ex);
@@ -139,7 +140,8 @@ public sealed class Files:IFiles
             _logger.LogInformation("Successfully imported file: {FilePath}", filePath);
             return ret;
         }
-        catch (Exception ex) when (ex is not EtabsException && ex is not ArgumentException && ex is not FileNotFoundException)
+        catch (Exception ex) when (ex is not EtabsException && ex is not ArgumentException &&
+                                   ex is not FileNotFoundException)
         {
             _logger.LogError(ex, "Unexpected error importing file: {FilePath}", filePath);
             throw new EtabsException($"Unexpected error importing file: {filePath}", ex);
@@ -172,7 +174,8 @@ public sealed class Files:IFiles
     }
 
     /// <inheritdoc/>
-    public int NewGridOnlyModel(int numberStories, double typicalStoryHeight,double bottomStoryHeight, int numberLineX, int numberLineY,
+    public int NewGridOnlyModel(int numberStories, double typicalStoryHeight, double bottomStoryHeight, int numberLineX,
+        int numberLineY,
         double spacingX, double spacingY)
     {
         if (numberStories <= 0)
@@ -201,7 +204,8 @@ public sealed class Files:IFiles
                 "Creating new grid-only model: Stories={Stories}, Height={Height}, GridX={GridX}, GridY={GridY}, SpacingX={SpacingX}, SpacingY={SpacingY}",
                 numberStories, typicalStoryHeight, numberLineX, numberLineY, spacingX, spacingY);
 
-            int ret = _sapModel.File.NewGridOnly(numberStories, typicalStoryHeight,bottomStoryHeight, numberLineX, numberLineY,
+            int ret = _sapModel.File.NewGridOnly(numberStories, typicalStoryHeight, bottomStoryHeight, numberLineX,
+                numberLineY,
                 spacingX, spacingY);
 
             if (ret != 0)
@@ -221,7 +225,8 @@ public sealed class Files:IFiles
     }
 
     /// <inheritdoc/>
-    public int NewSteelDeckModel(int numberStories, double typicalStoryHeight, double bottomStoryHeight, int numberLineX, int numberLineY,
+    public int NewSteelDeckModel(int numberStories, double typicalStoryHeight, double bottomStoryHeight,
+        int numberLineX, int numberLineY,
         double spacingX, double spacingY)
     {
         if (numberStories <= 0)
@@ -250,7 +255,8 @@ public sealed class Files:IFiles
                 "Creating new steel deck model: Stories={Stories}, Height={Height}, GridX={GridX}, GridY={GridY}, SpacingX={SpacingX}, SpacingY={SpacingY}",
                 numberStories, typicalStoryHeight, numberLineX, numberLineY, spacingX, spacingY);
 
-            int ret = _sapModel.File.NewSteelDeck(numberStories, typicalStoryHeight,bottomStoryHeight, numberLineX, numberLineY,
+            int ret = _sapModel.File.NewSteelDeck(numberStories, typicalStoryHeight, bottomStoryHeight, numberLineX,
+                numberLineY,
                 spacingX, spacingY);
 
             if (ret != 0)

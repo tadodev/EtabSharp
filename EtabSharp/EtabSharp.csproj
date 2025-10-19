@@ -1,41 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	  <TargetFrameworks>net8.0</TargetFrameworks>
-	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	  <GenerateDocumentationFile>True</GenerateDocumentationFile>
+	<PropertyGroup>
+		<TargetFrameworks>net8.0</TargetFrameworks>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 
-	  <!-- Package Identity -->
-	  <Title>EtabSharp</Title>
-	  <PackageId>EtabSharp</PackageId>
-	  <Version>0.0.1</Version>
-	  <Copyright>Copyright © Thanh Tu 2025</Copyright>
-	  <Authors>Thanh Tu</Authors>
+		<!-- Package Identity -->
+		<Title>EtabSharp</Title>
+		<PackageId>EtabSharp</PackageId>
+		<Version>0.0.1</Version>
+		<Copyright>Copyright © Thanh Tu 2025</Copyright>
+		<Authors>Thanh Tu</Authors>
 
-	  <!-- Package Description -->
-	  <Description>The easiest way to use the Etabs API in .NET</Description>
-	  <PackageTags>etabs;structural-engineering;civil-engineering;structural-analysis;csi;etabs-api;building-design;structural-design</PackageTags>
-	  
-	  <!-- Repository & Documentation -->
-	  <PackageProjectUrl>https://github.com/tadodev/EtabSharp</PackageProjectUrl>
-	  <!-- <PackageReadmeFile>README.md</PackageReadmeFile> -->
-	  <RepositoryUrl>https://github.com/tadodev/EtabSharp</RepositoryUrl>
-	  <RepositoryType>git</RepositoryType>
-	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<!-- Package Description -->
+		<Description>The easiest way to use the Etabs API in .NET</Description>
+		<PackageTags>etabs;structural-engineering;civil-engineering;structural-analysis;csi;etabs-api;building-design;structural-design</PackageTags>
 
-	  <!-- Build setting-->
-	  <SignAssembly>True</SignAssembly>
-	  <NoWarn>$(NoWarn);IDE0065;IDE0055;IDE0011;S3881</NoWarn>
-	  
-	  <!-- Package Release Notes -->
-	  <PackageReleaseNotes>
-		  Initial release supporting ETABS v22+
-		  - Material property management (Concrete, Rebar, Steel)
-		  - Automatic version detection and compatibility checking
-		  - Strongly-typed API with IntelliSense support
-		  - Comprehensive error handling
-	  </PackageReleaseNotes>
-  </PropertyGroup>
+		<!-- Repository & Documentation -->
+		<PackageProjectUrl>https://github.com/tadodev/EtabSharp</PackageProjectUrl>
+		<!-- <PackageReadmeFile>README.md</PackageReadmeFile> -->
+		<RepositoryUrl>https://github.com/tadodev/EtabSharp</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+		<!-- Build setting-->
+		<SignAssembly>True</SignAssembly>
+		<NoWarn>$(NoWarn);IDE0065;IDE0055;IDE0011;S3881</NoWarn>
+
+		<!-- Package Release Notes -->
+		<PackageReleaseNotes>
+			Initial release supporting ETABS v22+
+			- Material property management (Concrete, Rebar, Steel)
+			- Automatic version detection and compatibility checking
+			- Strongly-typed API with IntelliSense support
+			- Comprehensive error handling
+		</PackageReleaseNotes>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging" />
@@ -43,12 +43,12 @@
 
 	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="ETABSv1">
-      <HintPath>C:\Program Files\Computers and Structures\ETABS 22\ETABSv1.dll</HintPath>
-		<Private>True</Private>
-		<SpecificVersion>False</SpecificVersion>
-    </Reference>
-  </ItemGroup>
-    
+	<ItemGroup>
+		<Reference Include="ETABSv1">
+			<HintPath>C:\Program Files\Computers and Structures\ETABS 22\ETABSv1.dll</HintPath>
+			<Private>True</Private>
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+	</ItemGroup>
+
 </Project>

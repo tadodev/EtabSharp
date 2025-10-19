@@ -1,4 +1,5 @@
 ﻿namespace EtabSharp.Properties.Materials.Models;
+
 public record PropConcrete
 {
     public string Name { get; set; }
@@ -11,6 +12,6 @@ public record PropConcrete
 
     // Optional nonlinear properties with sensible defaults
     public bool IsLightWeight { get; set; } = false;
-    public double StrainAtFc { get; set; } = 0.0022;   // Strain at maximum stress
-    public double StrainAtU { get; set; } = 0.0052;   // Ultimate strain
+    public double StrainAtFc { get; set; } = 0.0022; // Strain at maximum stress
+    public double StrainAtU { get; set; } = 0.0052; // Ultimate strain
 }

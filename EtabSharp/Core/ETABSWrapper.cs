@@ -47,7 +47,8 @@ public class ETABSWrapper
     /// <param name="startApplication">Whether to start the application UI</param>
     /// <param name="logger">Optional logger for diagnostics</param>
     /// <returns>ETABS application wrapper</returns>
-    public static ETABSApplication CreateNew(string programPath = null, bool startApplication = true, ILogger<ETABSApplication>? logger = null)
+    public static ETABSApplication CreateNew(string programPath = null, bool startApplication = true,
+        ILogger<ETABSApplication>? logger = null)
     {
         try
         {
@@ -120,7 +121,8 @@ public class ETABSWrapper
                         MajorVersion = fileVersionInfo.FileMajorPart,
                         MinorVersion = fileVersionInfo.FileMinorPart,
                         BuildVersion = fileVersionInfo.FileBuildPart,
-                        FullVersion = $"{fileVersionInfo.FileMajorPart}.{fileVersionInfo.FileMinorPart}.{fileVersionInfo.FileBuildPart}",
+                        FullVersion =
+                            $"{fileVersionInfo.FileMajorPart}.{fileVersionInfo.FileMinorPart}.{fileVersionInfo.FileBuildPart}",
                         ProcessName = process.ProcessName
                     };
                 }
@@ -169,7 +171,8 @@ public class ETABSWrapper
     /// <summary>
     /// Creates ETABS application wrapper for v22+ by attaching to running instance
     /// </summary>
-    private static ETABSApplication CreateETABSApplication(int majorVersion, string fullVersion, ILogger<ETABSApplication>? logger)
+    private static ETABSApplication CreateETABSApplication(int majorVersion, string fullVersion,
+        ILogger<ETABSApplication>? logger)
     {
         try
         {
@@ -222,6 +225,7 @@ public class ETABSWrapper
             {
                 return (activeProcess.MajorVersion, activeProcess.FullVersion);
             }
+
             return (22, "22.0.0"); // Default to 22.0.0 if can't determine
         }
         catch
@@ -244,7 +248,8 @@ public class ETABSWrapper
             {
                 var fileVersionInfo = process.MainModule.FileVersionInfo;
                 int majorVersion = fileVersionInfo.FileMajorPart;
-                string fullVersion = $"{fileVersionInfo.FileMajorPart}.{fileVersionInfo.FileMinorPart}.{fileVersionInfo.FileBuildPart}";
+                string fullVersion =
+                    $"{fileVersionInfo.FileMajorPart}.{fileVersionInfo.FileMinorPart}.{fileVersionInfo.FileBuildPart}";
 
                 instances.Add(new ETABSInstanceInfo
                 {

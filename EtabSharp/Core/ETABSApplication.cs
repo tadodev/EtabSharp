@@ -65,7 +65,8 @@ public class ETABSApplication : IDisposable
     /// </summary>
     public ETABSv1.cSapModel SapModel => _sapModel;
 
-    internal ETABSApplication(ETABSv1.cOAPI api, int majorVersion, double apiVersion, string fullVersion, ILogger<ETABSApplication>? logger = null)
+    internal ETABSApplication(ETABSv1.cOAPI api, int majorVersion, double apiVersion, string fullVersion,
+        ILogger<ETABSApplication>? logger = null)
     {
         _api = api ?? throw new ArgumentNullException(nameof(api));
         _sapModel = api.SapModel ?? throw new InvalidOperationException("SapModel is null");
@@ -81,7 +82,6 @@ public class ETABSApplication : IDisposable
             "Connected to ETABS v{Version}, API v{ApiVersion}",
             fullVersion,
             apiVersion);
-
     }
 
     /// <summary>
@@ -185,6 +185,7 @@ public class ETABSApplication : IDisposable
             Close(false);
             _disposed = true;
         }
+
         GC.SuppressFinalize(this);
     }
 }

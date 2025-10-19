@@ -1,7 +1,8 @@
 ﻿using EtabSharp.Frames;
 using EtabSharp.Interfaces.Properties;
 using EtabSharp.Interfaces.System;
-using EtabSharp.Materials;
+using EtabSharp.Properties.Materials;
+using EtabSharp.System;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 
@@ -33,18 +34,18 @@ public sealed class ETABSModel
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
         // Initialize managers with lazy loading
-        _files = new Lazy<IFiles>(() => new Files.Files(_sapModel, _logger));
+        _files = new Lazy<IFiles>(() => new Files(_sapModel, _logger));
         _sapModelInfo = new Lazy<ISapModelInfor>(() => new SapModelInfor(_sapModel, _logger));
         _materials = new Lazy<IPropMaterial>(() => new PropMaterial(_sapModel, _logger));
-        _unitSystem = new Lazy<IUnitSystem>(() => new UnitSystem.UnitSystem(_sapModel, _logger));
+        _unitSystem = new Lazy<IUnitSystem>(() => new UnitSystem(_sapModel, _logger));
         _propFrame = new Lazy<IPropFrame>(() => new PropFrame(_sapModel, _logger));
-
     }
 
     /// <summary>
     /// Gets the material properties manager
     /// </summary>
     public IFiles Files => _files.Value;
+
     public IPropMaterial Materials => _materials.Value;
 
     // Add more properties as you create managers

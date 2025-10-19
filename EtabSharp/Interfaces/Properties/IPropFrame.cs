@@ -49,7 +49,8 @@ public interface IPropFrame
     /// <exception cref="ArgumentException">If name or material is invalid.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If depth or width ≤ 0.</exception>
     /// <exception cref="Exceptions.EtabsException">If ETABS API fails.</exception>
-    PropFrameRectangle AddRectangularSection(string name, string materialName, double depth, double width, int color = -1);
+    PropFrameRectangle AddRectangularSection(string name, string materialName, double depth, double width,
+        int color = -1);
 
     /// <summary>
     /// Gets the properties of an existing rectangular frame section.
@@ -153,7 +154,7 @@ public interface IPropFrame
     /// <param name="fileName"></param>
     /// <param name="propType"></param>
     /// <returns>Array of available property file names.</returns>
-    string[] GetAvailableSectionFiles(string fileName,eFramePropType propType);
+    string[] GetAvailableSectionFiles(string fileName, eFramePropType propType);
 
     #endregion
 

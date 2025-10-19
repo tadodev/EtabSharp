@@ -15,5 +15,4 @@ public interface IUnitSystem
     /// </summary>
     /// <returns>Unit system information including force, length, and temperature units</returns>
     Units GetPresentUnits();
-
 }

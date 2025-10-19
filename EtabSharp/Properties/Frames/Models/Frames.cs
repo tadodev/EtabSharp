@@ -29,7 +29,6 @@ public record PropFrameRectangle
     /// Section color (-1 for auto)
     /// </summary>
     public int Color { get; set; } = -1;
-
 }
 
 /// <summary>
@@ -127,7 +126,6 @@ public record PropColumnRebarRect
     /// Whether this column is to be designed
     /// </summary>
     public bool ToBeDesigned { get; set; } = false;
-
 }
 
 /// <summary>
