@@ -1,4 +1,4 @@
-﻿using EtabSharp.Elements.Story;
+﻿using EtabSharp.Elements.Story.Models;
 
 namespace EtabSharp.Interfaces.Elements.Stories;
 
@@ -158,15 +158,16 @@ public interface IStory
     /// Sets the splice height of a defined story.
     /// </summary>
     /// <param name="storyName">The name of the story.</param>
+    /// <param name="spliceAbove"></param>
     /// <param name="spliceHeight">
-    /// The splice height in current length units.
-    /// Set to 0 to remove splice.
+    ///     The splice height in current length units.
+    ///     Set to 0 to remove splice.
     /// </param>
     /// <returns>0 if successful, non-zero otherwise.</returns>
     /// <exception cref="ArgumentException">If story name is invalid.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If splice height is negative.</exception>
     /// <exception cref="EtabSharp.Exceptions.EtabsException">If ETABS API fails.</exception>
-    int SetSplice(string storyName, double spliceHeight);
+    int SetSplice(string storyName,bool spliceAbove, double spliceHeight);
 
     #endregion
 

@@ -41,10 +41,10 @@ using ETABSv1;
 
 var etabs = ETABSWrapper.Connect();
 
-var ret = etabs.Model.SapModelInfor.InitializeNewModel(eUnits.lb_in_F);
+var ret = etabs.Model.ModelInfo.InitializeNewModel(eUnits.lb_in_F);
 etabs.Model.Files.NewSteelDeckModel(10, 10, 10, 5, 5, 30, 30);
 
-var unit = etabs.Model.UnitSystem.GetPresentUnits();
+var unit = etabs.Model.Units.GetPresentUnits();
 Console.WriteLine(unit);
 
 try
@@ -84,5 +84,9 @@ var rebar = new PropColumnRebarRect
     ToBeDesigned = true
 };
 etabs.Model.PropFrame.SetColumnRebarRectangular(column.Name, rebar);
+
+var stories = etabs.Model.Story.GetStories();
+
+var selection = etabs.Model.Select.SelectAll();
 
 
