@@ -241,14 +241,18 @@
 
 ## Integration and Performance
 
-- [ ] 4. Integrate cPointObj, cFrameObj, cAreaObj with ETABSModel
+- [-] 4. Integrate cPointObj, cFrameObj, cAreaObj with ETABSModel
+
   - Add lazy initialization for all element managers
   - Update ETABSModel class with new manager properties
   - Create integration tests for cross-manager functionality
   - Implement performance optimization and caching
   - _Requirements: 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 4.1 Update ETABSModel with element manager integration
+- [x] 4.1 Update ETABSModel with element manager integration
+
+
+
   - Add lazy initialization fields for IPoint, IFrame, IArea managers
   - Create public properties Points, Frames, Areas for accessing managers
   - Update ETABSModel constructor to initialize element managers

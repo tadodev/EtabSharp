@@ -1,6 +1,8 @@
+using EtabSharp.Elements.AreaObj.Models;
 using EtabSharp.Elements.FrameObj.Models;
 using EtabSharp.Exceptions;
 using ETABSv1;
+using Microsoft.Extensions.Logging;
 
 namespace EtabSharp.Elements.FrameObj;
 
@@ -11,15 +13,16 @@ public partial class FrameObjectManager
 {
     #region Distributed Load Methods
 
-    /// <summary>
+    // <summary>
     /// Assigns distributed loads to a frame object.
     /// Wraps cSapModel.FrameObj.SetLoadDistributed.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="load">FrameDistributedLoad model with load parameters</param>
     /// <param name="replace">If true, replaces existing loads; if false, adds to existing</param>
+    /// <param name="itemType">Item type for assignment (Objects, Group, or SelectedObjects)</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetLoadDistributed(string frameName, FrameDistributedLoad load, bool replace = true)
+    public int SetLoadDistributed(string frameName, FrameDistributedLoad load, bool replace = true, eItemType itemType = eItemType.Objects)
     {
         try
         {
@@ -29,16 +32,18 @@ public partial class FrameObjectManager
                 throw new ArgumentNullException(nameof(load));
             if (string.IsNullOrEmpty(load.LoadPattern))
                 throw new ArgumentException("Load pattern cannot be null or empty", nameof(load));
+            if (!load.IsValid())
+                throw new ArgumentException("Load parameters are not valid", nameof(load));
 
-            int ret = _sapModel.FrameObj.SetLoadDistributed(frameName, load.LoadPattern, (int)load.LoadType, 
-                (int)load.Direction, load.StartDistance, load.EndDistance, load.StartLoad, load.EndLoad, 
-                load.CoordinateSystem, load.IsRelativeDistance, replace);
+            int ret = _sapModel.FrameObj.SetLoadDistributed(frameName, load.LoadPattern, load.LoadType,
+                load.Direction, load.StartDistance, load.EndDistance, load.StartLoad, load.EndLoad,
+                load.CoordinateSystem, load.IsRelativeDistance, replace, itemType);
 
             if (ret != 0)
                 throw new EtabsException(ret, "SetLoadDistributed", $"Failed to set distributed load for frame '{frameName}' in pattern '{load.LoadPattern}'");
 
-            _logger.LogDebug("Set distributed load for frame {FrameName} in pattern {LoadPattern}: {Load}", 
-                frameName, load.LoadPattern, load.ToString());
+            _logger.LogDebug("Set distributed load for frame {FrameName} in pattern {LoadPattern}: {Load} (ItemType: {ItemType})",
+                frameName, load.LoadPattern, load.ToString(), itemType);
 
             return ret;
         }
@@ -49,13 +54,71 @@ public partial class FrameObjectManager
     }
 
     /// <summary>
+    /// Assigns distributed loads to frame objects using individual parameters.
+    /// Wraps cSapModel.FrameObj.SetLoadDistributed directly with ETABS API parameters.
+    /// </summary>
+    /// <param name="name">Name of an existing frame object or group</param>
+    /// <param name="loadPattern">Name of a defined load pattern</param>
+    /// <param name="loadType">Type of distributed load (1=Force per unit length, 2=Moment per unit length)</param>
+    /// <param name="direction">Load direction (1-11)</param>
+    /// <param name="startDistance">Distance from I-End to start of load</param>
+    /// <param name="endDistance">Distance from I-End to end of load</param>
+    /// <param name="startLoad">Load value at start</param>
+    /// <param name="endLoad">Load value at end</param>
+    /// <param name="coordinateSystem">Coordinate system name ("Local" or coordinate system name)</param>
+    /// <param name="isRelativeDistance">If true, distances are relative (0-1); if false, absolute distances</param>
+    /// <param name="replace">If true, replaces all previous loads in the specified load pattern</param>
+    /// <param name="itemType">Item type for assignment (Objects, Group, or SelectedObjects)</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    public int SetLoadDistributed(string name, string loadPattern, int loadType, int direction,
+        double startDistance, double endDistance, double startLoad, double endLoad,
+        string coordinateSystem = "Global", bool isRelativeDistance = true, bool replace = true, eItemType itemType = eItemType.Objects)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("Name cannot be null or empty", nameof(name));
+            if (string.IsNullOrEmpty(loadPattern))
+                throw new ArgumentException("Load pattern cannot be null or empty", nameof(loadPattern));
+            if (string.IsNullOrEmpty(coordinateSystem))
+                throw new ArgumentException("Coordinate system cannot be null or empty", nameof(coordinateSystem));
+
+            // Validate parameters according to ETABS API
+            if (loadType < 1 || loadType > 2)
+                throw new ArgumentException("Load type must be 1 (Force) or 2 (Moment)", nameof(loadType));
+            if (direction < 1 || direction > 11)
+                throw new ArgumentException("Direction must be between 1 and 11", nameof(direction));
+            if (isRelativeDistance && (startDistance < 0 || startDistance > 1 || endDistance < 0 || endDistance > 1))
+                throw new ArgumentException("Relative distances must be between 0 and 1", nameof(startDistance));
+            if (startDistance > endDistance)
+                throw new ArgumentException("Start distance must be less than or equal to end distance", nameof(startDistance));
+
+            int ret = _sapModel.FrameObj.SetLoadDistributed(name, loadPattern, loadType, direction,
+                startDistance, endDistance, startLoad, endLoad, coordinateSystem, isRelativeDistance, replace, itemType);
+
+            if (ret != 0)
+                throw new EtabsException(ret, "SetLoadDistributed", $"Failed to set distributed load for '{name}' in pattern '{loadPattern}'");
+
+            _logger.LogDebug("Set distributed load for {Name} in pattern {LoadPattern}: Type={LoadType}, Dir={Direction}, Start={StartLoad}@{StartDistance}, End={EndLoad}@{EndDistance}, CSys={CoordinateSystem}, ItemType={ItemType}",
+                name, loadPattern, loadType, direction, startLoad, startDistance, endLoad, endDistance, coordinateSystem, itemType);
+
+            return ret;
+        }
+        catch (Exception ex) when (!(ex is EtabsException))
+        {
+            throw new EtabsException($"Unexpected error setting distributed load for '{name}': {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
     /// Gets distributed loads assigned to a frame object.
     /// Wraps cSapModel.FrameObj.GetLoadDistributed.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="loadPattern">Load pattern name (empty for all patterns)</param>
+    /// <param name="itemType">Item type for retrieval (Objects, Group, or SelectedObjects)</param>
     /// <returns>List of FrameDistributedLoad models</returns>
-    public List<FrameDistributedLoad> GetLoadDistributed(string frameName, string loadPattern = "")
+    public List<FrameDistributedLoad> GetLoadDistributed(string frameName, string loadPattern = "", eItemType itemType = eItemType.Objects)
     {
         try
         {
@@ -65,15 +128,23 @@ public partial class FrameObjectManager
             int numberItems = 0;
             string[] frameNames = null;
             string[] loadPatterns = null;
-            int[] loadTypes = null;
+            int[] myTypes = null;
             string[] csys = null;
             int[] directions = null;
-            double[] startDist = null, endDist = null, startLoad = null, endLoad = null;
-            bool[] relDist = null;
+            double[] rd1 = null;  // Relative distance indicators (not used in output, but required by API)
+            double[] rd2 = null;  // Relative distance indicators (not used in output, but required by API)
+            double[] dist1 = null; // Actual distances from I-End to start
+            double[] dist2 = null; // Actual distances from I-End to end
+            double[] val1 = null;  // Load values at start
+            double[] val2 = null;  // Load values at end
 
-            int ret = _sapModel.FrameObj.GetLoadDistributed(frameName, ref numberItems, ref frameNames, 
-                ref loadPatterns, ref loadTypes, ref csys, ref directions, ref startDist, ref endDist, 
-                ref startLoad, ref endLoad, ref relDist);
+            // According to the API documentation, the method signature is:
+            // GetLoadDistributed(Name, ref NumberItems, ref FrameName, ref LoadPat, ref MyType, 
+            //                   ref CSys, ref Dir, ref RD1, ref RD2, ref Dist1, ref Dist2, 
+            //                   ref Val1, ref Val2, ItemType)
+            int ret = _sapModel.FrameObj.GetLoadDistributed(frameName, ref numberItems, ref frameNames,
+                ref loadPatterns, ref myTypes, ref csys, ref directions, ref rd1, ref rd2,
+                ref dist1, ref dist2, ref val1, ref val2, itemType);
 
             if (ret != 0)
                 throw new EtabsException(ret, "GetLoadDistributed", $"Failed to get distributed loads for frame '{frameName}'");
@@ -86,18 +157,24 @@ public partial class FrameObjectManager
                 if (!string.IsNullOrEmpty(loadPattern) && loadPatterns[i] != loadPattern)
                     continue;
 
+                // Determine if distances are relative based on the RD1/RD2 values
+                // Note: The API returns actual distances in Dist1/Dist2 regardless
+                // RD1 and RD2 appear to indicate if the load was originally assigned with relative distances
+                bool isRelative = (rd1 != null && i < rd1.Length && rd1[i] != 0) ||
+                                 (rd2 != null && i < rd2.Length && rd2[i] != 0);
+
                 var load = new FrameDistributedLoad
                 {
-                    FrameName = frameName,
+                    FrameName = frameNames[i],
                     LoadPattern = loadPatterns[i],
-                    LoadType = (eLoadType)loadTypes[i],
-                    Direction = (eLoadDirection)directions[i],
-                    StartDistance = startDist[i],
-                    EndDistance = endDist[i],
-                    StartLoad = startLoad[i],
-                    EndLoad = endLoad[i],
+                    LoadType = myTypes[i],
+                    Direction = directions[i],
+                    StartDistance = dist1[i],
+                    EndDistance = dist2[i],
+                    StartLoad = val1[i],
+                    EndLoad = val2[i],
                     CoordinateSystem = csys[i],
-                    IsRelativeDistance = relDist[i]
+                    IsRelativeDistance = isRelative
                 };
                 loads.Add(load);
             }
@@ -117,8 +194,9 @@ public partial class FrameObjectManager
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="loadPattern">Name of the load pattern</param>
+    /// <param name="itemType">Item type for deletion (Objects, Group, or SelectedObjects)</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int DeleteLoadDistributed(string frameName, string loadPattern)
+    public int DeleteLoadDistributed(string frameName, string loadPattern, eItemType itemType = eItemType.Objects)
     {
         try
         {
@@ -127,7 +205,7 @@ public partial class FrameObjectManager
             if (string.IsNullOrEmpty(loadPattern))
                 throw new ArgumentException("Load pattern cannot be null or empty", nameof(loadPattern));
 
-            int ret = _sapModel.FrameObj.DeleteLoadDistributed(frameName, loadPattern);
+            int ret = _sapModel.FrameObj.DeleteLoadDistributed(frameName, loadPattern, itemType);
 
             if (ret != 0)
                 throw new EtabsException(ret, "DeleteLoadDistributed", $"Failed to delete distributed load for frame '{frameName}' in pattern '{loadPattern}'");

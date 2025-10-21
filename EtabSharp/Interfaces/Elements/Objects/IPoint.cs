@@ -177,9 +177,10 @@ public interface IPoint
     /// Critical for modeling floor diaphragm behavior.
     /// </summary>
     /// <param name="pointName">Name of the point object</param>
+    /// <param name="diaphragmOption"></param>
     /// <param name="diaphragmName">Name of the diaphragm (empty string to remove assignment)</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetDiaphragm(string pointName, string diaphragmName);
+    int SetDiaphragm(string pointName, eDiaphragmOption diaphragmOption, string diaphragmName);
 
     /// <summary>
     /// Gets the diaphragm assignment for a point object.

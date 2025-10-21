@@ -10,12 +10,12 @@ public class PointDiaphragm
     /// <summary>
     /// Name of the point
     /// </summary>
-    public required string PointName { get; set; }
+    public string PointName { get; set; }
 
     /// <summary>
-    /// Diaphragm option type
+    /// Diaphragm option type (0 = None, 1 = FromShellObject)
     /// </summary>
-    public eDiaphragmOption DiaphragmOption { get; set; }
+    public int DiaphragmOption { get; set; }
 
     /// <summary>
     /// Name of the diaphragm (if DiaphragmOption is not None)
@@ -28,7 +28,7 @@ public class PointDiaphragm
     /// <param name="pointName">Name of the point</param>
     /// <param name="diaphragmOption">Diaphragm option</param>
     /// <param name="diaphragmName">Diaphragm name</param>
-    public PointDiaphragm(string pointName, eDiaphragmOption diaphragmOption, string diaphragmName = "")
+    public PointDiaphragm(string pointName, int diaphragmOption, string diaphragmName = "")
     {
         PointName = pointName;
         DiaphragmOption = diaphragmOption;
@@ -38,17 +38,17 @@ public class PointDiaphragm
     /// <summary>
     /// Creates a diaphragm assignment with no diaphragm
     /// </summary>
-    public static PointDiaphragm None(string pointName) => new(pointName, eDiaphragmOption.None);
+    public static PointDiaphragm None(string pointName) => new(pointName, 0);
 
     /// <summary>
     /// Creates a diaphragm assignment with a named diaphragm
     /// </summary>
     public static PointDiaphragm WithDiaphragm(string pointName, string diaphragmName) => 
-        new(pointName, eDiaphragmOption.FromShellObject, diaphragmName);
+        new(pointName, 1, diaphragmName);
 
     public override string ToString()
     {
-        return DiaphragmOption == eDiaphragmOption.None 
+        return DiaphragmOption == 0 
             ? $"Point {PointName}: No diaphragm"
             : $"Point {PointName}: Diaphragm '{DiaphragmName}'";
     }

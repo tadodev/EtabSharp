@@ -1,6 +1,7 @@
 using EtabSharp.Elements.FrameObj.Models;
 using EtabSharp.Exceptions;
 using ETABSv1;
+using Microsoft.Extensions.Logging;
 
 namespace EtabSharp.Elements.FrameObj;
 
@@ -28,6 +29,10 @@ public partial class FrameObjectManager
             if (releases == null)
                 throw new ArgumentNullException(nameof(releases));
 
+            // Validate releases before sending to API
+            if (!releases.IsValid())
+                throw new ArgumentException("Invalid release combination - would cause instability", nameof(releases));
+
             bool[] ii = releases.IEndReleases.ToArray();
             bool[] jj = releases.JEndReleases.ToArray();
             double[] startValue = releases.IEndPartialFixity.ToArray();
@@ -38,7 +43,7 @@ public partial class FrameObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "SetReleases", $"Failed to set releases for frame '{frameName}'");
 
-            _logger.LogDebug("Set releases for frame {FrameName}: I-End={IEnd}, J-End={JEnd}", 
+            _logger.LogDebug("Set releases for frame {FrameName}: I-End={IEnd}, J-End={JEnd}",
                 frameName, releases.IEndReleases.ToString(), releases.JEndReleases.ToString());
 
             return ret;
@@ -84,7 +89,7 @@ public partial class FrameObjectManager
                 JEndPartialFixity = FrameEndPartialFixity.FromArray(endValue)
             };
 
-            _logger.LogDebug("Retrieved releases for frame {FrameName}: I-End={IEnd}, J-End={JEnd}", 
+            _logger.LogDebug("Retrieved releases for frame {FrameName}: I-End={IEnd}, J-End={JEnd}",
                 frameName, releases.IEndReleases.ToString(), releases.JEndReleases.ToString());
 
             return releases;
@@ -109,7 +114,13 @@ public partial class FrameObjectManager
             if (string.IsNullOrEmpty(frameName))
                 throw new ArgumentException("Frame name cannot be null or empty", nameof(frameName));
 
-            int ret = _sapModel.FrameObj.DeleteReleases(frameName, itemType);
+            var releases = new FrameReleases
+            {
+                IEndReleases = FrameEndReleases.Fixed(),
+                JEndReleases = FrameEndReleases.Fixed()
+            };
+
+            var ret = SetReleases(frameName, releases, itemType);
 
             if (ret != 0)
                 throw new EtabsException(ret, "DeleteReleases", $"Failed to delete releases for frame '{frameName}'");
@@ -123,13 +134,11 @@ public partial class FrameObjectManager
             throw new EtabsException($"Unexpected error deleting releases for frame '{frameName}': {ex.Message}", ex);
         }
     }
-
     #endregion
 
     #region Convenience Methods for Common Release Types
-
     /// <summary>
-    /// Sets a pinned connection at the I-end (start) of a frame (releases all moments).
+    /// Sets a pinned connection at the I-end (start) of a frame (releases all moments and torsion).
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="itemType">Item type for assignment</param>
@@ -138,7 +147,7 @@ public partial class FrameObjectManager
     {
         var releases = new FrameReleases
         {
-            IEndReleases = FrameEndReleases.MomentReleased(),
+            IEndReleases = FrameEndReleases.Pinned(),
             JEndReleases = FrameEndReleases.Fixed()
         };
 
@@ -146,7 +155,7 @@ public partial class FrameObjectManager
     }
 
     /// <summary>
-    /// Sets a pinned connection at the J-end of a frame (releases all moments).
+    /// Sets a pinned connection at the J-end of a frame (releases all moments and torsion).
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="itemType">Item type for assignment</param>
@@ -156,14 +165,14 @@ public partial class FrameObjectManager
         var releases = new FrameReleases
         {
             IEndReleases = FrameEndReleases.Fixed(),
-            JEndReleases = FrameEndReleases.MomentReleased()
+            JEndReleases = FrameEndReleases.Pinned()
         };
 
         return SetReleases(frameName, releases, itemType);
     }
 
     /// <summary>
-    /// Sets pinned connections at both ends of a frame (releases all moments).
+    /// Sets pinned connections at both ends of a frame (releases all moments and torsion).
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="itemType">Item type for assignment</param>
@@ -172,8 +181,8 @@ public partial class FrameObjectManager
     {
         var releases = new FrameReleases
         {
-            IEndReleases = FrameEndReleases.MomentReleased(),
-            JEndReleases = FrameEndReleases.MomentReleased()
+            IEndReleases = FrameEndReleases.Pinned(),
+            JEndReleases = FrameEndReleases.Pinned()
         };
 
         return SetReleases(frameName, releases, itemType);
@@ -189,13 +198,7 @@ public partial class FrameObjectManager
     {
         var releases = new FrameReleases
         {
-            IEndReleases = new FrameEndReleases
-            {
-                P = true,  // Axial force released
-                M22 = true, // Major axis moment released
-                M33 = true, // Minor axis moment released
-                T = true   // Torsion released
-            },
+            IEndReleases = FrameEndReleases.Roller(),
             JEndReleases = FrameEndReleases.Fixed()
         };
 
@@ -213,20 +216,14 @@ public partial class FrameObjectManager
         var releases = new FrameReleases
         {
             IEndReleases = FrameEndReleases.Fixed(),
-            JEndReleases = new FrameEndReleases
-            {
-                P = true,  // Axial force released
-                M22 = true, // Major axis moment released
-                M33 = true, // Minor axis moment released
-                T = true   // Torsion released
-            }
+            JEndReleases = FrameEndReleases.Roller()
         };
 
         return SetReleases(frameName, releases, itemType);
     }
 
     /// <summary>
-    /// Sets a torsion release at the I-end (releases torsional moment only).
+    /// Sets a torsion release at the I-end (releases R1 only).
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="itemType">Item type for assignment</param>
@@ -235,7 +232,7 @@ public partial class FrameObjectManager
     {
         var releases = new FrameReleases
         {
-            IEndReleases = new FrameEndReleases { T = true },
+            IEndReleases = new FrameEndReleases { R1 = true },
             JEndReleases = FrameEndReleases.Fixed()
         };
 
@@ -243,7 +240,7 @@ public partial class FrameObjectManager
     }
 
     /// <summary>
-    /// Sets a torsion release at the J-end (releases torsional moment only).
+    /// Sets a torsion release at the J-end (releases R1 only).
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="itemType">Item type for assignment</param>
@@ -253,51 +250,120 @@ public partial class FrameObjectManager
         var releases = new FrameReleases
         {
             IEndReleases = FrameEndReleases.Fixed(),
-            JEndReleases = new FrameEndReleases { T = true }
+            JEndReleases = new FrameEndReleases { R1 = true }
         };
 
         return SetReleases(frameName, releases, itemType);
     }
 
     /// <summary>
-    /// Sets partial moment releases with specified fixity values.
+    /// Sets moment releases only at both ends (releases R2 and R3).
+    /// Common for simple beam connections.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
-    /// <param name="iEndM22Fixity">I-end major axis moment fixity (0.0 = released, 1.0 = fixed)</param>
-    /// <param name="iEndM33Fixity">I-end minor axis moment fixity (0.0 = released, 1.0 = fixed)</param>
-    /// <param name="jEndM22Fixity">J-end major axis moment fixity (0.0 = released, 1.0 = fixed)</param>
-    /// <param name="jEndM33Fixity">J-end minor axis moment fixity (0.0 = released, 1.0 = fixed)</param>
     /// <param name="itemType">Item type for assignment</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetPartialMomentReleases(string frameName, double iEndM22Fixity, double iEndM33Fixity, 
-        double jEndM22Fixity, double jEndM33Fixity, eItemType itemType = eItemType.Objects)
+    public int SetBothEndsMomentReleased(string frameName, eItemType itemType = eItemType.Objects)
+    {
+        var releases = new FrameReleases
+        {
+            IEndReleases = new FrameEndReleases { R2 = true, R3 = true },
+            JEndReleases = new FrameEndReleases { R2 = true, R3 = true }
+        };
+
+        return SetReleases(frameName, releases, itemType);
+    }
+
+    /// <summary>
+    /// Sets partial moment releases with specified spring stiffness values.
+    /// </summary>
+    /// <param name="frameName">Name of the frame object</param>
+    /// <param name="iEndR2Spring">I-end R2 moment spring stiffness [FL/rad] (0 = fully released)</param>
+    /// <param name="iEndR3Spring">I-end R3 moment spring stiffness [FL/rad] (0 = fully released)</param>
+    /// <param name="jEndR2Spring">J-end R2 moment spring stiffness [FL/rad] (0 = fully released)</param>
+    /// <param name="jEndR3Spring">J-end R3 moment spring stiffness [FL/rad] (0 = fully released)</param>
+    /// <param name="itemType">Item type for assignment</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    public int SetPartialMomentReleases(string frameName,
+        double iEndR2Spring, double iEndR3Spring,
+        double jEndR2Spring, double jEndR3Spring,
+        eItemType itemType = eItemType.Objects)
     {
         var releases = new FrameReleases
         {
             IEndReleases = new FrameEndReleases
             {
-                M22 = iEndM22Fixity < 1.0,
-                M33 = iEndM33Fixity < 1.0
+                R2 = true, // Must be released to apply partial fixity
+                R3 = true
             },
             JEndReleases = new FrameEndReleases
             {
-                M22 = jEndM22Fixity < 1.0,
-                M33 = jEndM33Fixity < 1.0
+                R2 = true,
+                R3 = true
             },
             IEndPartialFixity = new FrameEndPartialFixity
             {
-                M22 = iEndM22Fixity,
-                M33 = iEndM33Fixity
+                R2 = iEndR2Spring,
+                R3 = iEndR3Spring
             },
             JEndPartialFixity = new FrameEndPartialFixity
             {
-                M22 = jEndM22Fixity,
-                M33 = jEndM33Fixity
+                R2 = jEndR2Spring,
+                R3 = jEndR3Spring
             }
         };
 
         return SetReleases(frameName, releases, itemType);
     }
 
+    /// <summary>
+    /// Sets a semi-rigid connection with specified rotational stiffness.
+    /// Releases R2 and R3 with partial fixity springs.
+    /// </summary>
+    /// <param name="frameName">Name of the frame object</param>
+    /// <param name="endLocation">Which end to apply to (IEnd or JEnd)</param>
+    /// <param name="rotationalStiffness">Rotational spring stiffness [FL/rad]</param>
+    /// <param name="itemType">Item type for assignment</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    public int SetSemiRigidConnection(string frameName, FrameEnd endLocation,
+        double rotationalStiffness, eItemType itemType = eItemType.Objects)
+    {
+        var releases = new FrameReleases();
+
+        if (endLocation == FrameEnd.IEnd)
+        {
+            releases.IEndReleases = new FrameEndReleases { R2 = true, R3 = true };
+            releases.IEndPartialFixity = new FrameEndPartialFixity
+            {
+                R2 = rotationalStiffness,
+                R3 = rotationalStiffness
+            };
+            releases.JEndReleases = FrameEndReleases.Fixed();
+        }
+        else
+        {
+            releases.IEndReleases = FrameEndReleases.Fixed();
+            releases.JEndReleases = new FrameEndReleases { R2 = true, R3 = true };
+            releases.JEndPartialFixity = new FrameEndPartialFixity
+            {
+                R2 = rotationalStiffness,
+                R3 = rotationalStiffness
+            };
+        }
+
+        return SetReleases(frameName, releases, itemType);
+    }
+
     #endregion
+}
+
+/// <summary>
+/// Enumeration for frame end location.
+/// </summary>
+public enum FrameEnd
+{
+    /// <summary>I-End (start of frame)</summary>
+    IEnd,
+    /// <summary>J-End (end of frame)</summary>
+    JEnd
 }

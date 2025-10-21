@@ -23,9 +23,11 @@ public class AreaUniformLoad
     public double LoadValue { get; set; } = 0.0;
 
     /// <summary>
-    /// Gets or sets the load direction.
+    /// Gets or sets the load direction (1-11).
     /// 1 = Local 1 axis, 2 = Local 2 axis, 3 = Local 3 axis,
-    /// 4 = Global X, 5 = Global Y, 6 = Global Z, 7 = Gravity
+    /// 4 = Global X, 5 = Global Y, 6 = Global Z,
+    /// 7 = Projected Global X, 8 = Projected Global Y, 9 = Projected Global Z,
+    /// 10 = Gravity, 11 = Projected Gravity
     /// </summary>
     public int Direction { get; set; } = 6; // Default to Global Z
 
@@ -65,6 +67,7 @@ public class AreaUniformLoad
 
     /// <summary>
     /// Gets the direction as an enumeration value.
+    /// Note: This method only supports basic directions (1-7). For projected directions (8-11), use Direction property directly.
     /// </summary>
     /// <returns>Load direction enumeration</returns>
     public eLoadDirection GetDirectionEnum()
@@ -77,7 +80,7 @@ public class AreaUniformLoad
             4 => eLoadDirection.GlobalX,
             5 => eLoadDirection.GlobalY,
             6 => eLoadDirection.GlobalZ,
-            7 => eLoadDirection.Gravity,
+            7 or 10 => eLoadDirection.Gravity, // Both gravity directions map to same enum
             _ => eLoadDirection.GlobalZ
         };
     }
@@ -96,7 +99,7 @@ public class AreaUniformLoad
             eLoadDirection.GlobalX => 4,
             eLoadDirection.GlobalY => 5,
             eLoadDirection.GlobalZ => 6,
-            eLoadDirection.Gravity => 7,
+            eLoadDirection.Gravity => 10, // Use standard gravity direction
             _ => 6
         };
     }
@@ -112,24 +115,30 @@ public class AreaUniformLoad
             1 => "Local 1 axis",
             2 => "Local 2 axis", 
             3 => "Local 3 axis",
-            4 => "Global X",
-            5 => "Global Y",
-            6 => "Global Z",
-            7 => "Gravity",
-            _ => "Unknown"
+            4 => "Global X direction",
+            5 => "Global Y direction",
+            6 => "Global Z direction",
+            7 => "Projected Global X direction",
+            8 => "Projected Global Y direction",
+            9 => "Projected Global Z direction",
+            10 => "Gravity direction",
+            11 => "Projected Gravity direction",
+            _ => "Unknown direction"
         };
     }
 
     /// <summary>
-    /// Creates a gravity load (downward in Global Z).
+    /// Creates a gravity load (downward in gravity direction).
     /// </summary>
     /// <param name="areaName">Name of the area object</param>
     /// <param name="loadPattern">Name of the load pattern</param>
     /// <param name="loadValue">Load value (positive for downward)</param>
+    /// <param name="useProjected">If true, uses projected gravity direction (11), otherwise standard gravity (10)</param>
     /// <returns>AreaUniformLoad for gravity</returns>
-    public static AreaUniformLoad CreateGravityLoad(string areaName, string loadPattern, double loadValue)
+    public static AreaUniformLoad CreateGravityLoad(string areaName, string loadPattern, double loadValue, bool useProjected = false)
     {
-        return new AreaUniformLoad(areaName, loadPattern, -Math.Abs(loadValue), 7, "Global");
+        int direction = useProjected ? 11 : 10;
+        return new AreaUniformLoad(areaName, loadPattern, Math.Abs(loadValue), direction, "Global");
     }
 
     /// <summary>
@@ -150,19 +159,49 @@ public class AreaUniformLoad
     /// <param name="areaName">Name of the area object</param>
     /// <param name="loadPattern">Name of the load pattern</param>
     /// <param name="loadValue">Load value</param>
+    /// <param name="useProjected">If true, uses projected Global Z direction (9), otherwise standard Global Z (6)</param>
     /// <returns>AreaUniformLoad in Global Z</returns>
-    public static AreaUniformLoad CreateGlobalZLoad(string areaName, string loadPattern, double loadValue)
+    public static AreaUniformLoad CreateGlobalZLoad(string areaName, string loadPattern, double loadValue, bool useProjected = false)
     {
-        return new AreaUniformLoad(areaName, loadPattern, loadValue, 6, "Global");
+        int direction = useProjected ? 9 : 6;
+        return new AreaUniformLoad(areaName, loadPattern, loadValue, direction, "Global");
+    }
+
+    /// <summary>
+    /// Creates a uniform load in Global X direction.
+    /// </summary>
+    /// <param name="areaName">Name of the area object</param>
+    /// <param name="loadPattern">Name of the load pattern</param>
+    /// <param name="loadValue">Load value</param>
+    /// <param name="useProjected">If true, uses projected Global X direction (7), otherwise standard Global X (4)</param>
+    /// <returns>AreaUniformLoad in Global X</returns>
+    public static AreaUniformLoad CreateGlobalXLoad(string areaName, string loadPattern, double loadValue, bool useProjected = false)
+    {
+        int direction = useProjected ? 7 : 4;
+        return new AreaUniformLoad(areaName, loadPattern, loadValue, direction, "Global");
+    }
+
+    /// <summary>
+    /// Creates a uniform load in Global Y direction.
+    /// </summary>
+    /// <param name="areaName">Name of the area object</param>
+    /// <param name="loadPattern">Name of the load pattern</param>
+    /// <param name="loadValue">Load value</param>
+    /// <param name="useProjected">If true, uses projected Global Y direction (8), otherwise standard Global Y (5)</param>
+    /// <returns>AreaUniformLoad in Global Y</returns>
+    public static AreaUniformLoad CreateGlobalYLoad(string areaName, string loadPattern, double loadValue, bool useProjected = false)
+    {
+        int direction = useProjected ? 8 : 5;
+        return new AreaUniformLoad(areaName, loadPattern, loadValue, direction, "Global");
     }
 
     /// <summary>
     /// Checks if this is a gravity load.
     /// </summary>
-    /// <returns>True if direction is gravity</returns>
+    /// <returns>True if direction is gravity (10) or projected gravity (11)</returns>
     public bool IsGravityLoad()
     {
-        return Direction == 7;
+        return Direction == 10 || Direction == 11;
     }
 
     /// <summary>
@@ -177,10 +216,19 @@ public class AreaUniformLoad
     /// <summary>
     /// Checks if this is a global direction load.
     /// </summary>
-    /// <returns>True if direction is global</returns>
+    /// <returns>True if direction is global (4-6) or projected global (7-9)</returns>
     public bool IsGlobalLoad()
     {
-        return Direction >= 4 && Direction <= 6;
+        return Direction >= 4 && Direction <= 9;
+    }
+
+    /// <summary>
+    /// Checks if this is a projected direction load.
+    /// </summary>
+    /// <returns>True if direction is projected (7-9, 11)</returns>
+    public bool IsProjectedLoad()
+    {
+        return Direction >= 7 && Direction <= 9 || Direction == 11;
     }
 
     /// <summary>
@@ -217,7 +265,7 @@ public class AreaUniformLoad
     {
         return !string.IsNullOrEmpty(AreaName) &&
                !string.IsNullOrEmpty(LoadPattern) &&
-               Direction >= 1 && Direction <= 7 &&
+               Direction >= 1 && Direction <= 11 &&
                !string.IsNullOrEmpty(CoordinateSystem);
     }
 }

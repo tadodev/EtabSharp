@@ -1,6 +1,7 @@
 using EtabSharp.Elements.FrameObj.Models;
 using EtabSharp.Exceptions;
 using ETABSv1;
+using Microsoft.Extensions.Logging;
 
 namespace EtabSharp.Elements.FrameObj;
 
@@ -324,29 +325,30 @@ public partial class FrameObjectManager
     /// Wraps cSapModel.FrameObj.SetLateralBracing.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
-    /// <param name="bracingType">Bracing type (1=Point, 2=Uniform, 3=Clear All)</param>
-    /// <param name="location">Bracing location (1=Top, 2=Bottom)</param>
-    /// <param name="distance1">Start distance</param>
-    /// <param name="distance2">End distance</param>
-    /// <param name="relativeDistance">True if distances are relative</param>
+    /// <param name="bracingType">Bracing type</param>
+    /// <param name="location">Bracing location</param>
+    /// <param name="distance1">Start distance (relative if relDist=true, actual if relDist=false)</param>
+    /// <param name="distance2">End distance (relative if relDist=true, actual if relDist=false)</param>
+    /// <param name="relDist">True if distances are relative, false for actual distances</param>
     /// <param name="itemType">Item type for assignment</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetLateralBracing(string frameName, int bracingType, int location, double distance1, double distance2, 
-        bool relativeDistance = true, eItemType itemType = eItemType.Objects)
+    public int SetLateralBracing(string frameName, BracingType bracingType, BracingLocation location,
+        double distance1, double distance2, bool relDist = true, eItemType itemType = eItemType.Objects)
     {
         try
         {
             if (string.IsNullOrEmpty(frameName))
                 throw new ArgumentException("Frame name cannot be null or empty", nameof(frameName));
 
-            int ret = _sapModel.FrameObj.SetLateralBracing(frameName, bracingType, location, distance1, distance2, 
-                relativeDistance, itemType);
+            int ret = _sapModel.FrameObj.SetLateralBracing(frameName, (int)bracingType, (int)location,
+                distance1, distance2, relDist, itemType);
 
             if (ret != 0)
-                throw new EtabsException(ret, "SetLateralBracing", $"Failed to set lateral bracing for frame '{frameName}'");
+                throw new EtabsException(ret, "SetLateralBracing",
+                    $"Failed to set lateral bracing for frame '{frameName}'");
 
-            _logger.LogDebug("Set lateral bracing for frame {FrameName}: Type={Type}, Location={Location}, D1={D1}, D2={D2}", 
-                frameName, bracingType, location, distance1, distance2);
+            _logger.LogDebug("Set lateral bracing for frame {FrameName}: Type={Type}, Location={Location}, D1={D1}, D2={D2}, RelDist={RelDist}",
+                frameName, bracingType, location, distance1, distance2, relDist);
             return ret;
         }
         catch (Exception ex) when (!(ex is EtabsException))
@@ -361,7 +363,7 @@ public partial class FrameObjectManager
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <returns>Lateral bracing data object</returns>
-    public object GetLateralBracing(string frameName)
+    public LateralBracingData GetLateralBracing(string frameName)
     {
         try
         {
@@ -370,33 +372,35 @@ public partial class FrameObjectManager
 
             int numberItems = 0;
             string[] frameNames = null;
-            int[] bracingTypes = null;
-            int[] locations = null;
-            double[] distance1 = null, distance2 = null;
-            bool[] relativeDistance = null;
+            int[] myType = null;
+            int[] loc = null;
+            double[] rd1 = null, rd2 = null;
+            double[] dist1 = null, dist2 = null;
 
-            int ret = _sapModel.FrameObj.GetLateralBracing(frameName, ref numberItems, ref frameNames, 
-                ref bracingTypes, ref locations, ref distance1, ref distance2, ref relativeDistance);
+            int ret = _sapModel.FrameObj.GetLateralBracing(frameName, ref numberItems, ref frameNames,
+                ref myType, ref loc, ref rd1, ref rd2, ref dist1, ref dist2);
 
             if (ret != 0)
-                throw new EtabsException(ret, "GetLateralBracing", $"Failed to get lateral bracing for frame '{frameName}'");
+                throw new EtabsException(ret, "GetLateralBracing",
+                    $"Failed to get lateral bracing for frame '{frameName}'");
 
-            // Return structured data
-            var bracingData = new List<object>();
+            var bracingData = new LateralBracingData();
             for (int i = 0; i < numberItems; i++)
             {
-                bracingData.Add(new
+                bracingData.AddEntry(new LateralBracingEntry
                 {
                     FrameName = frameNames[i],
-                    BracingType = bracingTypes[i],
-                    Location = locations[i],
-                    Distance1 = distance1[i],
-                    Distance2 = distance2[i],
-                    RelativeDistance = relativeDistance[i]
+                    BracingType = (BracingType)myType[i],
+                    Location = (BracingLocation)loc[i],
+                    RelativeDistance1 = rd1[i],
+                    RelativeDistance2 = rd2[i],
+                    ActualDistance1 = dist1[i],
+                    ActualDistance2 = dist2[i]
                 });
             }
 
-            _logger.LogDebug("Retrieved {Count} lateral bracing entries for frame {FrameName}", numberItems, frameName);
+            _logger.LogDebug("Retrieved {Count} lateral bracing entries for frame {FrameName}",
+                numberItems, frameName);
             return bracingData;
         }
         catch (Exception ex) when (!(ex is EtabsException))
@@ -410,27 +414,60 @@ public partial class FrameObjectManager
     /// Wraps cSapModel.FrameObj.DeleteLateralBracing.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
-    /// <param name="bracingType">Bracing type to delete (3=All)</param>
+    /// <param name="bracingType">Bracing type to delete</param>
     /// <param name="itemType">Item type for deletion</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int DeleteLateralBracing(string frameName, int bracingType = 3, eItemType itemType = eItemType.Objects)
+    public int DeleteLateralBracing(string frameName, BracingType bracingType,
+        eItemType itemType = eItemType.Objects)
     {
         try
         {
             if (string.IsNullOrEmpty(frameName))
                 throw new ArgumentException("Frame name cannot be null or empty", nameof(frameName));
 
-            int ret = _sapModel.FrameObj.DeleteLateralBracing(frameName, bracingType, itemType);
+            int ret = _sapModel.FrameObj.DeleteLateralBracing(frameName, (int)bracingType, itemType);
 
             if (ret != 0)
-                throw new EtabsException(ret, "DeleteLateralBracing", $"Failed to delete lateral bracing for frame '{frameName}'");
+                throw new EtabsException(ret, "DeleteLateralBracing",
+                    $"Failed to delete lateral bracing for frame '{frameName}'");
 
-            _logger.LogDebug("Deleted lateral bracing for frame {FrameName}: Type={Type}", frameName, bracingType);
+            _logger.LogDebug("Deleted lateral bracing for frame {FrameName}: Type={Type}",
+                frameName, bracingType);
             return ret;
         }
         catch (Exception ex) when (!(ex is EtabsException))
         {
             throw new EtabsException($"Unexpected error deleting lateral bracing for frame '{frameName}': {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Clears all lateral bracing for a frame object.
+    /// This is a convenience method that uses SetLateralBracing with MyType=3.
+    /// </summary>
+    /// <param name="frameName">Name of the frame object</param>
+    /// <param name="itemType">Item type for clearing</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    public int ClearAllLateralBracing(string frameName, eItemType itemType = eItemType.Objects)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(frameName))
+                throw new ArgumentException("Frame name cannot be null or empty", nameof(frameName));
+
+            // MyType = 3 means "Clear All" according to the original code comment
+            int ret = _sapModel.FrameObj.SetLateralBracing(frameName, 3, 1, 0, 0, true, itemType);
+
+            if (ret != 0)
+                throw new EtabsException(ret, "ClearAllLateralBracing",
+                    $"Failed to clear all lateral bracing for frame '{frameName}'");
+
+            _logger.LogDebug("Cleared all lateral bracing for frame {FrameName}", frameName);
+            return ret;
+        }
+        catch (Exception ex) when (!(ex is EtabsException))
+        {
+            throw new EtabsException($"Unexpected error clearing lateral bracing for frame '{frameName}': {ex.Message}", ex);
         }
     }
 
@@ -546,36 +583,39 @@ public partial class FrameObjectManager
     /// Sets full lateral bracing for the entire length of a frame.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
-    /// <param name="location">Bracing location (1=Top, 2=Bottom)</param>
+    /// <param name="bracingType"></param>
+    /// <param name="bracingLocation"></param>
     /// <param name="itemType">Item type for assignment</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetFullLateralBracing(string frameName, int location = 1, eItemType itemType = eItemType.Objects)
+    public int SetFullLateralBracing(string frameName,BracingType bracingType, BracingLocation bracingLocation, eItemType itemType = eItemType.Objects)
     {
-        return SetLateralBracing(frameName, 2, location, 0.0, 1.0, true, itemType); // 2 = Uniform bracing
+        return SetLateralBracing(frameName, bracingType, bracingLocation, 0.0, 1.0, true, itemType); // 2 = Uniform bracing
     }
 
     /// <summary>
     /// Sets point lateral bracing at specific locations on a frame.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
-    /// <param name="location">Bracing location (1=Top, 2=Bottom)</param>
+    /// <param name="bracingType"></param>
+    /// <param name="bracingLocation"></param>
     /// <param name="distance">Distance along frame (relative)</param>
     /// <param name="itemType">Item type for assignment</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetPointLateralBracing(string frameName, int location, double distance, eItemType itemType = eItemType.Objects)
+    public int SetPointLateralBracing(string frameName, BracingType bracingType, BracingLocation bracingLocation, double distance, eItemType itemType = eItemType.Objects)
     {
-        return SetLateralBracing(frameName, 1, location, distance, distance, true, itemType); // 1 = Point bracing
+        return SetLateralBracing(frameName, bracingType, bracingLocation, distance, distance, true, itemType); // 1 = Point bracing
     }
 
     /// <summary>
     /// Clears all lateral bracing from a frame.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
+    /// <param name="bracingType"></param>
     /// <param name="itemType">Item type for assignment</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int ClearLateralBracing(string frameName, eItemType itemType = eItemType.Objects)
+    public int ClearLateralBracing(string frameName,BracingType bracingType, eItemType itemType = eItemType.Objects)
     {
-        return DeleteLateralBracing(frameName, 3, itemType); // 3 = Clear all
+        return DeleteLateralBracing(frameName, bracingType, itemType); // 3 = Clear all
     }
 
     #endregion

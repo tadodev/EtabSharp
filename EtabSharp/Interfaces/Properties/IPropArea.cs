@@ -232,11 +232,18 @@ public interface IPropArea
     /// <param name="propertyName">Name of the property</param>
     /// <returns>ShellLayerData model with layer information</returns>
     ShellLayerData GetShellLayer(string propertyName);
-    
+
+    /// <summary>
+    /// Gets shell layer data for a property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <returns>ShellLayerData model with layer information</returns>
+    public ShellLayerData GetShellLayer_2(string propertyName);
+
     #endregion
 
     #region Shell Design Methods
-    
+
     /// <summary>
     /// Sets shell design parameters for a property.
     /// </summary>

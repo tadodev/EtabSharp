@@ -1,6 +1,7 @@
 using EtabSharp.Elements.PointObj.Models;
 using EtabSharp.Exceptions;
 using ETABSv1;
+using Microsoft.Extensions.Logging;
 
 namespace EtabSharp.Elements.PointObj;
 
@@ -16,17 +17,16 @@ public partial class PointObjectManager
     /// Wraps cSapModel.PointObj.SetDiaphragm.
     /// </summary>
     /// <param name="pointName">Name of the point object</param>
+    /// <param name="diaphragmOption"></param>
     /// <param name="diaphragmName">Name of the diaphragm (empty string to remove assignment)</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetDiaphragm(string pointName, string diaphragmName)
+    public int SetDiaphragm(string pointName,eDiaphragmOption diaphragmOption, string diaphragmName)
     {
         try
         {
             if (string.IsNullOrEmpty(pointName))
                 throw new ArgumentException("Point name cannot be null or empty", nameof(pointName));
 
-            var diaphragmOption = string.IsNullOrEmpty(diaphragmName) ? 
-                eDiaphragmOption.None : eDiaphragmOption.FromShellObject;
 
             int ret = _sapModel.PointObj.SetDiaphragm(pointName, diaphragmOption, diaphragmName ?? "");
 
@@ -56,7 +56,7 @@ public partial class PointObjectManager
             if (string.IsNullOrEmpty(pointName))
                 throw new ArgumentException("Point name cannot be null or empty", nameof(pointName));
 
-            eDiaphragmOption diaphragmOption = eDiaphragmOption.None;
+            eDiaphragmOption diaphragmOption = default;
             string diaphragmName = "";
 
             int ret = _sapModel.PointObj.GetDiaphragm(pointName, ref diaphragmOption, ref diaphragmName);
@@ -64,7 +64,7 @@ public partial class PointObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "GetDiaphragm", $"Failed to get diaphragm for point '{pointName}'");
 
-            return diaphragmOption == eDiaphragmOption.None ? "" : diaphragmName;
+            return diaphragmOption == 0 ? "" : diaphragmName;
         }
         catch (Exception ex) when (!(ex is EtabsException))
         {

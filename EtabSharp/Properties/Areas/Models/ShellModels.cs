@@ -171,7 +171,7 @@ public class ShellLayer
     public string LayerName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the distance from the reference surface.
+    /// Gets or sets the distance from the reference surface to the mid-height of the layer.
     /// </summary>
     public double Distance { get; set; } = 0.0;
 
@@ -179,6 +179,12 @@ public class ShellLayer
     /// Gets or sets the layer thickness.
     /// </summary>
     public double Thickness { get; set; } = 0.0;
+
+    /// <summary>
+    /// Gets or sets the layer type.
+    /// 1 = Shell, 2 = Membrane, 3 = Plate
+    /// </summary>
+    public ShellLayerType LayerType { get; set; } = ShellLayerType.Shell;
 
     /// <summary>
     /// Gets or sets the material property name.
@@ -191,29 +197,40 @@ public class ShellLayer
     public double MaterialAngle { get; set; } = 0.0;
 
     /// <summary>
-    /// Gets or sets the material behavior.
+    /// Gets or sets whether the material behavior is nonlinear.
+    /// Used by SetShellLayer API method.
     /// </summary>
-    public int MaterialBehavior { get; set; } = 1;
+    public bool Nonlinear { get; set; } = false;
 
     /// <summary>
-    /// Gets or sets the number of integration points.
+    /// Gets or sets the material behavior type.
+    /// 0 = Directional, 1 = Coupled
+    /// Used by GetShellLayer_2 API method.
+    /// </summary>
+    public MaterialBehaviorType MaterialBehavior { get; set; } = MaterialBehaviorType.Directional;
+
+    /// <summary>
+    /// Gets or sets the number of integration points in the thickness direction.
     /// </summary>
     public int NumberOfIntegrationPoints { get; set; } = 3;
 
     /// <summary>
-    /// Gets or sets the S11 stress type.
+    /// Gets or sets the S11 component behavior type.
+    /// 0 = Inactive, 1 = Linear, 2 = Nonlinear
     /// </summary>
-    public int S11Type { get; set; } = 0;
+    public ComponentBehaviorType S11Type { get; set; } = ComponentBehaviorType.Linear;
 
     /// <summary>
-    /// Gets or sets the S22 stress type.
+    /// Gets or sets the S22 component behavior type.
+    /// 0 = Inactive, 1 = Linear, 2 = Nonlinear
     /// </summary>
-    public int S22Type { get; set; } = 0;
+    public ComponentBehaviorType S22Type { get; set; } = ComponentBehaviorType.Linear;
 
     /// <summary>
-    /// Gets or sets the S12 stress type.
+    /// Gets or sets the S12 component behavior type.
+    /// 0 = Inactive, 1 = Linear, 2 = Nonlinear
     /// </summary>
-    public int S12Type { get; set; } = 0;
+    public ComponentBehaviorType S12Type { get; set; } = ComponentBehaviorType.Linear;
 
     /// <summary>
     /// Validates the shell layer.
@@ -238,8 +255,10 @@ public class ShellLayer
             LayerName = LayerName,
             Distance = Distance,
             Thickness = Thickness,
+            LayerType = LayerType,
             MaterialProperty = MaterialProperty,
             MaterialAngle = MaterialAngle,
+            Nonlinear = Nonlinear,
             MaterialBehavior = MaterialBehavior,
             NumberOfIntegrationPoints = NumberOfIntegrationPoints,
             S11Type = S11Type,
@@ -254,6 +273,43 @@ public class ShellLayer
     /// <returns>String containing shell layer information</returns>
     public override string ToString()
     {
-        return $"Layer: {LayerName} | Material: {MaterialProperty} | Thickness: {Thickness:F3}";
+        return $"Layer: {LayerName} | Type: {LayerType} | Material: {MaterialProperty} | Thickness: {Thickness:F3}";
     }
+}
+
+/// <summary>
+/// Shell layer type enumeration.
+/// </summary>
+public enum ShellLayerType
+{
+    /// <summary>Shell layer type</summary>
+    Shell = 1,
+    /// <summary>Membrane layer type</summary>
+    Membrane = 2,
+    /// <summary>Plate layer type</summary>
+    Plate = 3
+}
+
+/// <summary>
+/// Material behavior type enumeration.
+/// </summary>
+public enum MaterialBehaviorType
+{
+    /// <summary>Directional behavior</summary>
+    Directional = 0,
+    /// <summary>Coupled behavior</summary>
+    Coupled = 1
+}
+
+/// <summary>
+/// Component behavior type enumeration.
+/// </summary>
+public enum ComponentBehaviorType
+{
+    /// <summary>Inactive component</summary>
+    Inactive = 0,
+    /// <summary>Linear behavior</summary>
+    Linear = 1,
+    /// <summary>Nonlinear behavior</summary>
+    Nonlinear = 2
 }

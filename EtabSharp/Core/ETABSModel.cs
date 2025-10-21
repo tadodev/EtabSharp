@@ -1,10 +1,15 @@
-﻿using EtabSharp.Elements.Selection;
+﻿using EtabSharp.Elements.AreaObj;
+using EtabSharp.Elements.FrameObj;
+using EtabSharp.Elements.PointObj;
+using EtabSharp.Elements.Selection;
 using EtabSharp.Elements.Story;
 using EtabSharp.Frames;
+using EtabSharp.Interfaces.Elements.Objects;
 using EtabSharp.Interfaces.Elements.Selection;
 using EtabSharp.Interfaces.Elements.Stories;
 using EtabSharp.Interfaces.Properties;
 using EtabSharp.Interfaces.System;
+using EtabSharp.Properties.Areas;
 using EtabSharp.Properties.Materials;
 using EtabSharp.System;
 using ETABSv1;
@@ -38,8 +43,8 @@ public sealed class ETABSModel
 
     private readonly Lazy<IPropMaterial> _materials;
     private readonly Lazy<IPropFrame> _frameProperties;
+    private readonly Lazy<IPropArea> _areaProperties;
     // TODO: Add when implemented
-    // private readonly Lazy<IPropArea> _areaProperties;
     // private readonly Lazy<IPropLink> _linkProperties;
     // private readonly Lazy<IPropCable> _cableProperties;
 
@@ -49,11 +54,11 @@ public sealed class ETABSModel
 
     private readonly Lazy<ISelection> _selection;
     private readonly Lazy<IStory> _story;
+    private readonly Lazy<IPoint> _points;
+    private readonly Lazy<IFrame> _frames;
+    private readonly Lazy<IArea> _areas;
 
     // TODO: Add when implemented
-    // private readonly Lazy<IPoint> _points;
-    // private readonly Lazy<IFrame> _frames;
-    // private readonly Lazy<IArea> _areas;
     // private readonly Lazy<IGroup> _groups;
 
     #endregion
@@ -92,10 +97,14 @@ public sealed class ETABSModel
         // Initialize Property Managers
         _materials = new Lazy<IPropMaterial>(() => new PropMaterial(_sapModel, _logger));
         _frameProperties = new Lazy<IPropFrame>(() => new PropFrame(_sapModel, _logger));
+        _areaProperties = new Lazy<IPropArea>(() => new PropArea(_sapModel, _logger));
 
         // Initialize Element Managers
         _selection = new Lazy<ISelection>(() => new Selection(_sapModel, _logger));
         _story = new Lazy<IStory>(() => new Story(_sapModel, _logger));
+        _points = new Lazy<IPoint>(() => new PointObjectManager(_sapModel, _logger));
+        _frames = new Lazy<IFrame>(() => new FrameObjectManager(_sapModel, _logger));
+        _areas = new Lazy<IArea>(() => new AreaObjectManager(_sapModel, _logger));
     }
 
     #endregion
@@ -131,12 +140,12 @@ public sealed class ETABSModel
     /// </summary>
     public IPropFrame PropFrame => _frameProperties.Value;
 
-    // TODO: Implement these
-    // /// <summary>
-    // /// Area section properties: slabs, walls, ramps.
-    // /// </summary>
-    // public IPropArea AreaProperties => _areaProperties.Value;
+    /// <summary>
+    /// Area section properties: slabs, walls, ramps.
+    /// </summary>
+    public IPropArea PropArea => _areaProperties.Value;
 
+    // TODO: Implement these
     // /// <summary>
     // /// Link properties: isolators, dampers, gap/hook elements.
     // /// </summary>
@@ -156,24 +165,22 @@ public sealed class ETABSModel
     /// </summary>
     public IStory Story => _story.Value;
 
+    /// <summary>
+    /// Point objects: joints, supports, connection points.
+    /// </summary>
+    public IPoint Points => _points.Value;
+
+    /// <summary>
+    /// Frame objects: beams, columns, braces.
+    /// </summary>
+    public IFrame Frames => _frames.Value;
+
+    /// <summary>
+    /// Area objects: floors, walls, ramps.
+    /// </summary>
+    public IArea Areas => _areas.Value;
+
     // TODO: Implement these
-    // /// <summary>
-    // /// Point objects: joints, supports, connection points.
-    // /// </summary>
-    // public IPoint Points => _points.Value;
-
-    // /// <summary>
-    // /// Frame objects: beams, columns, braces.
-    // /// </summary>
-    // public IFrame Frames => _frames.Value;
-
-    // /// <summary>
-    // /// Area objects: floors, walls, ramps.
-    // /// </summary>
-    // public IArea Areas => _areas.Value;
-
-
-
     // /// <summary>
     // /// Group definitions: organize and select objects by groups.
     // /// </summary>

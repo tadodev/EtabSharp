@@ -244,8 +244,7 @@ public interface IFrame
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <returns>Tuple of (cardinalPoint, mirror2, mirror3, stiffTransform, offset1, offset2, csys)</returns>
-    (int CardinalPoint, bool Mirror2, bool Mirror3, bool StiffTransform, double[] Offset1, double[] Offset2, string CSys
-        )
+    FrameInsertionPoint
         GetInsertionPoint(string frameName);
 
     #endregion
@@ -259,24 +258,48 @@ public interface IFrame
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="load">FrameDistributedLoad model with load parameters</param>
     /// <param name="replace">If true, replaces existing loads; if false, adds</param>
+    /// <param name="itemType">Item type for assignment (Objects, Group, or SelectedObjects)</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetLoadDistributed(string frameName, FrameDistributedLoad load, bool replace = true);
+    int SetLoadDistributed(string frameName, FrameDistributedLoad load, bool replace = true, eItemType itemType = eItemType.Objects);
+
+    /// <summary>
+    /// Assigns distributed loads to frame objects using individual parameters.
+    /// Wraps cSapModel.FrameObj.SetLoadDistributed directly with ETABS API parameters.
+    /// </summary>
+    /// <param name="name">Name of an existing frame object or group</param>
+    /// <param name="loadPattern">Name of a defined load pattern</param>
+    /// <param name="loadType">Type of distributed load (1=Force per unit length, 2=Moment per unit length)</param>
+    /// <param name="direction">Load direction (1-11)</param>
+    /// <param name="startDistance">Distance from I-End to start of load</param>
+    /// <param name="endDistance">Distance from I-End to end of load</param>
+    /// <param name="startLoad">Load value at start</param>
+    /// <param name="endLoad">Load value at end</param>
+    /// <param name="coordinateSystem">Coordinate system name ("Local" or coordinate system name)</param>
+    /// <param name="isRelativeDistance">If true, distances are relative (0-1); if false, absolute distances</param>
+    /// <param name="replace">If true, replaces all previous loads in the specified load pattern</param>
+    /// <param name="itemType">Item type for assignment (Objects, Group, or SelectedObjects)</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetLoadDistributed(string name, string loadPattern, int loadType, int direction,
+        double startDistance, double endDistance, double startLoad, double endLoad,
+        string coordinateSystem = "Global", bool isRelativeDistance = true, bool replace = true, eItemType itemType = eItemType.Objects);
 
     /// <summary>
     /// Gets distributed load assignments for a frame object.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="loadPattern">Load pattern name (empty for all patterns)</param>
+    /// <param name="itemType">Item type 1-object, 2- Group, 3-SelectedObject</param>
     /// <returns>List of FrameDistributedLoad models</returns>
-    List<FrameDistributedLoad> GetLoadDistributed(string frameName, string loadPattern = "");
+    public List<FrameDistributedLoad> GetLoadDistributed(string frameName, string loadPattern = "", eItemType itemType = eItemType.Objects)
 
     /// <summary>
     /// Deletes distributed load assignments from a frame.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="loadPattern">Name of the load pattern</param>
+    /// <param name="itemType">Item type 1-object, 2- Group, 3-SelectedObject</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int DeleteLoadDistributed(string frameName, string loadPattern);
+    public int DeleteLoadDistributed(string frameName, string loadPattern, eItemType itemType = eItemType.Objects);
 
     #endregion
 
@@ -546,18 +569,18 @@ public interface IFrame
     /// <param name="location">Location type</param>
     /// <param name="distance1">Start distance</param>
     /// <param name="distance2">End distance</param>
-    /// <param name="relativeDistance">If true, distances are relative (0-1)</param>
+    /// <param name="relDist">Relative distance (0-1)</param>
     /// <param name="itemType">Apply to object, group, or selected objects</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetLateralBracing(string frameName, int bracingType, int location, double distance1,
-        double distance2, bool relativeDistance = true, eItemType itemType = eItemType.Objects);
+    public int SetLateralBracing(string frameName, BracingType bracingType, BracingLocation location,
+        double distance1, double distance2, bool relDist = true, eItemType itemType = eItemType.Objects);
 
     /// <summary>
     /// Gets lateral bracing assignments for a frame.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <returns>Lateral bracing data</returns>
-    object GetLateralBracing(string frameName);
+    public LateralBracingData GetLateralBracing(string frameName);
 
     /// <summary>
     /// Deletes lateral bracing assignments from a frame.
@@ -566,7 +589,8 @@ public interface IFrame
     /// <param name="bracingType">Bracing type to delete (3 = all types)</param>
     /// <param name="itemType">Apply to object, group, or selected objects</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int DeleteLateralBracing(string frameName, int bracingType = 3, eItemType itemType = eItemType.Objects);
+    public int DeleteLateralBracing(string frameName, BracingType bracingType,
+        eItemType itemType = eItemType.Objects);
 
     #endregion
 

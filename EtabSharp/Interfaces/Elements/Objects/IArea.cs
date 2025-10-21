@@ -157,8 +157,23 @@ public interface IArea
     /// <param name="areaName">Name of the area object</param>
     /// <param name="load">AreaUniformLoad model with load parameters</param>
     /// <param name="replace">If true, replaces existing loads</param>
+    /// <param name="itemType">Item type for assignment (Objects, Group, or SelectedObjects)</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetLoadUniform(string areaName, AreaUniformLoad load, bool replace = true);
+    int SetLoadUniform(string areaName, AreaUniformLoad load, bool replace = true, eItemType itemType = eItemType.Objects);
+
+    /// <summary>
+    /// Sets uniform load on an area object using individual parameters.
+    /// </summary>
+    /// <param name="name">Name of an existing area object or group</param>
+    /// <param name="loadPattern">Name of a defined load pattern</param>
+    /// <param name="value">Uniform load value [F/L2]</param>
+    /// <param name="direction">Load direction (1-11): 1-3=Local 1-3, 4-6=Global X-Z, 7-9=Projected X-Z, 10=Gravity, 11=Projected Gravity</param>
+    /// <param name="replace">If true, replaces all previous uniform loads in the specified load pattern</param>
+    /// <param name="coordinateSystem">Coordinate system name ("Local" or coordinate system name)</param>
+    /// <param name="itemType">Item type for assignment (Objects, Group, or SelectedObjects)</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetLoadUniform(string name, string loadPattern, double value, int direction, 
+        bool replace = true, string coordinateSystem = "Global", eItemType itemType = eItemType.Objects);
     
     /// <summary>
     /// Gets uniform loads assigned to an area object.

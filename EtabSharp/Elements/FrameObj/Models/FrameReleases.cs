@@ -6,40 +6,46 @@
 public class FrameReleases
 {
     /// <summary>
-    /// I-end (start) releases [P, V2, V3, T, M2, M3]
+    /// Gets or sets the I-end (start) releases.
     /// </summary>
-    public FrameEndRelease IEnd { get; set; } = new();
+    public FrameEndReleases IEndReleases { get; set; } = new FrameEndReleases();
 
     /// <summary>
-    /// J-end (end) releases [P, V2, V3, T, M2, M3]
+    /// Gets or sets the J-end releases.
     /// </summary>
-    public FrameEndRelease JEnd { get; set; } = new();
+    public FrameEndReleases JEndReleases { get; set; } = new FrameEndReleases();
 
     /// <summary>
-    /// Creates fixed-fixed frame (no releases)
+    /// Gets or sets the I-end partial fixity values.
+    /// Only applies to released degrees of freedom.
     /// </summary>
-    public static FrameReleases FixedFixed() => new();
+    public FrameEndPartialFixity IEndPartialFixity { get; set; } = new FrameEndPartialFixity();
 
     /// <summary>
-    /// Creates pinned-pinned frame (M2, M3 released at both ends)
+    /// Gets or sets the J-end partial fixity values.
+    /// Only applies to released degrees of freedom.
     /// </summary>
-    public static FrameReleases PinnedPinned() => new()
+    public FrameEndPartialFixity JEndPartialFixity { get; set; } = new FrameEndPartialFixity();
+
+    /// <summary>
+    /// Validates the releases to ensure they don't cause instability.
+    /// </summary>
+    /// <returns>True if valid, false if would cause instability</returns>
+    public bool IsValid()
     {
-        IEnd = FrameEndRelease.Pinned(),
-        JEnd = FrameEndRelease.Pinned()
-    };
+        // Check for unstable release combinations
+        // Both ends released for any translation or R1 is unstable
+        if (IEndReleases.U1 && JEndReleases.U1) return false;
+        if (IEndReleases.U2 && JEndReleases.U2) return false;
+        if (IEndReleases.U3 && JEndReleases.U3) return false;
+        if (IEndReleases.R1 && JEndReleases.R1) return false;
 
-    /// <summary>
-    /// Creates fixed-pinned frame
-    /// </summary>
-    public static FrameReleases FixedPinned() => new()
-    {
-        IEnd = FrameEndRelease.Fixed(),
-        JEnd = FrameEndRelease.Pinned()
-    };
+        // R2 released at both ends with U3 at either end
+        if (IEndReleases.R2 && JEndReleases.R2 && (IEndReleases.U3 || JEndReleases.U3)) return false;
 
-    public override string ToString()
-    {
-        return $"I-end: {IEnd}, J-end: {JEnd}";
+        // R3 released at both ends with U2 at either end
+        if (IEndReleases.R3 && JEndReleases.R3 && (IEndReleases.U2 || JEndReleases.U2)) return false;
+
+        return true;
     }
 }

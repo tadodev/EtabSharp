@@ -1,6 +1,7 @@
 using EtabSharp.Elements.FrameObj.Models;
 using EtabSharp.Exceptions;
 using ETABSv1;
+using Microsoft.Extensions.Logging;
 
 namespace EtabSharp.Elements.FrameObj;
 
@@ -259,35 +260,32 @@ public partial class FrameObjectManager
     /// Wraps cSapModel.FrameObj.SetInsertionPoint.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
-    /// <param name="cardinalPoint">Cardinal point (1-11)</param>
-    /// <param name="mirror2">Mirror about local 2-axis</param>
-    /// <param name="mirror3">Mirror about local 3-axis</param>
-    /// <param name="stiffTransform">Transform stiffness</param>
-    /// <param name="offset1">I-end offsets [x, y, z]</param>
-    /// <param name="offset2">J-end offsets [x, y, z]</param>
-    /// <param name="csys">Coordinate system for offsets</param>
-    /// <param name="itemType">Item type for assignment</param>
+    /// <param name="insertionPoint">FrameInsertionPoint model with insertion point data</param>
+    /// <param name="itemType">Item type for assignment (Objects, Group, or SelectedObjects)</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetInsertionPoint(string frameName, int cardinalPoint, bool mirror2, bool mirror3, 
-        bool stiffTransform, double[] offset1, double[] offset2, string csys = "Local", 
-        eItemType itemType = eItemType.Objects)
+    public int SetInsertionPoint(string frameName, FrameInsertionPoint insertionPoint, eItemType itemType = eItemType.Objects)
     {
         try
         {
             if (string.IsNullOrEmpty(frameName))
                 throw new ArgumentException("Frame name cannot be null or empty", nameof(frameName));
-            if (offset1 == null || offset1.Length != 3)
-                throw new ArgumentException("Offset1 must be an array of 3 values", nameof(offset1));
-            if (offset2 == null || offset2.Length != 3)
-                throw new ArgumentException("Offset2 must be an array of 3 values", nameof(offset2));
+            if (insertionPoint == null)
+                throw new ArgumentNullException(nameof(insertionPoint));
+            if (!insertionPoint.IsValid())
+                throw new ArgumentException("Insertion point parameters are not valid", nameof(insertionPoint));
 
-            int ret = _sapModel.FrameObj.SetInsertionPoint(frameName, cardinalPoint, mirror2, mirror3, 
-                stiffTransform, ref offset1, ref offset2, csys, itemType);
+            // Create copies of the offset arrays since the API uses ref parameters
+            double[] offset1 = (double[])insertionPoint.Offset1.Clone();
+            double[] offset2 = (double[])insertionPoint.Offset2.Clone();
+
+            int ret = _sapModel.FrameObj.SetInsertionPoint_1(frameName, insertionPoint.CardinalPoint,
+                insertionPoint.Mirror2, insertionPoint.Mirror3, insertionPoint.StiffnessTransform,
+                ref offset1, ref offset2, insertionPoint.CoordinateSystem, itemType);
 
             if (ret != 0)
                 throw new EtabsException(ret, "SetInsertionPoint", $"Failed to set insertion point for frame '{frameName}'");
 
-            _logger.LogDebug("Set insertion point {CardinalPoint} for frame {FrameName}", cardinalPoint, frameName);
+            _logger.LogDebug("Set insertion point for frame {FrameName}: {InsertionPoint}", frameName, insertionPoint.ToString());
             return ret;
         }
         catch (Exception ex) when (!(ex is EtabsException))
@@ -297,8 +295,60 @@ public partial class FrameObjectManager
     }
 
     /// <summary>
+    /// Sets the insertion point and end offsets for a frame object using individual parameters.
+    /// Wraps cSapModel.FrameObj.SetInsertionPoint directly with ETABS API parameters.
+    /// </summary>
+    /// <param name="name">Name of an existing frame object or group</param>
+    /// <param name="cardinalPoint">Cardinal point (1-11)</param>
+    /// <param name="mirror2">Mirror about local 2-axis</param>
+    /// <param name="mirror3">Mirror about local 3-axis</param>
+    /// <param name="stiffTransform">Transform stiffness</param>
+    /// <param name="offset1">I-end offsets [x, y, z]</param>
+    /// <param name="offset2">J-end offsets [x, y, z]</param>
+    /// <param name="csys">Coordinate system for offsets</param>
+    /// <param name="itemType">Item type for assignment (Objects, Group, or SelectedObjects)</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    public int SetInsertionPoint(string name, int cardinalPoint, bool mirror2, bool mirror3,
+        bool stiffTransform, double[] offset1, double[] offset2, string csys = "Local",
+        eItemType itemType = eItemType.Objects)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("Name cannot be null or empty", nameof(name));
+            if (offset1 == null || offset1.Length != 3)
+                throw new ArgumentException("Offset1 must be an array of 3 values", nameof(offset1));
+            if (offset2 == null || offset2.Length != 3)
+                throw new ArgumentException("Offset2 must be an array of 3 values", nameof(offset2));
+            if (string.IsNullOrEmpty(csys))
+                throw new ArgumentException("Coordinate system cannot be null or empty", nameof(csys));
+            if (cardinalPoint < 1 || cardinalPoint > 11)
+                throw new ArgumentException("Cardinal point must be between 1 and 11", nameof(cardinalPoint));
+
+            // Create copies of the offset arrays since the API uses ref parameters
+            double[] offset1Copy = (double[])offset1.Clone();
+            double[] offset2Copy = (double[])offset2.Clone();
+
+            int ret = _sapModel.FrameObj.SetInsertionPoint_1(name, cardinalPoint, mirror2, mirror3,
+                stiffTransform, ref offset1Copy, ref offset2Copy, csys, itemType);
+
+            if (ret != 0)
+                throw new EtabsException(ret, "SetInsertionPoint", $"Failed to set insertion point for '{name}'");
+
+            _logger.LogDebug("Set insertion point for {Name}: Cardinal={CardinalPoint}, Mirror2={Mirror2}, Mirror3={Mirror3}, StiffTransform={StiffTransform}, CSys={CSys}",
+                name, cardinalPoint, mirror2, mirror3, stiffTransform, csys);
+
+            return ret;
+        }
+        catch (Exception ex) when (!(ex is EtabsException))
+        {
+            throw new EtabsException($"Unexpected error setting insertion point for '{name}': {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
     /// Gets the insertion point and end offsets for a frame object.
-    /// Wraps cSapModel.FrameObj.GetInsertionPoint.
+    /// Wraps cSapModel.FrameObj.GetInsertionPoint_1.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <returns>FrameInsertionPoint model with insertion point data</returns>
@@ -310,31 +360,108 @@ public partial class FrameObjectManager
                 throw new ArgumentException("Frame name cannot be null or empty", nameof(frameName));
 
             int cardinalPoint = 0;
-            bool mirror2 = false, mirror3 = false, stiffTransform = false;
+            bool mirror2 = false;
+            bool mirror3 = false;
+            bool stiffTransform = false;
             double[] offset1 = new double[3];
             double[] offset2 = new double[3];
             string csys = "";
 
-            int ret = _sapModel.FrameObj.GetInsertionPoint(frameName, ref cardinalPoint, ref mirror2, ref mirror3, 
-                ref stiffTransform, ref offset1, ref offset2, ref csys);
+            // Use GetInsertionPoint_1 which includes Mirror3 parameter
+            int ret = _sapModel.FrameObj.GetInsertionPoint_1(frameName, ref cardinalPoint, ref mirror2,
+                ref mirror3, ref stiffTransform, ref offset1, ref offset2, ref csys);
 
             if (ret != 0)
-                throw new EtabsException(ret, "GetInsertionPoint", $"Failed to get insertion point for frame '{frameName}'");
+                throw new EtabsException(ret, "GetInsertionPoint_1", $"Failed to get insertion point for frame '{frameName}'");
 
-            return new FrameInsertionPoint
+            var insertionPoint = new FrameInsertionPoint
             {
                 CardinalPoint = cardinalPoint,
                 Mirror2 = mirror2,
                 Mirror3 = mirror3,
                 StiffnessTransform = stiffTransform,
-                IEndOffset = offset1,
-                JEndOffset = offset2,
+                Offset1 = offset1,
+                Offset2 = offset2,
                 CoordinateSystem = csys
             };
+
+            _logger.LogDebug("Retrieved insertion point for frame {FrameName}: {InsertionPoint}", frameName, insertionPoint.ToString());
+            return insertionPoint;
         }
         catch (Exception ex) when (!(ex is EtabsException))
         {
             throw new EtabsException($"Unexpected error getting insertion point for frame '{frameName}': {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Gets the insertion point and end offsets for a frame object, returning individual values.
+    /// Wraps cSapModel.FrameObj.GetInsertionPoint_1.
+    /// </summary>
+    /// <param name="frameName">Name of the frame object</param>
+    /// <returns>Tuple with insertion point data</returns>
+    public (int CardinalPoint, bool Mirror2, bool Mirror3, bool StiffTransform, double[] Offset1, double[] Offset2, string CSys) GetInsertionPointValues(string frameName)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(frameName))
+                throw new ArgumentException("Frame name cannot be null or empty", nameof(frameName));
+
+            int cardinalPoint = 0;
+            bool mirror2 = false;
+            bool mirror3 = false;
+            bool stiffTransform = false;
+            double[] offset1 = new double[3];
+            double[] offset2 = new double[3];
+            string csys = "";
+
+            // Use GetInsertionPoint_1 which includes Mirror3 parameter
+            int ret = _sapModel.FrameObj.GetInsertionPoint_1(frameName, ref cardinalPoint, ref mirror2,
+                ref mirror3, ref stiffTransform, ref offset1, ref offset2, ref csys);
+
+            if (ret != 0)
+                throw new EtabsException(ret, "GetInsertionPoint_1", $"Failed to get insertion point for frame '{frameName}'");
+
+            _logger.LogDebug("Retrieved insertion point values for frame {FrameName}: Cardinal={CardinalPoint}, Mirror2={Mirror2}, Mirror3={Mirror3}",
+                frameName, cardinalPoint, mirror2, mirror3);
+
+            return (cardinalPoint, mirror2, mirror3, stiffTransform, offset1, offset2, csys);
+        }
+        catch (Exception ex) when (!(ex is EtabsException))
+        {
+            throw new EtabsException($"Unexpected error getting insertion point for frame '{frameName}': {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Deletes the insertion point assignment for a frame object (resets to defaults).
+    /// </summary>
+    /// <param name="frameName">Name of the frame object</param>
+    /// <param name="itemType">Item type for deletion (Objects, Group, or SelectedObjects)</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    public int DeleteInsertionPoint(string frameName, eItemType itemType = eItemType.Objects)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(frameName))
+                throw new ArgumentException("Frame name cannot be null or empty", nameof(frameName));
+
+            // Reset to default values: centroid (10), no mirroring, no offsets
+            double[] offset1 = new double[3];
+            double[] offset2 = new double[3];
+
+            int ret = _sapModel.FrameObj.SetInsertionPoint_1(frameName, 10, false, false, false,
+                ref offset1, ref offset2, "Local", itemType);
+
+            if (ret != 0)
+                throw new EtabsException(ret, "DeleteInsertionPoint", $"Failed to delete insertion point for frame '{frameName}'");
+
+            _logger.LogDebug("Deleted (reset) insertion point for frame {FrameName}", frameName);
+            return ret;
+        }
+        catch (Exception ex) when (!(ex is EtabsException))
+        {
+            throw new EtabsException($"Unexpected error deleting insertion point for frame '{frameName}': {ex.Message}", ex);
         }
     }
 

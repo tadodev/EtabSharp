@@ -83,7 +83,7 @@ public abstract class AreaProperty
             eShellType.ShellThin => "Thin Shell",
             eShellType.ShellThick => "Thick Shell",
             eShellType.Membrane => "Membrane",
-            eShellType.PlateType => "Plate",
+            eShellType.Layered => "Layered",
             _ => "Unknown"
         };
     }

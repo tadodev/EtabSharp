@@ -1,6 +1,7 @@
 using EtabSharp.Elements.PointObj.Models;
 using EtabSharp.Exceptions;
 using ETABSv1;
+using Microsoft.Extensions.Logging;
 
 namespace EtabSharp.Elements.PointObj;
 
