@@ -35,8 +35,8 @@ public partial class FrameObjectManager
             if (!load.IsValid())
                 throw new ArgumentException("Load parameters are not valid", nameof(load));
 
-            int ret = _sapModel.FrameObj.SetLoadDistributed(frameName, load.LoadPattern, load.LoadType,
-                load.Direction, load.StartDistance, load.EndDistance, load.StartLoad, load.EndLoad,
+            int ret = _sapModel.FrameObj.SetLoadDistributed(frameName, load.LoadPattern, (int)load.LoadType,
+                (int)load.Direction, load.StartDistance, load.EndDistance, load.StartLoad, load.EndLoad,
                 load.CoordinateSystem, load.IsRelativeDistance, replace, itemType);
 
             if (ret != 0)
@@ -167,8 +167,8 @@ public partial class FrameObjectManager
                 {
                     FrameName = frameNames[i],
                     LoadPattern = loadPatterns[i],
-                    LoadType = myTypes[i],
-                    Direction = directions[i],
+                    LoadType = (eLoadType)myTypes[i],
+                    Direction = (eFrameLoadDirection)directions[i],
                     StartDistance = dist1[i],
                     EndDistance = dist2[i],
                     StartLoad = val1[i],
@@ -230,8 +230,9 @@ public partial class FrameObjectManager
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="load">FramePointLoad model with load parameters</param>
     /// <param name="replace">If true, replaces existing loads; if false, adds to existing</param>
+    /// <param name="itemType">Object = 0,Group = 1,SelectedObjects = 2</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetLoadPoint(string frameName, FramePointLoad load, bool replace = true)
+    public int SetLoadPoint(string frameName, FramePointLoad load, bool replace = true, eItemType itemType = eItemType.Objects)
     {
         try
         {
@@ -243,8 +244,10 @@ public partial class FrameObjectManager
                 throw new ArgumentException("Load pattern cannot be null or empty", nameof(load));
 
             int ret = _sapModel.FrameObj.SetLoadPoint(frameName, load.LoadPattern, (int)load.LoadType, 
-                (int)load.Direction, load.Distance, load.LoadValue, load.CoordinateSystem, 
-                load.IsRelativeDistance, replace);
+                (int)load.Direction, 
+                load.IsRelativeDistance ? load.RelativeDistance:load.AbsoluteDistance,
+                load.LoadValue, load.CoordinateSystem, 
+                load.IsRelativeDistance, replace,itemType);
 
             if (ret != 0)
                 throw new EtabsException(ret, "SetLoadPoint", $"Failed to set point load for frame '{frameName}' in pattern '{load.LoadPattern}'");
@@ -280,12 +283,22 @@ public partial class FrameObjectManager
             int[] loadTypes = null;
             string[] csys = null;
             int[] directions = null;
-            double[] distances = null, loadValues = null;
-            bool[] relDist = null;
+            double[] relDistances = null;
+            double[] absDistances = null;
+            double[] loadValues = null;
 
-            int ret = _sapModel.FrameObj.GetLoadPoint(frameName, ref numberItems, ref frameNames, 
-                ref loadPatterns, ref loadTypes, ref csys, ref directions, ref distances, 
-                ref loadValues, ref relDist);
+            int ret = _sapModel.FrameObj.GetLoadPoint(
+                frameName,
+                ref numberItems,
+                ref frameNames,
+                ref loadPatterns,
+                ref loadTypes,
+                ref csys,
+                ref directions,
+                ref relDistances,
+                ref absDistances,
+                ref loadValues
+            );
 
             if (ret != 0)
                 throw new EtabsException(ret, "GetLoadPoint", $"Failed to get point loads for frame '{frameName}'");
@@ -294,21 +307,22 @@ public partial class FrameObjectManager
 
             for (int i = 0; i < numberItems; i++)
             {
-                // Filter by load pattern if specified
                 if (!string.IsNullOrEmpty(loadPattern) && loadPatterns[i] != loadPattern)
                     continue;
 
                 var load = new FramePointLoad
                 {
-                    FrameName = frameName,
+                    FrameName = frameNames[i],
                     LoadPattern = loadPatterns[i],
                     LoadType = (eLoadType)loadTypes[i],
-                    Direction = (eLoadDirection)directions[i],
-                    Distance = distances[i],
-                    LoadValue = loadValues[i],
+                    Direction = (eFrameLoadDirection)directions[i],
                     CoordinateSystem = csys[i],
-                    IsRelativeDistance = relDist[i]
+                    IsRelativeDistance = true, // RelDist and Dist are both available
+                    RelativeDistance = relDistances[i],
+                    AbsoluteDistance = absDistances[i],
+                    LoadValue = loadValues[i]
                 };
+
                 loads.Add(load);
             }
 
@@ -487,7 +501,7 @@ public partial class FrameObjectManager
     /// <param name="replace">If true, replaces existing loads</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
     public int SetUniformLoad(string frameName, string loadPattern, double loadValue, 
-        eLoadDirection direction = eLoadDirection.Gravity, string coordinateSystem = "Global", bool replace = true)
+        eFrameLoadDirection  direction = eFrameLoadDirection.Gravity, string coordinateSystem = "Global", bool replace = true)
     {
         var load = new FrameDistributedLoad
         {
@@ -518,7 +532,7 @@ public partial class FrameObjectManager
     /// <param name="replace">If true, replaces existing loads</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
     public int SetTriangularLoad(string frameName, string loadPattern, double startLoad, double endLoad,
-        eLoadDirection direction = eLoadDirection.Gravity, string coordinateSystem = "Global", bool replace = true)
+        eFrameLoadDirection direction = eFrameLoadDirection.Gravity, string coordinateSystem = "Global", bool replace = true)
     {
         var load = new FrameDistributedLoad
         {
@@ -548,7 +562,7 @@ public partial class FrameObjectManager
     /// <param name="replace">If true, replaces existing loads</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
     public int SetMidspanLoad(string frameName, string loadPattern, double loadValue,
-        eLoadDirection direction = eLoadDirection.Gravity, string coordinateSystem = "Global", bool replace = true)
+        eFrameLoadDirection direction = eFrameLoadDirection.Gravity, string coordinateSystem = "Global", bool replace = true)
     {
         var load = new FramePointLoad
         {
@@ -556,7 +570,7 @@ public partial class FrameObjectManager
             LoadPattern = loadPattern,
             LoadType = eLoadType.Force,
             Direction = direction,
-            Distance = 0.5,
+            RelativeDistance = 0.5,
             LoadValue = loadValue,
             CoordinateSystem = coordinateSystem,
             IsRelativeDistance = true

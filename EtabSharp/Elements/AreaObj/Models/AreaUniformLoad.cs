@@ -70,18 +70,18 @@ public class AreaUniformLoad
     /// Note: This method only supports basic directions (1-7). For projected directions (8-11), use Direction property directly.
     /// </summary>
     /// <returns>Load direction enumeration</returns>
-    public eLoadDirection GetDirectionEnum()
+    public EAreaLoadDirection GetDirectionEnum()
     {
         return Direction switch
         {
-            1 => eLoadDirection.Local1,
-            2 => eLoadDirection.Local2,
-            3 => eLoadDirection.Local3,
-            4 => eLoadDirection.GlobalX,
-            5 => eLoadDirection.GlobalY,
-            6 => eLoadDirection.GlobalZ,
-            7 or 10 => eLoadDirection.Gravity, // Both gravity directions map to same enum
-            _ => eLoadDirection.GlobalZ
+            1 => EAreaLoadDirection.Local1,
+            2 => EAreaLoadDirection.Local2,
+            3 => EAreaLoadDirection.Local3,
+            4 => EAreaLoadDirection.GlobalX,
+            5 => EAreaLoadDirection.GlobalY,
+            6 => EAreaLoadDirection.GlobalZ,
+            7 or 10 => EAreaLoadDirection.Gravity, // Both gravity directions map to same enum
+            _ => EAreaLoadDirection.GlobalZ
         };
     }
 
@@ -89,17 +89,17 @@ public class AreaUniformLoad
     /// Sets the direction from an enumeration value.
     /// </summary>
     /// <param name="direction">Load direction enumeration</param>
-    public void SetDirection(eLoadDirection direction)
+    public void SetDirection(EAreaLoadDirection direction)
     {
         Direction = direction switch
         {
-            eLoadDirection.Local1 => 1,
-            eLoadDirection.Local2 => 2,
-            eLoadDirection.Local3 => 3,
-            eLoadDirection.GlobalX => 4,
-            eLoadDirection.GlobalY => 5,
-            eLoadDirection.GlobalZ => 6,
-            eLoadDirection.Gravity => 10, // Use standard gravity direction
+            EAreaLoadDirection.Local1 => 1,
+            EAreaLoadDirection.Local2 => 2,
+            EAreaLoadDirection.Local3 => 3,
+            EAreaLoadDirection.GlobalX => 4,
+            EAreaLoadDirection.GlobalY => 5,
+            EAreaLoadDirection.GlobalZ => 6,
+            EAreaLoadDirection.Gravity => 10, // Use standard gravity direction
             _ => 6
         };
     }

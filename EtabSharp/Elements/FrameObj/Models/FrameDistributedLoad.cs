@@ -21,7 +21,7 @@ public class FrameDistributedLoad
     /// 1 = Force per unit length [F/L]
     /// 2 = Moment per unit length [FL/L]
     /// </summary>
-    public int LoadType { get; set; } = 1;
+    public eLoadType LoadType { get; set; } = eLoadType.Force;
 
     /// <summary>
     /// Gets or sets the load direction (1-11).
@@ -30,7 +30,7 @@ public class FrameDistributedLoad
     /// 7 = Projected Global X, 8 = Projected Global Y, 9 = Projected Global Z,
     /// 10 = Gravity, 11 = Projected Gravity
     /// </summary>
-    public int Direction { get; set; } = 10; // Default to Gravity
+    public eFrameLoadDirection Direction { get; set; } = eFrameLoadDirection.Gravity; // Default to Gravity
 
     /// <summary>
     /// Gets or sets the distance from the I-End of the frame to the start of the distributed load.
@@ -90,7 +90,7 @@ public class FrameDistributedLoad
     /// <param name="coordinateSystem">Coordinate system</param>
     /// <param name="isRelativeDistance">Whether distances are relative</param>
     public FrameDistributedLoad(string frameName, string loadPattern, double startLoad, double endLoad,
-        int loadType = 1, int direction = 10, double startDistance = 0.0, double endDistance = 1.0,
+        eLoadType loadType = eLoadType.Force, eFrameLoadDirection direction = eFrameLoadDirection.Gravity, double startDistance = 0.0, double endDistance = 1.0,
         string coordinateSystem = "Global", bool isRelativeDistance = true)
     {
         FrameName = frameName;
@@ -115,9 +115,9 @@ public class FrameDistributedLoad
     /// <param name="coordinateSystem">Coordinate system</param>
     /// <returns>FrameDistributedLoad for uniform load</returns>
     public static FrameDistributedLoad CreateUniformLoad(string frameName, string loadPattern, double loadValue,
-        int direction = 10, string coordinateSystem = "Global")
+        eFrameLoadDirection direction = eFrameLoadDirection.Gravity, string coordinateSystem = "Global")
     {
-        return new FrameDistributedLoad(frameName, loadPattern, loadValue, loadValue, 1, direction, 0.0, 1.0, coordinateSystem, true);
+        return new FrameDistributedLoad(frameName, loadPattern, loadValue, loadValue, eLoadType.Force, direction, 0.0, 1.0, coordinateSystem, true);
     }
 
     /// <summary>
@@ -130,8 +130,8 @@ public class FrameDistributedLoad
     /// <returns>FrameDistributedLoad for gravity load</returns>
     public static FrameDistributedLoad CreateGravityLoad(string frameName, string loadPattern, double loadValue, bool useProjected = false)
     {
-        int direction = useProjected ? 11 : 10;
-        return new FrameDistributedLoad(frameName, loadPattern, Math.Abs(loadValue), Math.Abs(loadValue), 1, direction, 0.0, 1.0, "Global", true);
+        eFrameLoadDirection direction = useProjected ? eFrameLoadDirection.ProjectedGravity : eFrameLoadDirection.Gravity;
+        return new FrameDistributedLoad(frameName, loadPattern, Math.Abs(loadValue), Math.Abs(loadValue), eLoadType.Force, direction, 0.0, 1.0, "Global", true);
     }
 
     /// <summary>
@@ -145,9 +145,9 @@ public class FrameDistributedLoad
     /// <param name="coordinateSystem">Coordinate system</param>
     /// <returns>FrameDistributedLoad for triangular load</returns>
     public static FrameDistributedLoad CreateTriangularLoad(string frameName, string loadPattern, double startLoad, double endLoad,
-        int direction = 10, string coordinateSystem = "Global")
+        eFrameLoadDirection direction = eFrameLoadDirection.Gravity, string coordinateSystem = "Global")
     {
-        return new FrameDistributedLoad(frameName, loadPattern, startLoad, endLoad, 1, direction, 0.0, 1.0, coordinateSystem, true);
+        return new FrameDistributedLoad(frameName, loadPattern, startLoad, endLoad, eLoadType.Force, direction, 0.0, 1.0, coordinateSystem, true);
     }
 
     /// <summary>
@@ -163,47 +163,12 @@ public class FrameDistributedLoad
     /// <param name="coordinateSystem">Coordinate system</param>
     /// <returns>FrameDistributedLoad for partial load</returns>
     public static FrameDistributedLoad CreatePartialLoad(string frameName, string loadPattern, double loadValue,
-        double startDistance, double endDistance, int direction = 10, bool isRelative = true, string coordinateSystem = "Global")
+        double startDistance, double endDistance, eFrameLoadDirection direction = eFrameLoadDirection.Gravity, bool isRelative = true, string coordinateSystem = "Global")
     {
-        return new FrameDistributedLoad(frameName, loadPattern, loadValue, loadValue, 1, direction, startDistance, endDistance, coordinateSystem, isRelative);
+        return new FrameDistributedLoad(frameName, loadPattern, loadValue, loadValue, eLoadType.Force, direction, startDistance, endDistance, coordinateSystem, isRelative);
     }
 
-    /// <summary>
-    /// Gets a description of the load direction.
-    /// </summary>
-    /// <returns>Direction description</returns>
-    public string GetDirectionDescription()
-    {
-        return Direction switch
-        {
-            1 => "Local 1 axis",
-            2 => "Local 2 axis",
-            3 => "Local 3 axis",
-            4 => "Global X direction",
-            5 => "Global Y direction",
-            6 => "Global Z direction",
-            7 => "Projected Global X direction",
-            8 => "Projected Global Y direction",
-            9 => "Projected Global Z direction",
-            10 => "Gravity direction",
-            11 => "Projected Gravity direction",
-            _ => "Unknown direction"
-        };
-    }
-
-    /// <summary>
-    /// Gets a description of the load type.
-    /// </summary>
-    /// <returns>Load type description</returns>
-    public string GetLoadTypeDescription()
-    {
-        return LoadType switch
-        {
-            1 => "Force per unit length",
-            2 => "Moment per unit length",
-            _ => "Unknown load type"
-        };
-    }
+    
 
     /// <summary>
     /// Checks if this is a uniform load (StartLoad = EndLoad).
@@ -214,55 +179,41 @@ public class FrameDistributedLoad
         return Math.Abs(StartLoad - EndLoad) < 1e-6;
     }
 
-    /// <summary>
-    /// Checks if this is a gravity load.
-    /// </summary>
-    /// <returns>True if direction is gravity (10) or projected gravity (11)</returns>
-    public bool IsGravityLoad()
-    {
-        return Direction == 10 || Direction == 11;
-    }
-
-    /// <summary>
-    /// Checks if this is a local direction load.
-    /// </summary>
-    /// <returns>True if direction is local (1-3)</returns>
-    public bool IsLocalLoad()
-    {
-        return Direction >= 1 && Direction <= 3;
-    }
-
-    /// <summary>
-    /// Checks if this is a global direction load.
-    /// </summary>
-    /// <returns>True if direction is global (4-6) or projected global (7-9)</returns>
-    public bool IsGlobalLoad()
-    {
-        return Direction >= 4 && Direction <= 9;
-    }
-
-    /// <summary>
-    /// Checks if this is a projected direction load.
-    /// </summary>
-    /// <returns>True if direction is projected (7-9, 11)</returns>
-    public bool IsProjectedLoad()
-    {
-        return (Direction >= 7 && Direction <= 9) || Direction == 11;
-    }
-
-    /// <summary>
-    /// Validates the load parameters.
-    /// </summary>
-    /// <returns>True if valid, false otherwise</returns>
     public bool IsValid()
     {
-        return !string.IsNullOrEmpty(FrameName) &&
-               !string.IsNullOrEmpty(LoadPattern) &&
-               LoadType >= 1 && LoadType <= 2 &&
-               Direction >= 1 && Direction <= 11 &&
-               !string.IsNullOrEmpty(CoordinateSystem) &&
-               (IsRelativeDistance ? (StartDistance >= 0 && StartDistance <= 1 && EndDistance >= 0 && EndDistance <= 1) : true) &&
-               StartDistance <= EndDistance;
+        // 1️⃣ Basic string validations
+        if (string.IsNullOrEmpty(FrameName) || string.IsNullOrEmpty(LoadPattern))
+            return false;
+
+        // 2️⃣ Load type validation — only Force or Moment are allowed
+        if (LoadType != eLoadType.Force && LoadType != eLoadType.Moment)
+            return false;
+
+        // 3️⃣ Direction validation — ensure it's a defined enum value
+        if (!Enum.IsDefined(typeof(eFrameLoadDirection), Direction))
+            return false;
+
+        // 4️⃣ Coordinate system must be defined
+        if (string.IsNullOrEmpty(CoordinateSystem))
+            return false;
+
+        // 5️⃣ Distance validation (relative or absolute)
+        if (IsRelativeDistance)
+        {
+            if (StartDistance < 0 || StartDistance > 1 || EndDistance < 0 || EndDistance > 1)
+                return false;
+        }
+
+        // 6️⃣ Ensure logical distance order
+        if (StartDistance > EndDistance)
+            return false;
+
+        // 7️⃣ Load magnitude must be finite numbers
+        if (double.IsNaN(StartLoad) || double.IsInfinity(StartLoad) ||
+            double.IsNaN(EndLoad) || double.IsInfinity(EndLoad))
+            return false;
+
+        return true;
     }
 
     /// <summary>
@@ -279,7 +230,7 @@ public class FrameDistributedLoad
             ? $"({StartDistance:F2}-{EndDistance:F2} rel)"
             : $"({StartDistance:F2}-{EndDistance:F2} abs)";
 
-        return $"Distributed Load: {loadDesc} {distanceDesc} | {GetDirectionDescription()} | Pattern: {LoadPattern} | Frame: {FrameName}";
+        return $"Distributed Load: {loadDesc} {distanceDesc}  | Pattern: {LoadPattern} | Frame: {FrameName}";
     }
 
     /// <summary>

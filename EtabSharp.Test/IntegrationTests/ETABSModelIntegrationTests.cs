@@ -369,7 +369,6 @@ public class ETABSModelIntegrationTests : IDisposable
             _output.WriteLine("✓ Applied partial load using FrameDistributedLoad model");
 
             // Test validation methods
-            Assert.True(gravityLoad.IsGravityLoad());
             Assert.True(gravityLoad.IsUniform());
             Assert.False(triangularLoad.IsUniform());
             Assert.True(gravityLoad.IsValid());

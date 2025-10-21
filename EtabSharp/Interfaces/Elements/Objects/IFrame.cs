@@ -290,7 +290,8 @@ public interface IFrame
     /// <param name="loadPattern">Load pattern name (empty for all patterns)</param>
     /// <param name="itemType">Item type 1-object, 2- Group, 3-SelectedObject</param>
     /// <returns>List of FrameDistributedLoad models</returns>
-    public List<FrameDistributedLoad> GetLoadDistributed(string frameName, string loadPattern = "", eItemType itemType = eItemType.Objects)
+    public List<FrameDistributedLoad> GetLoadDistributed(string frameName, string loadPattern = "",
+        eItemType itemType = eItemType.Objects);
 
     /// <summary>
     /// Deletes distributed load assignments from a frame.
@@ -312,8 +313,9 @@ public interface IFrame
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="load">FramePointLoad model with load parameters</param>
     /// <param name="replace">If true, replaces existing; if false, adds</param>
+    /// <param name="itemType">Object selected type</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetLoadPoint(string frameName, FramePointLoad load, bool replace = true);
+    int SetLoadPoint(string frameName, FramePointLoad load, bool replace = true, eItemType itemType =eItemType.Objects);
 
     /// <summary>
     /// Gets point load assignments for a frame object.

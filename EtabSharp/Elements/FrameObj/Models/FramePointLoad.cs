@@ -1,4 +1,7 @@
-﻿namespace EtabSharp.Elements.FrameObj.Models;
+﻿using EtabSharp.Elements.AreaObj.Models;
+using ETABSv1;
+
+namespace EtabSharp.Elements.FrameObj.Models;
 
 /// <summary>
 /// Represents a point load on a frame.
@@ -6,61 +9,71 @@
 public class FramePointLoad
 {
     /// <summary>
-    /// Name of the frame
+    /// Name of the frame object.
     /// </summary>
     public required string FrameName { get; set; }
 
     /// <summary>
-    /// Load pattern name
+    /// Load pattern name.
     /// </summary>
     public required string LoadPattern { get; set; }
 
     /// <summary>
-    /// Load type: 1=Force, 2=Moment
+    /// Type of load: 1 = Force, 2 = Moment.
     /// </summary>
-    public int LoadType { get; set; } = 1;
+    public eLoadType LoadType { get; set; } = eLoadType.Force;
 
     /// <summary>
-    /// Direction: 4=Local-1, 5=Local-2, 6=Local-3
+    /// Direction of the load (1–11) as defined by ETABS API.
     /// </summary>
-    public int Direction { get; set; } = 6;
+    public eFrameLoadDirection Direction { get; set; } = eFrameLoadDirection.Gravity;
 
     /// <summary>
-    /// Relative distance along frame (0 to 1, where 0=I-end, 1=J-end)
+    /// Relative distance from I-End (0–1) of the frame.
     /// </summary>
-    public double RelativeDistance { get; set; } = 0.5;
+    public double RelativeDistance { get; set; }
 
     /// <summary>
-    /// Load value (force or moment)
+    /// Absolute distance from I-End (same units as model length).
     /// </summary>
-    public double Value { get; set; }
+    public double AbsoluteDistance { get; set; }
 
     /// <summary>
-    /// Coordinate system
+    /// Value of the load. [F] if Force, [FL] if Moment.
+    /// </summary>
+    public double LoadValue { get; set; }
+
+    /// <summary>
+    /// Coordinate system in which the load is defined ("Local" or a named CSys).
     /// </summary>
     public string CoordinateSystem { get; set; } = "Global";
 
     /// <summary>
-    /// Whether distance is relative (0-1) or absolute
+    /// True if RelativeDistance is used to define load position, false if AbsoluteDistance is used.
     /// </summary>
     public bool IsRelativeDistance { get; set; } = true;
 
     /// <summary>
-    /// Creates concentrated load at mid-span
+    /// If true, replaces existing loads of this pattern (used when setting loads).
     /// </summary>
-    public static FramePointLoad MidSpan(string frameName, string pattern, double value)
-    {
-        return new FramePointLoad
-        {
-            FrameName = frameName,
-            LoadPattern = pattern,
-            Value = value,
-            RelativeDistance = 0.5
-        };
-    }
+    public bool Replace { get; set; } = true;
+
+    /// <summary>
+    /// Item type context (Object, Group, SelectedObjects).
+    /// </summary>
+    public eItemType ItemType { get; set; } = eItemType.Objects;
 
     public override string ToString()
     {
-        return $"{FrameName} [{LoadPattern}]: {Value:F2} at {RelativeDistance:P0}";
+        var distance = IsRelativeDistance ? RelativeDistance : AbsoluteDistance;
+        var distType = IsRelativeDistance ? "Rel" : "Abs";
+
+        return $"{LoadPattern}: {LoadType} {LoadValue} @ {distance} ({distType}) {Direction} [{CoordinateSystem}]";
     }
+}
+
+public enum eLoadType
+{
+    Force = 1,
+    Moment = 2
 }

@@ -3,7 +3,7 @@ namespace EtabSharp.Elements.AreaObj.Models;
 /// <summary>
 /// Enumeration for load direction options.
 /// </summary>
-public enum eLoadDirection
+public enum EAreaLoadDirection
 {
     /// <summary>
     /// Local 1 axis direction.
