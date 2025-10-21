@@ -1,4 +1,5 @@
-﻿using ETABSv1;
+﻿using EtabSharp.Elements.FrameObj.Models;
+using ETABSv1;
 
 namespace EtabSharp.Interfaces.Elements.Objects;
 
@@ -49,12 +50,12 @@ public interface IFrame
     int ChangeName(string currentName, string newName);
 
     /// <summary>
-    /// Gets the names of the end points of a frame object.
-    /// Essential for understanding frame connectivity.
+    /// Gets a frame object with its properties and connectivity.
+    /// Essential for understanding frame geometry and properties.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
-    /// <returns>Tuple of (Point1Name, Point2Name) at I-end and J-end</returns>
-    (string Point1, string Point2) GetEndPoints(string frameName);
+    /// <returns>Frame model with properties and connectivity</returns>
+    Frame GetFrame(string frameName);
 
     /// <summary>
     /// Retrieves the names of all defined frame objects in the model.
@@ -63,12 +64,11 @@ public interface IFrame
     string[] GetNameList();
 
     /// <summary>
-    /// Gets all frame data efficiently in a single call.
+    /// Gets all frame objects with their properties and connectivity.
     /// Returns comprehensive information about all frames.
     /// </summary>
-    /// <param name="csys">Coordinate system for coordinates (default: "Global")</param>
-    /// <returns>Complex data structure with names, sections, points, coordinates, angles, offsets</returns>
-    object GetAllFrames(string csys = "Global");
+    /// <returns>List of Frame models with properties and connectivity</returns>
+    List<Frame> GetAllFrames();
 
     /// <summary>
     /// Gets the count of frame objects in the model.
@@ -184,21 +184,17 @@ public interface IFrame
     /// Critical for defining connection types: pinned, fixed, or partially fixed.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
-    /// <param name="ii">Array of 6 booleans for I-end: [P, V2, V3, T, M2, M3] where true = released</param>
-    /// <param name="jj">Array of 6 booleans for J-end: [P, V2, V3, T, M2, M3] where true = released</param>
-    /// <param name="startFixity">Array of 6 partial fixity values (0-1) for I-end (0=released, 1=fixed)</param>
-    /// <param name="endFixity">Array of 6 partial fixity values (0-1) for J-end</param>
+    /// <param name="releases">FrameReleases model with I-end and J-end release conditions</param>
     /// <param name="itemType">Apply to object, group, or selected objects</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetReleases(string frameName, bool[] ii, bool[] jj, double[] startFixity, double[] endFixity,
-        eItemType itemType = eItemType.Objects);
+    int SetReleases(string frameName, FrameReleases releases, eItemType itemType = eItemType.Objects);
 
     /// <summary>
     /// Gets the end release conditions for a frame object.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
-    /// <returns>Tuple of (I-end releases, J-end releases, I-fixity, J-fixity)</returns>
-    (bool[] IEnd, bool[] JEnd, double[] IFixity, double[] JFixity) GetReleases(string frameName);
+    /// <returns>FrameReleases model with I-end and J-end release conditions, or null if no releases</returns>
+    FrameReleases? GetReleases(string frameName);
 
     #endregion
 
@@ -261,25 +257,18 @@ public interface IFrame
     /// Essential for applying uniform or trapezoidal loads on beams.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
-    /// <param name="loadPattern">Name of the load pattern</param>
-    /// <param name="loadType">Load type: 1=Force, 2=Moment</param>
-    /// <param name="direction">Direction: 1=Gravity, 4=Local-1, 5=Local-2, 6=Local-3, etc.</param>
-    /// <param name="distance1">Relative distance to start of load (0 to 1)</param>
-    /// <param name="distance2">Relative distance to end of load (0 to 1)</param>
-    /// <param name="value1">Load value at start (force/length or moment/length)</param>
-    /// <param name="value2">Load value at end (for trapezoidal loads)</param>
+    /// <param name="load">FrameDistributedLoad model with load parameters</param>
     /// <param name="replace">If true, replaces existing loads; if false, adds</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetLoadDistributed(string frameName, string loadPattern, int loadType, int direction,
-        double distance1, double distance2, double value1, double value2 = 0, bool replace = true);
+    int SetLoadDistributed(string frameName, FrameDistributedLoad load, bool replace = true);
 
     /// <summary>
     /// Gets distributed load assignments for a frame object.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="loadPattern">Load pattern name (empty for all patterns)</param>
-    /// <returns>Array of distributed load data</returns>
-    object[] GetLoadDistributed(string frameName, string loadPattern = "");
+    /// <returns>List of FrameDistributedLoad models</returns>
+    List<FrameDistributedLoad> GetLoadDistributed(string frameName, string loadPattern = "");
 
     /// <summary>
     /// Deletes distributed load assignments from a frame.
@@ -298,23 +287,18 @@ public interface IFrame
     /// Used for applying point loads on beams (equipment, concentrated live loads).
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
-    /// <param name="loadPattern">Name of the load pattern</param>
-    /// <param name="loadType">Load type: 1=Force, 2=Moment</param>
-    /// <param name="direction">Direction: 4=Local-1, 5=Local-2, 6=Local-3, etc.</param>
-    /// <param name="relativeDistance">Relative distance along frame (0 to 1)</param>
-    /// <param name="value">Load value (force or moment)</param>
+    /// <param name="load">FramePointLoad model with load parameters</param>
     /// <param name="replace">If true, replaces existing; if false, adds</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetLoadPoint(string frameName, string loadPattern, int loadType, int direction,
-        double relativeDistance, double value, bool replace = true);
+    int SetLoadPoint(string frameName, FramePointLoad load, bool replace = true);
 
     /// <summary>
     /// Gets point load assignments for a frame object.
     /// </summary>
     /// <param name="frameName">Name of the frame object</param>
     /// <param name="loadPattern">Load pattern name (empty for all)</param>
-    /// <returns>Array of point load data</returns>
-    object[] GetLoadPoint(string frameName, string loadPattern = "");
+    /// <returns>List of FramePointLoad models</returns>
+    List<FramePointLoad> GetLoadPoint(string frameName, string loadPattern = "");
 
     /// <summary>
     /// Deletes point load assignments from a frame.

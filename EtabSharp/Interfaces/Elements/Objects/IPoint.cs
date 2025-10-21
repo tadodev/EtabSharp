@@ -1,4 +1,5 @@
-﻿using ETABSv1;
+﻿using EtabSharp.Elements.PointObj.Models;
+using ETABSv1;
 
 namespace EtabSharp.Interfaces.Elements.Objects;
 
@@ -25,18 +26,18 @@ public interface IPoint
     string AddPoint(double x, double y, double z, string userName = "", string csys = "Global");
 
     /// <summary>
-    /// Gets the Cartesian coordinates of a point object.
-    /// Essential for verifying geometry and extracting node locations.
+    /// Gets a point object with its coordinates and properties.
+    /// Essential for verifying geometry and extracting node information.
     /// </summary>
     /// <param name="pointName">Name of the point object</param>
-    /// <returns>Tuple of (X, Y, Z) coordinates in current units</returns>
-    (double X, double Y, double Z) GetCoordinate(string pointName);
+    /// <returns>Point model with coordinates and properties</returns>
+    Point GetPoint(string pointName);
 
     /// <summary>
-    /// Gets the Cartesian coordinates of all point objects.
+    /// Gets all point objects with their coordinates and properties.
     /// </summary>
-    /// <returns></returns>
-    (double[] X, double[] Y, double[] Z) GetAllPointCoordinates();
+    /// <returns>List of Point models</returns>
+    List<Point> GetAllPoints();
 
     /// <summary>
     /// Retrieves the names of all defined point objects in the model.
@@ -60,18 +61,17 @@ public interface IPoint
     /// This is critical for defining boundary conditions.
     /// </summary>
     /// <param name="pointName">Name of the point object</param>
-    /// <param name="restraints">6 boolean values: [Ux, Uy, Uz, Rx, Ry, Rz] where true = restrained</param>
-    /// <param name="itemType"></param>
+    /// <param name="restraint">PointRestraint model with restraint conditions</param>
+    /// <param name="itemType">Item type for assignment</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    /// <exception cref="ArgumentException">If restraints array length ≠ 6</exception>
-    int SetRestraint(string pointName, bool[] restraints, eItemType itemType = eItemType.Objects);
+    int SetRestraint(string pointName, PointRestraint restraint, eItemType itemType = eItemType.Objects);
 
     /// <summary>
     /// Gets the restraint conditions assigned to a point object.
     /// </summary>
     /// <param name="pointName">Name of the point object</param>
-    /// <returns>Array of 6 booleans: [Ux, Uy, Uz, Rx, Ry, Rz] where true = restrained</returns>
-    bool[] GetRestraint(string pointName);
+    /// <returns>PointRestraint model with restraint conditions</returns>
+    PointRestraint? GetRestraint(string pointName);
 
     /// <summary>
     /// Removes all restraints from a point object (makes it free).
@@ -86,20 +86,20 @@ public interface IPoint
     #region Spring Supports
 
     /// <summary>
-    /// Assigns spring stiffness (uncoupled) to a point object.
+    /// Assigns spring stiffness to a point object.
     /// Used for flexible supports like soil springs.
     /// </summary>
     /// <param name="pointName">Name of the point object</param>
-    /// <param name="springs">6 spring values: [Kx, Ky, Kz, Krx, Kry, Krz] in current force/length units</param>
+    /// <param name="spring">PointSpring model with spring stiffness values</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetSpring(string pointName, double[] springs);
+    int SetSpring(string pointName, PointSpring spring);
 
     /// <summary>
     /// Gets the spring stiffness values assigned to a point object.
     /// </summary>
     /// <param name="pointName">Name of the point object</param>
-    /// <returns>Array of 6 spring values: [Kx, Ky, Kz, Krx, Kry, Krz]</returns>
-    double[] GetSpring(string pointName);
+    /// <returns>PointSpring model with spring stiffness values</returns>
+    PointSpring? GetSpring(string pointName);
 
     /// <summary>
     /// Removes all spring assignments from a point object.
@@ -116,21 +116,18 @@ public interface IPoint
     /// Essential for applying nodal loads.
     /// </summary>
     /// <param name="pointName">Name of the point object</param>
-    /// <param name="loadPattern">Name of the load pattern</param>
-    /// <param name="forces">6 force/moment values: [Fx, Fy, Fz, Mx, My, Mz]</param>
+    /// <param name="load">PointLoad model with force/moment values and load pattern</param>
     /// <param name="replace">If true, replaces existing loads; if false, adds to existing</param>
-    /// <param name="csys">Coordinate system for load application (default: "Global")</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetLoadForce(string pointName, string loadPattern, double[] forces,
-        bool replace = true, string csys = "Global");
+    int SetLoadForce(string pointName, PointLoad load, bool replace = true);
 
     /// <summary>
     /// Gets the force loads assigned to a point object for a specific load pattern.
     /// </summary>
     /// <param name="pointName">Name of the point object</param>
     /// <param name="loadPattern">Name of the load pattern</param>
-    /// <returns>Array of 6 force/moment values: [Fx, Fy, Fz, Mx, My, Mz]</returns>
-    double[] GetLoadForce(string pointName, string loadPattern);
+    /// <returns>PointLoad model with force/moment values, or null if no load found</returns>
+    PointLoad? GetLoadForce(string pointName, string loadPattern);
 
     /// <summary>
     /// Deletes all force loads from a point object for a specific load pattern.
@@ -150,18 +147,18 @@ public interface IPoint
     /// </summary>
     /// <param name="pointName">Name of the point object</param>
     /// <param name="loadPattern">Name of the load pattern</param>
-    /// <param name="displacements">6 displacement values: [Ux, Uy, Uz, Rx, Ry, Rz]</param>
+    /// <param name="displacement">PointDisplacement model with displacement values and load pattern</param>
     /// <param name="replace">If true, replaces existing; if false, adds to existing</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetLoadDisplacement(string pointName, string loadPattern, double[] displacements, bool replace = true);
+    int SetLoadDisplacement(string pointName, PointDisplacement displacement, bool replace = true);
 
     /// <summary>
     /// Gets ground displacement assignments for a point object.
     /// </summary>
     /// <param name="pointName">Name of the point object</param>
     /// <param name="loadPattern">Name of the load pattern</param>
-    /// <returns>Array of 6 displacement values: [Ux, Uy, Uz, Rx, Ry, Rz]</returns>
-    double[] GetLoadDisplacement(string pointName, string loadPattern);
+    /// <returns>PointDisplacement model with displacement values, or null if no displacement found</returns>
+    PointDisplacement? GetLoadDisplacement(string pointName, string loadPattern);
 
     /// <summary>
     /// Deletes ground displacement assignments from a point object.
@@ -200,17 +197,17 @@ public interface IPoint
     /// Used for dynamic analysis and representing dead load mass.
     /// </summary>
     /// <param name="pointName">Name of the point object</param>
-    /// <param name="massValues">6 mass values: [Mx, My, Mz, MMx, MMy, MMz] in current mass units</param>
+    /// <param name="mass">PointMass model with mass values</param>
     /// <param name="replace">If true, replaces existing; if false, adds to existing</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetMass(string pointName, double[] massValues, bool replace = true);
+    int SetMass(string pointName, PointMass mass, bool replace = true);
 
     /// <summary>
     /// Gets the lumped mass assigned to a point object.
     /// </summary>
     /// <param name="pointName">Name of the point object</param>
-    /// <returns>Array of 6 mass values: [Mx, My, Mz, MMx, MMy, MMz]</returns>
-    double[] GetMass(string pointName);
+    /// <returns>PointMass model with mass values, or null if no mass assigned</returns>
+    PointMass? GetMass(string pointName);
 
     /// <summary>
     /// Deletes mass assignment from a point object.
@@ -228,8 +225,8 @@ public interface IPoint
     /// Essential for understanding structural connectivity.
     /// </summary>
     /// <param name="pointName">Name of the point object</param>
-    /// <returns>Tuple containing arrays of connected object names by type</returns>
-    (string[] Frames, string[] Areas, string[] Links) GetConnectedObjects(string pointName);
+    /// <returns>PointConnectivity model with connected object information</returns>
+    PointConnectivity GetConnectedObjects(string pointName);
 
     /// <summary>
     /// Checks if a point is connected to any structural elements.

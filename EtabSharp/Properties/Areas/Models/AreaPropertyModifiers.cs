@@ -1,10 +1,10 @@
-﻿namespace EtabSharp.Elements.AreaObj.Models;
+namespace EtabSharp.Properties.Areas.Models;
 
 /// <summary>
-/// Represents property modifiers for area objects.
-/// These modifiers scale the area properties for analysis.
+/// Represents property modifiers for area properties.
+/// These modifiers scale the area property values for analysis.
 /// </summary>
-public class AreaModifiers
+public class AreaPropertyModifiers
 {
     /// <summary>
     /// Gets or sets the membrane f11 modifier.
@@ -57,14 +57,14 @@ public class AreaModifiers
     public double Weight { get; set; } = 1.0;
 
     /// <summary>
-    /// Initializes a new instance of the AreaModifiers class with default values (1.0).
+    /// Initializes a new instance of the AreaPropertyModifiers class with default values (1.0).
     /// </summary>
-    public AreaModifiers()
+    public AreaPropertyModifiers()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the AreaModifiers class with specified values.
+    /// Initializes a new instance of the AreaPropertyModifiers class with specified values.
     /// </summary>
     /// <param name="membraneF11">Membrane f11 modifier</param>
     /// <param name="membraneF22">Membrane f22 modifier</param>
@@ -76,9 +76,9 @@ public class AreaModifiers
     /// <param name="shearV23">Shear v23 modifier</param>
     /// <param name="mass">Mass modifier</param>
     /// <param name="weight">Weight modifier</param>
-    public AreaModifiers(double membraneF11, double membraneF22, double membraneF12,
-                        double bendingM11, double bendingM22, double bendingM12,
-                        double shearV13, double shearV23, double mass, double weight)
+    public AreaPropertyModifiers(double membraneF11, double membraneF22, double membraneF12,
+                                double bendingM11, double bendingM22, double bendingM12,
+                                double shearV13, double shearV23, double mass, double weight)
     {
         MembraneF11 = membraneF11;
         MembraneF22 = membraneF22;
@@ -114,16 +114,16 @@ public class AreaModifiers
     }
 
     /// <summary>
-    /// Creates AreaModifiers from an array of values.
+    /// Creates AreaPropertyModifiers from an array of values.
     /// </summary>
     /// <param name="values">Array of modifier values</param>
-    /// <returns>AreaModifiers instance</returns>
-    public static AreaModifiers FromArray(double[] values)
+    /// <returns>AreaPropertyModifiers instance</returns>
+    public static AreaPropertyModifiers FromArray(double[] values)
     {
         if (values == null || values.Length < 10)
             throw new ArgumentException("Values array must contain at least 10 modifier values", nameof(values));
 
-        return new AreaModifiers(
+        return new AreaPropertyModifiers(
             values[0], values[1], values[2], values[3], values[4],
             values[5], values[6], values[7], values[8], values[9]
         );
@@ -132,54 +132,10 @@ public class AreaModifiers
     /// <summary>
     /// Creates default modifiers (all values = 1.0).
     /// </summary>
-    /// <returns>AreaModifiers with default values</returns>
-    public static AreaModifiers Default()
+    /// <returns>AreaPropertyModifiers with default values</returns>
+    public static AreaPropertyModifiers Default()
     {
-        return new AreaModifiers();
-    }
-
-    /// <summary>
-    /// Creates modifiers with all membrane properties scaled.
-    /// </summary>
-    /// <param name="membraneScale">Scale factor for all membrane properties</param>
-    /// <returns>AreaModifiers with scaled membrane properties</returns>
-    public static AreaModifiers ScaledMembrane(double membraneScale)
-    {
-        return new AreaModifiers
-        {
-            MembraneF11 = membraneScale,
-            MembraneF22 = membraneScale,
-            MembraneF12 = membraneScale
-        };
-    }
-
-    /// <summary>
-    /// Creates modifiers with all bending properties scaled.
-    /// </summary>
-    /// <param name="bendingScale">Scale factor for all bending properties</param>
-    /// <returns>AreaModifiers with scaled bending properties</returns>
-    public static AreaModifiers ScaledBending(double bendingScale)
-    {
-        return new AreaModifiers
-        {
-            BendingM11 = bendingScale,
-            BendingM22 = bendingScale,
-            BendingM12 = bendingScale
-        };
-    }
-
-    /// <summary>
-    /// Creates modifiers with all shear properties scaled.
-    /// </summary>
-    /// <param name="shearScale">Scale factor for all shear properties</param>
-    /// <returns>AreaModifiers with scaled shear properties</returns>
-    public static AreaModifiers ScaledShear(double shearScale)
-    {
-        return new AreaModifiers
-        {
-            ShearV13 = shearScale,
-            ShearV23 = shearScale
-        };
+        return new AreaPropertyModifiers();
     }
 
     /// <summary>
@@ -216,10 +172,10 @@ public class AreaModifiers
     /// <summary>
     /// Creates a copy of the current modifiers.
     /// </summary>
-    /// <returns>Copy of the AreaModifiers</returns>
-    public AreaModifiers Clone()
+    /// <returns>Copy of the AreaPropertyModifiers</returns>
+    public AreaPropertyModifiers Clone()
     {
-        return new AreaModifiers(
+        return new AreaPropertyModifiers(
             MembraneF11, MembraneF22, MembraneF12,
             BendingM11, BendingM22, BendingM12,
             ShearV13, ShearV23, Mass, Weight

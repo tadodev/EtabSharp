@@ -4,165 +4,253 @@ using ETABSv1;
 namespace EtabSharp.Interfaces.Properties;
 
 /// <summary>
-/// Provides methods for managing area properties (slabs and walls) in the ETABS model.
-/// This interface handles creation, modification, and retrieval of area sections including
-/// slabs (solid, ribbed, waffle) and walls (solid, auto-select).
+/// Interface for area property operations in ETABS.
+/// Provides type-safe methods for creating, modifying, and querying area properties.
 /// </summary>
 public interface IPropArea
 {
-    #region General Section Information
-
-    /// <summary>
-    /// Retrieves the names of all defined area properties of the specified type.
-    /// </summary>
-    /// <param name="propType"></param>
-    /// <returns>An array of area property names.</returns>
-    string[] GetNameList(int propType = 0);
-
-    /// <summary>
-    /// Returns the total number of defined area properties in the model.
-    /// </summary>
-    /// <param name="propType"></param>
-    /// <returns>The number of defined area properties.</returns>
-    int Count(int propType = 0);
-
-    /// <summary>
-    /// Gets the property type for the specified area property.(GetTypeOAPI method)
-    /// </summary>
-    /// <param name="name">The name of the area property.</param>
-    /// <returns>The area property type enumeration.</returns>
-    int GetPropertyType(string name);
-
+    #region General Property Methods
+    
     /// <summary>
     /// Changes the name of an existing area property.
     /// </summary>
-    /// <param name="currentName">The current name of the area property.</param>
-    /// <param name="newName">The new name for the area property.</param>
-    /// <returns>0 if successful, non-zero otherwise.</returns>
+    /// <param name="currentName">Current name of the property</param>
+    /// <param name="newName">New name for the property</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
     int ChangeName(string currentName, string newName);
-
+    
     /// <summary>
-    /// Deletes a specified area property from the model.
+    /// Gets the count of area properties in the model.
     /// </summary>
-    /// <param name="name">The name of the area property to delete.</param>
-    /// <returns>0 if successful, non-zero otherwise.</returns>
-    int Delete(string name);
-
-    #endregion
-
-    #region Slab Sections
-
+    /// <param name="propertyType">Property type filter (0 for all)</param>
+    /// <returns>Total number of area properties</returns>
+    int Count(int propertyType = 0);
+    
     /// <summary>
-    /// Gets the properties of an existing solid slab section.
+    /// Deletes an area property from the model.
     /// </summary>
-    /// <param name="name">The name of the slab section.</param>
-    /// <returns>A <see cref="PropSlab"/> object containing the slab properties.</returns>
-    PropSlab GetSlab(string name);
-
+    /// <param name="propertyName">Name of the property to delete</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int Delete(string propertyName);
+    
     /// <summary>
-    /// Creates a solid slab property.
+    /// Gets the names of all area properties.
     /// </summary>
-    /// <param name="name">Unique identifier for the slab section.</param>
-    /// <param name="slabType">Type of slab (slab, drop, mat, footing).</param>
-    /// <param name="shellType">Shell behavior type (shell-thin, shell-thick, membrane, plate).</param>
-    /// <param name="materialName">Name of the material (must exist in model).</param>
-    /// <param name="thickness">Slab thickness. Must be positive.</param>
-    /// <returns>A <see cref="PropSlab"/> object containing the slab properties.</returns>
-    /// <exception cref="ArgumentException">If name or material is invalid.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">If thickness ≤ 0.</exception>
-    /// <exception cref="Exceptions.EtabsException">If ETABS API fails.</exception>
-    PropSlab AddSlab(string name, eSlabType slabType, eShellType shellType, string materialName, double thickness);
-
-    #endregion
-
-    #region Wall Sections
-
+    /// <param name="propertyType">Property type filter (0 for all)</param>
+    /// <returns>Array of property names</returns>
+    string[] GetNameList(int propertyType = 0);
+    
     /// <summary>
-    /// Creates a solid wall property.
+    /// Gets the property type for an area property.
     /// </summary>
-    /// <param name="name">Unique identifier for the wall section.</param>
-    /// <param name="wallType"></param>
-    /// <param name="shellType">Shell behavior type (shell-thin, shell-thick, membrane).</param>
-    /// <param name="materialName">Name of the material (must exist in model).</param>
-    /// <param name="thickness">Wall thickness. Must be positive.</param>
-    /// <returns>A <see cref="PropWall"/> object containing the wall properties.</returns>
-    /// <exception cref="ArgumentException">If name or material is invalid.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">If thickness ≤ 0.</exception>
-    /// <exception cref="EtabSharp.Exceptions.EtabsException">If ETABS API fails.</exception>
-    PropWall AddWall(
-        string name,
-        eWallPropType wallType,
-        eShellType shellType,
-        string materialName,
-        double thickness);
-
-    /// <summary>
-    /// Gets the properties of an existing wall section.
-    /// </summary>
-    /// <param name="name">The name of the wall section.</param>
-    /// <returns>A <see cref="PropWall"/> object containing the wall properties.</returns>
-    PropWall GetWall(string name);
-
-    /// <summary>
-    /// Creates an auto-select list wall property that allows ETABS to optimize wall thickness.
-    /// </summary>
-    /// <param name="name">Unique identifier for the auto-select list.</param>
-    /// <param name="autoSelectList">Array of wall section names to include in the auto-select list.</param>
-    /// <param name="startingSection">Name of the section to use initially (must be in the list).</param>
-    /// <returns>A <see cref="PropWallAutoSelect"/> object containing the auto-select properties.</returns>
-    /// <exception cref="ArgumentException">If name is invalid or section list is empty.</exception>
-    /// <exception cref="EtabSharp.Exceptions.EtabsException">If ETABS API fails.</exception>
-    PropWallAutoSelect AddWallAutoSelectList(
-        string name,
-        string[] autoSelectList,
-        string startingSection);
-
-    /// <summary>
-    /// Gets the properties of an existing wall auto-select list.
-    /// </summary>
-    /// <param name="name">The name of the auto-select list.</param>
-    /// <returns>A <see cref="PropWallAutoSelect"/> object containing the auto-select properties.</returns>
-    PropWallAutoSelect GetWallAutoSelectList(string name);
-
-    #endregion
-
-    #region Design Parameters
-
-    /// <summary>
-    /// Assigns design parameters for shell-type area properties (slabs and walls).
-    /// Controls whether the section is designed and which design code to use.
-    /// </summary>
-    /// <param name="name">The name of the area property.</param>
-    /// <param name="designParameters">Shell design parameter data.</param>
-    /// <returns>0 if successful, non-zero otherwise.</returns>
-    int SetShellDesign(string name, PropShellDesign designParameters);
-
-    /// <summary>
-    /// Gets design parameters for shell-type area properties.
-    /// </summary>
-    /// <param name="name">The name of the area property.</param>
-    /// <returns>Shell design parameter data.</returns>
-    PropShellDesign GetShellDesign(string name);
-
+    /// <param name="propertyName">Name of the property</param>
+    /// <returns>Property type enumeration</returns>
+    eAreaPropertyType GetPropertyType(string propertyName);
+    
     #endregion
 
     #region Modifiers
-
+    
     /// <summary>
-    /// Sets property modifiers for an area section.
-    /// Modifiers scale the section properties (membrane stiffness, bending stiffness, etc.).
+    /// Sets property modifiers for an area property.
     /// </summary>
-    /// <param name="name">Name of the area section.</param>
-    /// <param name="modifiers">Property modifier values.</param>
-    /// <returns>0 if successful, non-zero otherwise.</returns>
-    int SetModifiers(string name, PropAreaModifiers modifiers);
-
+    /// <param name="propertyName">Name of the property</param>
+    /// <param name="modifiers">AreaPropertyModifiers model with modifier values</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetModifiers(string propertyName, AreaPropertyModifiers modifiers);
+    
     /// <summary>
-    /// Gets property modifiers for an area section.
+    /// Gets property modifiers for an area property.
     /// </summary>
-    /// <param name="name">Name of the area section.</param>
-    /// <returns>Property modifier values.</returns>
-    PropAreaModifiers GetModifiers(string name);
+    /// <param name="propertyName">Name of the property</param>
+    /// <returns>AreaPropertyModifiers model with modifier values</returns>
+    AreaPropertyModifiers GetModifiers(string propertyName);
+    
+    #endregion
 
+    #region Wall Properties
+    
+    /// <summary>
+    /// Sets a wall property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <param name="wallProperty">WallProperty model with wall parameters</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetWall(string propertyName, WallProperty wallProperty);
+    
+    /// <summary>
+    /// Gets a wall property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <returns>WallProperty model with wall parameters</returns>
+    WallProperty GetWall(string propertyName);
+    
+    /// <summary>
+    /// Sets auto select list for a wall property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <param name="autoSelectList">Array of property names for auto selection</param>
+    /// <param name="startingProperty">Starting property for auto selection</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetWallAutoSelectList(string propertyName, string[] autoSelectList, string startingProperty = "Median");
+    
+    /// <summary>
+    /// Gets auto select list for a wall property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <returns>Tuple of (AutoSelectList, StartingProperty)</returns>
+    (string[] AutoSelectList, string StartingProperty) GetWallAutoSelectList(string propertyName);
+    
+    #endregion
+
+    #region Slab Properties
+    
+    /// <summary>
+    /// Sets a slab property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <param name="slabProperty">SlabProperty model with slab parameters</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetSlab(string propertyName, SlabProperty slabProperty);
+    
+    /// <summary>
+    /// Gets a slab property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <returns>SlabProperty model with slab parameters</returns>
+    SlabProperty GetSlab(string propertyName);
+    
+    /// <summary>
+    /// Sets ribbed slab parameters.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <param name="ribbedSlabData">RibbedSlabData model with ribbed slab parameters</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetSlabRibbed(string propertyName, RibbedSlabData ribbedSlabData);
+    
+    /// <summary>
+    /// Gets ribbed slab parameters.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <returns>RibbedSlabData model with ribbed slab parameters</returns>
+    RibbedSlabData GetSlabRibbed(string propertyName);
+    
+    /// <summary>
+    /// Sets waffle slab parameters.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <param name="waffleSlabData">WaffleSlabData model with waffle slab parameters</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetSlabWaffle(string propertyName, WaffleSlabData waffleSlabData);
+    
+    /// <summary>
+    /// Gets waffle slab parameters.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <returns>WaffleSlabData model with waffle slab parameters</returns>
+    WaffleSlabData GetSlabWaffle(string propertyName);
+    
+    #endregion
+
+    #region Deck Properties
+    
+    /// <summary>
+    /// Sets a deck property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <param name="deckProperty">DeckProperty model with deck parameters</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetDeck(string propertyName, DeckProperty deckProperty);
+    
+    /// <summary>
+    /// Gets a deck property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <returns>DeckProperty model with deck parameters</returns>
+    DeckProperty GetDeck(string propertyName);
+    
+    /// <summary>
+    /// Sets filled deck parameters.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <param name="filledDeckData">FilledDeckData model with filled deck parameters</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetDeckFilled(string propertyName, FilledDeckData filledDeckData);
+    
+    /// <summary>
+    /// Gets filled deck parameters.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <returns>FilledDeckData model with filled deck parameters</returns>
+    FilledDeckData GetDeckFilled(string propertyName);
+    
+    /// <summary>
+    /// Sets unfilled deck parameters.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <param name="unfilledDeckData">UnfilledDeckData model with unfilled deck parameters</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetDeckUnfilled(string propertyName, UnfilledDeckData unfilledDeckData);
+    
+    /// <summary>
+    /// Gets unfilled deck parameters.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <returns>UnfilledDeckData model with unfilled deck parameters</returns>
+    UnfilledDeckData GetDeckUnfilled(string propertyName);
+    
+    /// <summary>
+    /// Sets solid slab deck parameters.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <param name="solidSlabDeckData">SolidSlabDeckData model with solid slab deck parameters</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetDeckSolidSlab(string propertyName, SolidSlabDeckData solidSlabDeckData);
+    
+    /// <summary>
+    /// Gets solid slab deck parameters.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <returns>SolidSlabDeckData model with solid slab deck parameters</returns>
+    SolidSlabDeckData GetDeckSolidSlab(string propertyName);
+    
+    #endregion
+
+    #region Shell Layer Methods
+    
+    /// <summary>
+    /// Sets shell layer data for a property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <param name="shellLayers">ShellLayerData model with layer information</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetShellLayer(string propertyName, ShellLayerData shellLayers);
+    
+    /// <summary>
+    /// Gets shell layer data for a property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <returns>ShellLayerData model with layer information</returns>
+    ShellLayerData GetShellLayer(string propertyName);
+    
+    #endregion
+
+    #region Shell Design Methods
+    
+    /// <summary>
+    /// Sets shell design parameters for a property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <param name="shellDesign">ShellDesignData model with design parameters</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetShellDesign(string propertyName, ShellDesignData shellDesign);
+    
+    /// <summary>
+    /// Gets shell design parameters for a property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property</param>
+    /// <returns>ShellDesignData model with design parameters</returns>
+    ShellDesignData GetShellDesign(string propertyName);
+    
     #endregion
 }
