@@ -63,13 +63,20 @@ public sealed class ETABSModel
 
     #endregion
 
+    #region Load Manager
+
+    //TODO: Add when implemented
+    // private readonly Lazy<ILoadPatterns> _loadPatterns;
+    // private readonly Lazy<ILoadCases> _loadCases;
+    // private readonly Lazy<ILoadCombinations> _loadCombinations;
+
+    #endregion
+
     #region Analysis Managers
 
     // TODO: Add when implemented
     // private readonly Lazy<IAnalysisSettings> _analysisSettings;
-    // private readonly Lazy<ILoadPatterns> _loadPatterns;
-    // private readonly Lazy<ILoadCases> _loadCases;
-    // private readonly Lazy<ILoadCombinations> _loadCombinations;
+
 
     #endregion
 
@@ -188,14 +195,9 @@ public sealed class ETABSModel
 
     #endregion
 
-    #region Analysis Properties
+    #region Load Manager
 
     // TODO: Implement these
-    // /// <summary>
-    // /// Analysis settings and execution control.
-    // /// </summary>
-    // public IAnalysisSettings Analysis => _analysisSettings.Value;
-
     // /// <summary>
     // /// Load pattern definitions: dead, live, wind, seismic loads.
     // /// </summary>
@@ -210,6 +212,18 @@ public sealed class ETABSModel
     // /// Load combination definitions.
     // /// </summary>
     // public ILoadCombinations LoadCombinations => _loadCombinations.Value;
+
+    #endregion
+
+    #region Analysis Properties
+
+    // TODO: Implement these
+    // /// <summary>
+    // /// Analysis settings and execution control.
+    // /// </summary>
+    // public IAnalysisSettings Analysis => _analysisSettings.Value;
+
+
 
     #endregion
 
