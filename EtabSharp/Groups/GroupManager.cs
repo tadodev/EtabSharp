@@ -4,7 +4,7 @@ using EtabSharp.Interfaces.Group;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 
-namespace EtabSharp.Group;
+namespace EtabSharp.Groups;
 
 /// <summary>
 /// Manages groups in the ETABS model.
@@ -32,7 +32,7 @@ public class GroupManager : IGroup
     /// Creates or modifies a group with specified properties.
     /// Wraps cSapModel.GroupDef.SetGroup_1 (most comprehensive version).
     /// </summary>
-    public int SetGroup(Groups.Models.Group group)
+    public int SetGroup(Group group)
     {
         try
         {
@@ -115,7 +115,7 @@ public class GroupManager : IGroup
     /// Gets a group with all its properties.
     /// Wraps cSapModel.GroupDef.GetGroup_1 (most comprehensive version).
     /// </summary>
-    public Groups.Models.Group GetGroup(string name)
+    public Group GetGroup(string name)
     {
         try
         {
@@ -157,7 +157,7 @@ public class GroupManager : IGroup
             if (ret != 0)
                 throw new EtabsException(ret, "GetGroup_1", $"Failed to get group '{name}'");
 
-            var group = new Groups.Models.Group
+            var group = new Group
             {
                 Name = name,
                 Color = color,
@@ -348,7 +348,7 @@ public class GroupManager : IGroup
     /// </summary>
     public int CreateDefaultGroup(string name, int color = -1)
     {
-        var group = Groups.Models.Group.CreateDefault(name);
+        var group = Group.CreateDefault(name);
         group.Color = color;
         return SetGroup(group);
     }
@@ -358,7 +358,7 @@ public class GroupManager : IGroup
     /// </summary>
     public int CreateDesignGroup(string name, int color = -1)
     {
-        var group = Groups.Models.Group.CreateForDesign(name);
+        var group = Group.CreateForDesign(name);
         group.Color = color;
         return SetGroup(group);
     }
@@ -368,7 +368,7 @@ public class GroupManager : IGroup
     /// </summary>
     public int CreateOutputGroup(string name, int color = -1)
     {
-        var group = Groups.Models.Group.CreateForOutput(name);
+        var group = Group.CreateForOutput(name);
         group.Color = color;
         return SetGroup(group);
     }
@@ -378,7 +378,7 @@ public class GroupManager : IGroup
     /// </summary>
     public int CreateSelectionGroup(string name, int color = -1)
     {
-        var group = Groups.Models.Group.CreateForSelection(name);
+        var group = Group.CreateForSelection(name);
         group.Color = color;
         return SetGroup(group);
     }
@@ -405,12 +405,12 @@ public class GroupManager : IGroup
     /// <summary>
     /// Gets all groups in the model with their properties.
     /// </summary>
-    public List<Groups.Models.Group> GetAllGroups()
+    public List<Group> GetAllGroups()
     {
         try
         {
             var groupNames = GetNameList();
-            var groups = new List<Groups.Models.Group>();
+            var groups = new List<Group>();
 
             foreach (var groupName in groupNames)
             {
