@@ -1,6 +1,6 @@
 ﻿using EtabSharp.Groups.Models;
 
-namespace EtabSharp.Interfaces.Group;
+namespace EtabSharp.Interfaces.Groups;
 
 /// <summary>
 /// Interface for managing groups in the ETABS model.
@@ -16,7 +16,7 @@ public interface IGroup
     /// </summary>
     /// <param name="group">Group model with all properties</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetGroup(Groups.Models.Group group);
+    int SetGroup(EtabSharp.Groups.Models.Group group);
 
     /// <summary>
     /// Creates or modifies a group with basic properties.
@@ -34,7 +34,7 @@ public interface IGroup
     /// </summary>
     /// <param name="name">Name of the group</param>
     /// <returns>Group model with all properties</returns>
-    Groups.Models.Group GetGroup(string name);
+    EtabSharp.Groups.Models.Group GetGroup(string name);
 
     /// <summary>
     /// Deletes a group from the model.
@@ -132,7 +132,7 @@ public interface IGroup
     /// Gets all groups in the model with their properties.
     /// </summary>
     /// <returns>List of all Group objects</returns>
-    List<Groups.Models.Group> GetAllGroups();
+    List<EtabSharp.Groups.Models.Group> GetAllGroups();
 
     /// <summary>
     /// Sets the color of a group.

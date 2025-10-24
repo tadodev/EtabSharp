@@ -4,11 +4,15 @@ using EtabSharp.Elements.PointObj;
 using EtabSharp.Elements.Selection;
 using EtabSharp.Elements.Story;
 using EtabSharp.Frames;
+using EtabSharp.Groups;
 using EtabSharp.Interfaces.Elements.Objects;
 using EtabSharp.Interfaces.Elements.Selection;
 using EtabSharp.Interfaces.Elements.Stories;
+using EtabSharp.Interfaces.Groups;
+using EtabSharp.Interfaces.Loads;
 using EtabSharp.Interfaces.Properties;
 using EtabSharp.Interfaces.System;
+using EtabSharp.Loads;
 using EtabSharp.Properties.Areas;
 using EtabSharp.Properties.Materials;
 using EtabSharp.System;
@@ -57,16 +61,16 @@ public sealed class ETABSModel
     private readonly Lazy<IPoint> _points;
     private readonly Lazy<IFrame> _frames;
     private readonly Lazy<IArea> _areas;
+    private readonly Lazy<IGroup> _groups;
 
     // TODO: Add when implemented
-    // private readonly Lazy<IGroup> _groups;
 
     #endregion
 
     #region Load Manager
+    private readonly Lazy<ILoadPatterns> _loadPatterns;
 
     //TODO: Add when implemented
-    // private readonly Lazy<ILoadPatterns> _loadPatterns;
     // private readonly Lazy<ILoadCases> _loadCases;
     // private readonly Lazy<ILoadCombinations> _loadCombinations;
 
@@ -112,6 +116,10 @@ public sealed class ETABSModel
         _points = new Lazy<IPoint>(() => new PointObjectManager(_sapModel, _logger));
         _frames = new Lazy<IFrame>(() => new FrameObjectManager(_sapModel, _logger));
         _areas = new Lazy<IArea>(() => new AreaObjectManager(_sapModel, _logger));
+        _groups = new Lazy<IGroup>(() => new GroupManager(_sapModel, _logger));
+
+        // Initialize Load Manager
+        _loadPatterns = new Lazy<ILoadPatterns>(() => new LoadPatternsManager(_sapModel, _logger));
     }
 
     #endregion
@@ -187,21 +195,20 @@ public sealed class ETABSModel
     /// </summary>
     public IArea Areas => _areas.Value;
 
-    // TODO: Implement these
-    // /// <summary>
-    // /// Group definitions: organize and select objects by groups.
-    // /// </summary>
-    // public IGroup Groups => _groups.Value;
+    /// <summary>
+    /// Group definitions: organize and select objects by groups.
+    /// </summary>
+    public IGroup Groups => _groups.Value;
+
 
     #endregion
 
     #region Load Manager
 
-    // TODO: Implement these
-    // /// <summary>
-    // /// Load pattern definitions: dead, live, wind, seismic loads.
-    // /// </summary>
-    // public ILoadPatterns LoadPatterns => _loadPatterns.Value;
+    /// <summary>
+    /// Load pattern definitions: dead, live, wind, seismic loads.
+    /// </summary>
+    public ILoadPatterns LoadPatterns => _loadPatterns.Value;
 
     // /// <summary>
     // /// Load case definitions and run settings.

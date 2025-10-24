@@ -1,6 +1,6 @@
 ﻿using EtabSharp.Exceptions;
 using EtabSharp.Groups.Models;
-using EtabSharp.Interfaces.Group;
+using EtabSharp.Interfaces.Groups;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 
