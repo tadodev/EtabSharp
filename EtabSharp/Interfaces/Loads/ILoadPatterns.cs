@@ -1,4 +1,4 @@
-﻿using EtabSharp.Loads.Models;
+﻿using EtabSharp.Loads.LoadPatterns.Models;
 using ETABSv1;
 
 namespace EtabSharp.Interfaces.Loads;

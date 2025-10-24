@@ -1,10 +1,10 @@
 ﻿using EtabSharp.Exceptions;
 using EtabSharp.Interfaces.Loads;
-using EtabSharp.Loads.Models;
+using EtabSharp.Loads.LoadPatterns.Models;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 
-namespace EtabSharp.Loads;
+namespace EtabSharp.Loads.LoadPatterns;
 
 /// <summary>
 /// Manages load patterns in the ETABS model.

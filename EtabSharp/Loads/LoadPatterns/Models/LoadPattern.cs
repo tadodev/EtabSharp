@@ -1,6 +1,6 @@
 ﻿using ETABSv1;
 
-namespace EtabSharp.Loads.Models;
+namespace EtabSharp.Loads.LoadPatterns.Models;
 
 /// <summary>
 /// Represents a load pattern in the ETABS model.

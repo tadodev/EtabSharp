@@ -1,4 +1,4 @@
-﻿namespace EtabSharp.Loads.Models;
+﻿namespace EtabSharp.Loads.LoadPatterns.Models;
 
 public class LoadPatternSummary
 {
