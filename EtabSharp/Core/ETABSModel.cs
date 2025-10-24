@@ -14,6 +14,7 @@ using EtabSharp.Interfaces.Properties;
 using EtabSharp.Interfaces.System;
 using EtabSharp.Loads;
 using EtabSharp.Loads.LoadCases;
+using EtabSharp.Loads.LoadCombos;
 using EtabSharp.Loads.LoadPatterns;
 using EtabSharp.Properties.Areas;
 using EtabSharp.Properties.Materials;
@@ -72,9 +73,9 @@ public sealed class ETABSModel
     #region Load Manager
     private readonly Lazy<ILoadPatterns> _loadPatterns;
     private readonly Lazy<ILoadCases> _loadCases;
+    private readonly Lazy<ICombos> _loadCombinations;
 
     //TODO: Add when implemented
-    // private readonly Lazy<ILoadCombinations> _loadCombinations;
 
     #endregion
 
@@ -123,6 +124,7 @@ public sealed class ETABSModel
         // Initialize Load Manager
         _loadPatterns = new Lazy<ILoadPatterns>(() => new LoadPatternsManager(_sapModel, _logger));
         _loadCases = new Lazy<ILoadCases>(() => new LoadCasesManager(_sapModel, _logger));
+        _loadCombinations = new Lazy<ICombos>(() => new CombosManager(_sapModel, _logger));
     }
 
     #endregion
@@ -218,10 +220,10 @@ public sealed class ETABSModel
     /// </summary>
     public ILoadCases LoadCases => _loadCases.Value;
 
-    // /// <summary>
-    // /// Load combination definitions.
-    // /// </summary>
-    // public ILoadCombinations LoadCombinations => _loadCombinations.Value;
+    /// <summary>
+    /// Load combination definitions.
+    /// </summary>
+    public ICombos LoadCombinations => _loadCombinations.Value;
 
     #endregion
 
