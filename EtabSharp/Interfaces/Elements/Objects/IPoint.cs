@@ -453,4 +453,141 @@ public interface IPoint
     Point GetCompletePoint(string pointName);
 
     #endregion
+
+    #region Advanced Coordinate Systems
+
+    /// <summary>
+    /// Gets point coordinates in cylindrical coordinate system.
+    /// </summary>
+    /// <param name="pointName">Name of the point object</param>
+    /// <param name="csys">Coordinate system name (default: "Global")</param>
+    /// <returns>Tuple of (R, Theta, Z) where R is radial distance, Theta is angle in degrees, Z is height</returns>
+    (double R, double Theta, double Z) GetCoordCylindrical(string pointName, string csys = "Global");
+
+    /// <summary>
+    /// Gets point coordinates in spherical coordinate system.
+    /// </summary>
+    /// <param name="pointName">Name of the point object</param>
+    /// <param name="csys">Coordinate system name (default: "Global")</param>
+    /// <returns>Tuple of (R, A, B) where R is radial distance, A and B are angles in degrees</returns>
+    (double R, double A, double B) GetCoordSpherical(string pointName, string csys = "Global");
+
+    #endregion
+
+    #region Local Axes and Transformations
+
+    /// <summary>
+    /// Gets the local axes orientation angles for a point object.
+    /// The local axes are defined by rotating from global axes:
+    /// 1. Rotate about Z axis by angle A
+    /// 2. Rotate about resulting Y axis by angle B
+    /// 3. Rotate about resulting X axis by angle C
+    /// </summary>
+    /// <param name="pointName">Name of the point object</param>
+    /// <returns>Tuple of (A, B, C, Advanced) where angles are in degrees</returns>
+    (double A, double B, double C, bool Advanced) GetLocalAxes(string pointName);
+
+    /// <summary>
+    /// Gets the transformation matrix for a point object.
+    /// </summary>
+    /// <param name="pointName">Name of the point object</param>
+    /// <param name="isGlobal">If true, returns global-to-local transformation; if false, returns local-to-global</param>
+    /// <returns>Transformation matrix as double array</returns>
+    double[] GetTransformationMatrix(string pointName, bool isGlobal = true);
+
+    #endregion
+
+    #region Panel Zone Methods
+
+    /// <summary>
+    /// Gets panel zone assignment for a point object.
+    /// Panel zones model the finite size and flexibility of beam-column connections.
+    /// </summary>
+    /// <param name="pointName">Name of the point object</param>
+    /// <returns>PointPanelZone model with panel zone properties, or null if no panel zone assigned</returns>
+    PointPanelZone? GetPanelZone(string pointName);
+
+    /// <summary>
+    /// Sets panel zone assignment for a point object.
+    /// </summary>
+    /// <param name="pointName">Name of the point object</param>
+    /// <param name="panelZone">PointPanelZone model with panel zone properties</param>
+    /// <param name="itemType">Item type for assignment</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetPanelZone(string pointName, PointPanelZone panelZone, eItemType itemType = eItemType.Objects);
+
+    /// <summary>
+    /// Deletes panel zone assignment from a point object.
+    /// </summary>
+    /// <param name="pointName">Name of the point object</param>
+    /// <param name="itemType">Item type for deletion</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int DeletePanelZone(string pointName, eItemType itemType = eItemType.Objects);
+
+    /// <summary>
+    /// Gets the count of points with panel zone assignments.
+    /// </summary>
+    /// <returns>Number of points with panel zones</returns>
+    int CountPanelZone();
+
+    #endregion
+
+    #region Advanced Mass Assignment
+
+    /// <summary>
+    /// Assigns mass to a point based on volume and material density.
+    /// </summary>
+    /// <param name="pointName">Name of the point object</param>
+    /// <param name="materialProperty">Name of the material property</param>
+    /// <param name="mass">PointMass model with mass values</param>
+    /// <param name="itemType">Item type for assignment</param>
+    /// <param name="replace">If true, replaces existing; if false, adds to existing</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetMassByVolume(string pointName, string materialProperty, PointMass mass, 
+        eItemType itemType = eItemType.Objects, bool replace = false);
+
+    /// <summary>
+    /// Assigns mass to a point based on weight.
+    /// </summary>
+    /// <param name="pointName">Name of the point object</param>
+    /// <param name="mass">PointMass model with mass values</param>
+    /// <param name="itemType">Item type for assignment</param>
+    /// <param name="replace">If true, replaces existing; if false, adds to existing</param>
+    /// <returns>0 if successful, non-zero otherwise</returns>
+    int SetMassByWeight(string pointName, PointMass mass, 
+        eItemType itemType = eItemType.Objects, bool replace = false);
+
+    #endregion
+
+    #region Count Methods
+
+    /// <summary>
+    /// Gets the count of points with restraint assignments.
+    /// </summary>
+    /// <returns>Number of points with restraints</returns>
+    int CountRestraint();
+
+    /// <summary>
+    /// Gets the count of points with spring assignments.
+    /// </summary>
+    /// <returns>Number of points with springs</returns>
+    int CountSpring();
+
+    /// <summary>
+    /// Gets the count of force load assignments for a point.
+    /// </summary>
+    /// <param name="pointName">Name of the point object (empty for all points)</param>
+    /// <param name="loadPattern">Name of the load pattern (empty for all patterns)</param>
+    /// <returns>Number of force load assignments</returns>
+    int CountLoadForce(string pointName = "", string loadPattern = "");
+
+    /// <summary>
+    /// Gets the count of displacement load assignments for a point.
+    /// </summary>
+    /// <param name="pointName">Name of the point object (empty for all points)</param>
+    /// <param name="loadPattern">Name of the load pattern (empty for all patterns)</param>
+    /// <returns>Number of displacement load assignments</returns>
+    int CountLoadDispl(string pointName = "", string loadPattern = "");
+
+    #endregion
 }
