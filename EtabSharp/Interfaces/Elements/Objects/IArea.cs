@@ -501,4 +501,24 @@ public interface IArea
     Area GetCompleteArea(string areaName);
 
     #endregion
+
+    #region Rebar Data (Wall Design)
+
+    /// <summary>
+    /// Gets rebar data for a wall pier area object.
+    /// Used for shear wall design and detailing.
+    /// </summary>
+    /// <param name="areaName">Name of the area object</param>
+    /// <returns>AreaPierRebarData model with rebar layer information</returns>
+    AreaPierRebarData GetRebarDataPier(string areaName);
+
+    /// <summary>
+    /// Gets rebar data for a wall spandrel area object.
+    /// Used for coupling beam design and detailing.
+    /// </summary>
+    /// <param name="areaName">Name of the area object</param>
+    /// <returns>AreaSpandrelRebarData model with rebar layer information</returns>
+    AreaSpandrelRebarData GetRebarDataSpandrel(string areaName);
+
+    #endregion
 }
