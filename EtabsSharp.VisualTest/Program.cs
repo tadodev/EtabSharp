@@ -36,7 +36,11 @@
 //etabs.Model.PropMaterial.SetORebar_1("Rebar", 62, 93, 70, 102, 1, 1, 0.02, 0.1, -0.1, true);
 
 using EtabSharp.Core;
+using EtabSharp.Elements.FrameObj.Models;
+using EtabSharp.Elements.PointObj.Models;
+using EtabSharp.Loads.LoadPatterns.Models;
 using EtabSharp.Properties.Frames.Models;
+using EtabSharp.System.Models;
 using ETABSv1;
 
 
@@ -86,20 +90,59 @@ try
     );
 
     // Assign Reinforcement to sections
-    var columnRebar = new PropColumnRebarRect()
+    var columnRebar = PropColumnRebarRect.Create("A615Gr60", "A615Gr60",6,6);
+
+    try
     {
-        BarSize = "#9",
-        ConfineType = 1,
-        Cover = 1.5,
-        MatPropLong = 
+        var ret = sapModel.PropFrame.SetColumnRebarRectangular(colSection.Name, columnRebar);
+
     }
-    sapModel.PropFrame.SetColumnRebarRectangular(
-        sectionName: "C_30x30_5ksi",
-        
-    );
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+        throw;
+    }
 
-    
+    var beamRebar = PropBeamRebar.Create("A615Gr60", "A615Gr60",0,0,0,4);
+    try
+    {
+        var ret = sapModel.PropFrame.SetBeamRebar(beamSection.Name, beamRebar);
 
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+        throw;
+    }
+
+    var frameModifier = PropFrameModifiers.Cracked();
+
+    sapModel.PropFrame.SetModifiers(colSection.Name, frameModifier);
+
+    sapModel.Units.SetPresentUnits(Units.US_Kip_Ft);
+
+    // Add frames by coordinates
+    var frame1 = sapModel.Frames.AddFrameByCoordinates(0, 0, 0, 0, 0, 10, colSection.Name);
+    var frame2 = sapModel.Frames.AddFrameByCoordinates(0, 0, 10, 8, 0, 16, colSection.Name);
+    var frame3 = sapModel.Frames.AddFrameByCoordinates(-4, 0, 10, 0, 0, 10, beamSection.Name);
+
+//assign point object restraint at top
+sapModel.Points.SetRestraint("3",PointRestraint.RollerZ());
+sapModel.Points.SetRestraint("4",PointRestraint.RollerZ());
+
+// add load pattern
+
+sapModel.LoadPatterns.AddDeadLoad("SW");
+sapModel.LoadPatterns.AddSuperDeadLoad("SDL");
+sapModel.LoadPatterns.AddLiveLoad("LLunred");
+
+sapModel.Frames.SetLoadDistributed(frame2,FrameDistributedLoad.CreateGravityLoad(frame2, "SDL", 0.5));
+
+//save model
+
+    sapModel.Files.SaveFile(@"D:\Research\test.edb");
+
+sapModel.Analyze.RunCompleteAnalysis();
 }
 catch (Exception e)
 {
