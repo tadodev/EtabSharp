@@ -39,18 +39,26 @@ using EtabSharp.Core;
 using EtabSharp.Properties.Frames.Models;
 using ETABSv1;
 
+
 var etabs = ETABSWrapper.Connect();
 
-var ret = etabs.Model.ModelInfo.InitializeNewModel(eUnits.lb_in_F);
-etabs.Model.Files.NewSteelDeckModel(10, 10, 10, 5, 5, 30, 30);
-
-var unit = etabs.Model.Units.GetPresentUnits();
-Console.WriteLine(unit);
+if (etabs == null)
+{
+    Console.WriteLine("No Etabs instance found. Please open etabs first");
+    return;
+}
 
 try
 {
-    // Modern async/await pattern
-    var concrete = etabs.Model.Materials.AddConcreteMaterial(
+    var sapModel = etabs.Model;
+    //Initialize a new model
+   sapModel.ModelInfo.InitializeNewModel(eUnits.kip_in_F);
+
+    // Create a new blank model
+    sapModel.Files.NewBlankModel();
+
+    // Define material properties - Concrete
+    var concrete = sapModel.Materials.AddConcreteMaterial(
         name: "5ksi",
         fpc: 5000,  // 5 ksi compressive strength
         Ec: 47 * Math.Sqrt(5000)  // 47*sqrt(fc) psi elastic modulus
@@ -61,32 +69,41 @@ try
     Console.WriteLine($"  Ec = {concrete.Ec} MPa");
     Console.WriteLine($"  Poisson's ratio = {concrete.nu}");
     Console.WriteLine();
+
+    // Define rectangular frame section property
+    var colSection = sapModel.PropFrame.AddRectangularSection(
+        name: "C_30x30_5ksi",
+        materialName: "5ksi",
+        depth:30,
+        width: 30
+    );
+
+    var beamSection = sapModel.PropFrame.AddRectangularSection(
+        name: "B_16x34_5ksi",
+        materialName: "5ksi",
+        depth: 34,
+        width: 16
+    );
+
+    // Assign Reinforcement to sections
+    var columnRebar = new PropColumnRebarRect()
+    {
+        BarSize = "#9",
+        ConfineType = 1,
+        Cover = 1.5,
+        MatPropLong = 
+    }
+    sapModel.PropFrame.SetColumnRebarRectangular(
+        sectionName: "C_30x30_5ksi",
+        
+    );
+
+    
+
 }
-catch (Exception ex)
+catch (Exception e)
 {
-    Console.WriteLine($"✗ Error: {ex.Message}");
+    Console.WriteLine(e);
+    throw;
 }
-
-var column = etabs.Model.PropFrame.AddRectangularSection("C_24x24_5ksi", "5ksi", 24, 24);
-
-var rebar = new PropColumnRebarRect
-{
-    MatPropLong = "A615Gr60",
-    MatPropConfine = "A615Gr60",
-    Cover = 2,
-    NumberOfBars3Dir = 6,
-    NumberOfBars2Dir = 6,
-    BarSize = "#8",
-    TieSize = "#4",
-    TieSpacing = 12,
-    TieLegs2Dir = 4,
-    TieLegs3Dir = 4,
-    ToBeDesigned = true
-};
-etabs.Model.PropFrame.SetColumnRebarRectangular(column.Name, rebar);
-
-var stories = etabs.Model.Story.GetStories();
-
-var selection = etabs.Model.Select.SelectAll();
-
 

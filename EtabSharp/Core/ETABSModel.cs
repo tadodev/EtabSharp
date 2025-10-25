@@ -1,10 +1,12 @@
-﻿using EtabSharp.Elements.AreaObj;
+﻿using EtabSharp.Analyzes;
+using EtabSharp.Elements.AreaObj;
 using EtabSharp.Elements.FrameObj;
 using EtabSharp.Elements.PointObj;
 using EtabSharp.Elements.Selection;
 using EtabSharp.Elements.Story;
 using EtabSharp.Frames;
 using EtabSharp.Groups;
+using EtabSharp.Interfaces.Analyzes;
 using EtabSharp.Interfaces.Elements.Objects;
 using EtabSharp.Interfaces.Elements.Selection;
 using EtabSharp.Interfaces.Elements.Stories;
@@ -81,8 +83,7 @@ public sealed class ETABSModel
 
     #region Analysis Managers
 
-    // TODO: Add when implemented
-    // private readonly Lazy<IAnalysisSettings> _analysisSettings;
+    private readonly Lazy<IAnalyze> _analysisSettings;
 
 
     #endregion
@@ -125,6 +126,9 @@ public sealed class ETABSModel
         _loadPatterns = new Lazy<ILoadPatterns>(() => new LoadPatternsManager(_sapModel, _logger));
         _loadCases = new Lazy<ILoadCases>(() => new LoadCasesManager(_sapModel, _logger));
         _loadCombinations = new Lazy<ICombos>(() => new CombosManager(_sapModel, _logger));
+
+        // Initialize Analysis Managers
+        _analysisSettings = new Lazy<IAnalyze>(() => new AnalyzeManager(_sapModel, _logger));
     }
 
     #endregion
@@ -229,11 +233,10 @@ public sealed class ETABSModel
 
     #region Analysis Properties
 
-    // TODO: Implement these
-    // /// <summary>
-    // /// Analysis settings and execution control.
-    // /// </summary>
-    // public IAnalysisSettings Analysis => _analysisSettings.Value;
+    /// <summary>
+    /// Analysis settings and execution control.
+    /// </summary>
+    public IAnalyze Analyze => _analysisSettings.Value;
 
 
 
