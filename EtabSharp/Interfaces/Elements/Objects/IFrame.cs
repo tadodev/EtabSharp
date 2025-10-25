@@ -66,7 +66,7 @@ public interface IFrame
     /// <summary>
     /// Gets curve data for curved frame objects.
     /// </summary>
-    object GetCurveData(string frameName);
+    FrameCurveData GetCurveData(string frameName);
 
     #endregion
 

@@ -373,94 +373,10 @@ public partial class FrameObjectManager : IFrame
 
     #endregion
 
-    #region Not Yet Implemented - Will be implemented in subsequent tasks
-
-    public string GetFrameType(string frameName)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    public object GetCurveData(string frameName)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    // Section, Material, Local Axes, End Releases, Insertion Point, and Load methods are implemented in:
+    // Additional methods are implemented in partial class files:
     // - FrameObjectManager.Properties.cs (Section, Material, Local Axes, Insertion Point, Modifiers)
     // - FrameObjectManager.EndReleases.cs (End Releases)
     // - FrameObjectManager.Loads.cs (Distributed, Point, Temperature Loads)
     // - FrameObjectManager.Design.cs (Design Procedure, Pier, Spandrel, Column Splice, T/C Limits, Lateral Bracing, Output Stations)
-
-    // Mass, Spring, Group, Selection, and Label methods will be implemented in subsequent tasks
-    public int SetMass(string frameName, double massPerLength, bool replace = false, eItemType itemType = eItemType.Objects)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    public double GetMass(string frameName)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    public int DeleteMass(string frameName, eItemType itemType = eItemType.Objects)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    public int SetSpringAssignment(string frameName, string springPropertyName, eItemType itemType = eItemType.Objects)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    public string GetSpringAssignment(string frameName)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    public int DeleteSpring(string frameName, eItemType itemType = eItemType.Objects)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    public int SetGroupAssignment(string frameName, string groupName, bool remove = false, eItemType itemType = eItemType.Objects)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    public string[] GetGroupAssignment(string frameName)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    public int SetSelected(string frameName, bool selected, eItemType itemType = eItemType.Objects)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    public bool IsSelected(string frameName)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    public (string[] Names, string[] Labels, string[] Stories) GetLabelNameList()
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    public (string Label, string Story) GetLabelFromName(string frameName)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    public string GetNameFromLabel(string label, string story)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    public string[] GetFramesOnStory(string storyName)
-    {
-        throw new NotImplementedException("Will be implemented in subsequent tasks");
-    }
-
-    #endregion
+    // - FrameObjectManager.Advanced.cs (Mass, Spring, Group, Selection, Label, Transformation, Hinges, Supports, Curved Frames)
 }
