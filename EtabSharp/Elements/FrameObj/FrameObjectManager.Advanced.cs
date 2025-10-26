@@ -118,7 +118,7 @@ public partial class FrameObjectManager
         try
         {
             if (string.IsNullOrEmpty(frameName))
-          throw new ArgumentException("Frame name cannot be null or empty", nameof(frameName));
+                throw new ArgumentException("Frame name cannot be null or empty", nameof(frameName));
 
             string supportName1 = "";
             eObjType supportType1 = eObjType.Point;

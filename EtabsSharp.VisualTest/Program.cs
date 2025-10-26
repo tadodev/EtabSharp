@@ -125,7 +125,9 @@ try
     var frame1 = sapModel.Frames.AddFrameByCoordinates(0, 0, 0, 0, 0, 10, colSection.Name);
     var frame2 = sapModel.Frames.AddFrameByCoordinates(0, 0, 10, 8, 0, 16, colSection.Name);
     var frame3 = sapModel.Frames.AddFrameByCoordinates(-4, 0, 10, 0, 0, 10, beamSection.Name);
+    var frames = sapModel.Frames.GetAllFrames();
 
+    
 //assign point object restraint at top
 sapModel.Points.SetRestraint("3",PointRestraint.RollerZ());
 sapModel.Points.SetRestraint("4",PointRestraint.RollerZ());
