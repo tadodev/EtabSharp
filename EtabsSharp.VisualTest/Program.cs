@@ -52,103 +52,103 @@ if (etabs == null)
     return;
 }
 
-try
-{
-    var sapModel = etabs.Model;
-    //Initialize a new model
-   sapModel.ModelInfo.InitializeNewModel(eUnits.kip_in_F);
-
-    // Create a new blank model
-    sapModel.Files.NewBlankModel();
-
-    // Define material properties - Concrete
-    var concrete = sapModel.Materials.AddConcreteMaterial(
-        name: "5ksi",
-        fpc: 5000,  // 5 ksi compressive strength
-        Ec: 47 * Math.Sqrt(5000)  // 47*sqrt(fc) psi elastic modulus
-    );
-
-    Console.WriteLine($"✓ Created: {concrete.Name}");
-    Console.WriteLine($"  f'c = {concrete.fpc} MPa");
-    Console.WriteLine($"  Ec = {concrete.Ec} MPa");
-    Console.WriteLine($"  Poisson's ratio = {concrete.nu}");
-    Console.WriteLine();
-
-    // Define rectangular frame section property
-    var colSection = sapModel.PropFrame.AddRectangularSection(
-        name: "C_30x30_5ksi",
-        materialName: "5ksi",
-        depth:30,
-        width: 30
-    );
-
-    var beamSection = sapModel.PropFrame.AddRectangularSection(
-        name: "B_16x34_5ksi",
-        materialName: "5ksi",
-        depth: 34,
-        width: 16
-    );
-
-    // Assign Reinforcement to sections
-    var columnRebar = PropColumnRebarRect.Create("A615Gr60", "A615Gr60",6,6);
-
-    try
-    {
-        var ret = sapModel.PropFrame.SetColumnRebarRectangular(colSection.Name, columnRebar);
-
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine(e);
-        throw;
-    }
-
-    var beamRebar = PropBeamRebar.Create("A615Gr60", "A615Gr60",0,0,0,4);
-    try
-    {
-        var ret = sapModel.PropFrame.SetBeamRebar(beamSection.Name, beamRebar);
-
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine(e);
-        throw;
-    }
-
-    var frameModifier = PropFrameModifiers.Cracked();
-
-    sapModel.PropFrame.SetModifiers(colSection.Name, frameModifier);
-
-    sapModel.Units.SetPresentUnits(Units.US_Kip_Ft);
-
-    // Add frames by coordinates
-    var frame1 = sapModel.Frames.AddFrameByCoordinates(0, 0, 0, 0, 0, 10, colSection.Name);
-    var frame2 = sapModel.Frames.AddFrameByCoordinates(0, 0, 10, 8, 0, 16, colSection.Name);
-    var frame3 = sapModel.Frames.AddFrameByCoordinates(-4, 0, 10, 0, 0, 10, beamSection.Name);
-    var frames = sapModel.Frames.GetAllFrames();
-
-    
-//assign point object restraint at top
-sapModel.Points.SetRestraint("3",PointRestraint.RollerZ());
-sapModel.Points.SetRestraint("4",PointRestraint.RollerZ());
-
-// add load pattern
-
-sapModel.LoadPatterns.AddDeadLoad("SW");
-sapModel.LoadPatterns.AddSuperDeadLoad("SDL");
-sapModel.LoadPatterns.AddLiveLoad("LLunred");
-
-sapModel.Frames.SetLoadDistributed(frame2,FrameDistributedLoad.CreateGravityLoad(frame2, "SDL", 0.5));
-
-//save model
-
-    sapModel.Files.SaveFile(@"D:\Research\test.edb");
-
-sapModel.Analyze.RunCompleteAnalysis();
-}
-catch (Exception e)
-{
-    Console.WriteLine(e);
-    throw;
-}
+// try
+// {
+//     var sapModel = etabs.Model;
+//     //Initialize a new model
+//    sapModel.ModelInfo.InitializeNewModel(eUnits.kip_in_F);
+//
+//     // Create a new blank model
+//     sapModel.Files.NewBlankModel();
+//
+//     // Define material properties - Concrete
+//     var concrete = sapModel.Materials.AddConcreteMaterial(
+//         name: "5ksi",
+//         fpc: 5000,  // 5 ksi compressive strength
+//         Ec: 47 * Math.Sqrt(5000)  // 47*sqrt(fc) psi elastic modulus
+//     );
+//
+//     Console.WriteLine($"✓ Created: {concrete.Name}");
+//     Console.WriteLine($"  f'c = {concrete.fpc} MPa");
+//     Console.WriteLine($"  Ec = {concrete.Ec} MPa");
+//     Console.WriteLine($"  Poisson's ratio = {concrete.nu}");
+//     Console.WriteLine();
+//
+//     // Define rectangular frame section property
+//     var colSection = sapModel.PropFrame.AddRectangularSection(
+//         name: "C_30x30_5ksi",
+//         materialName: "5ksi",
+//         depth:30,
+//         width: 30
+//     );
+//
+//     var beamSection = sapModel.PropFrame.AddRectangularSection(
+//         name: "B_16x34_5ksi",
+//         materialName: "5ksi",
+//         depth: 34,
+//         width: 16
+//     );
+//
+//     // Assign Reinforcement to sections
+//     var columnRebar = PropColumnRebarRect.Create("A615Gr60", "A615Gr60",6,6);
+//
+//     try
+//     {
+//         var ret = sapModel.PropFrame.SetColumnRebarRectangular(colSection.Name, columnRebar);
+//
+//     }
+//     catch (Exception e)
+//     {
+//         Console.WriteLine(e);
+//         throw;
+//     }
+//
+//     var beamRebar = PropBeamRebar.Create("A615Gr60", "A615Gr60",0,0,0,4);
+//     try
+//     {
+//         var ret = sapModel.PropFrame.SetBeamRebar(beamSection.Name, beamRebar);
+//
+//     }
+//     catch (Exception e)
+//     {
+//         Console.WriteLine(e);
+//         throw;
+//     }
+//
+//     var frameModifier = PropFrameModifiers.Cracked();
+//
+//     sapModel.PropFrame.SetModifiers(colSection.Name, frameModifier);
+//
+//     sapModel.Units.SetPresentUnits(Units.US_Kip_Ft);
+//
+//     // Add frames by coordinates
+//     var frame1 = sapModel.Frames.AddFrameByCoordinates(0, 0, 0, 0, 0, 10, colSection.Name);
+//     var frame2 = sapModel.Frames.AddFrameByCoordinates(0, 0, 10, 8, 0, 16, colSection.Name);
+//     var frame3 = sapModel.Frames.AddFrameByCoordinates(-4, 0, 10, 0, 0, 10, beamSection.Name);
+//     var frames = sapModel.Frames.GetAllFrames();
+//
+//     
+// //assign point object restraint at top
+// sapModel.Points.SetRestraint("3",PointRestraint.RollerZ());
+// sapModel.Points.SetRestraint("4",PointRestraint.RollerZ());
+//
+// // add load pattern
+//
+// sapModel.LoadPatterns.AddDeadLoad("SW");
+// sapModel.LoadPatterns.AddSuperDeadLoad("SDL");
+// sapModel.LoadPatterns.AddLiveLoad("LLunred");
+//
+// sapModel.Frames.SetLoadDistributed(frame2,FrameDistributedLoad.CreateGravityLoad(frame2, "SDL", 0.5));
+//
+// //save model
+//
+//     sapModel.Files.SaveFile(@"D:\Research\test.edb");
+//
+// sapModel.Analyze.RunCompleteAnalysis();
+// }
+// catch (Exception e)
+// {
+//     Console.WriteLine(e);
+//     throw;
+// }
 
