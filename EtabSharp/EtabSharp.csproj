@@ -38,8 +38,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="AnalysisResultsSetup\NewFolder\**" />
 	  <Compile Remove="Analyzes\NewFolder\**" />
+	  <EmbeddedResource Remove="AnalysisResultsSetup\NewFolder\**" />
 	  <EmbeddedResource Remove="Analyzes\NewFolder\**" />
+	  <None Remove="AnalysisResultsSetup\NewFolder\**" />
 	  <None Remove="Analyzes\NewFolder\**" />
 	</ItemGroup>
 

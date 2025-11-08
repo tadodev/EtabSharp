@@ -4,7 +4,7 @@ using EtabSharp.Properties.Frames.Models;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 
-namespace EtabSharp.Frames;
+namespace EtabSharp.Properties.Frames;
 
 public partial class PropFrame : IPropFrame
 {

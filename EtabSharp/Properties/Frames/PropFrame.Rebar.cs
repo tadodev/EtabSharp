@@ -2,7 +2,7 @@
 using EtabSharp.Properties.Frames.Models;
 using Microsoft.Extensions.Logging;
 
-namespace EtabSharp.Frames;
+namespace EtabSharp.Properties.Frames;
 
 public partial class PropFrame
 {

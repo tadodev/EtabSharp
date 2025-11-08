@@ -1,4 +1,4 @@
-﻿namespace EtabSharp.AnalysisResults.Models.AnalysisResultsSetup;
+﻿namespace EtabSharp.AnalysisResultsSetup.Models;
 
 /// <summary>
 /// Represents base reaction location settings.

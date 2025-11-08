@@ -1,4 +1,4 @@
-﻿using EtabSharp.AnalysisResults.Models.AnalysisResultsSetup;
+﻿using EtabSharp.AnalysisResultsSetup.Models;
 
 namespace EtabSharp.Interfaces.AnalysisResults;
 

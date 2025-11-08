@@ -1,4 +1,4 @@
-﻿namespace EtabSharp.AnalysisResults.Models.AnalysisResultsSetup;
+﻿namespace EtabSharp.AnalysisResultsSetup.Models;
 
 /// <summary>
 /// Enumeration for multi-valued combination output options.

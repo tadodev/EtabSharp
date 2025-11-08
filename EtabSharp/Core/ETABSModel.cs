@@ -1,12 +1,13 @@
 ﻿using EtabSharp.AnalysisResults;
+using EtabSharp.AnalysisResultsSetup;
 using EtabSharp.Analyzes;
 using EtabSharp.Elements.AreaObj;
 using EtabSharp.Elements.FrameObj;
 using EtabSharp.Elements.PointObj;
 using EtabSharp.Elements.Selection;
 using EtabSharp.Elements.Story;
-using EtabSharp.Frames;
 using EtabSharp.Groups;
+using EtabSharp.Interfaces;
 using EtabSharp.Interfaces.AnalysisResults;
 using EtabSharp.Interfaces.Analyzes;
 using EtabSharp.Interfaces.Elements.Objects;
@@ -21,6 +22,7 @@ using EtabSharp.Loads.LoadCases;
 using EtabSharp.Loads.LoadCombos;
 using EtabSharp.Loads.LoadPatterns;
 using EtabSharp.Properties.Areas;
+using EtabSharp.Properties.Frames;
 using EtabSharp.Properties.Materials;
 using EtabSharp.System;
 using ETABSv1;
@@ -94,10 +96,8 @@ public sealed class ETABSModel
 
     private readonly Lazy<IAnalysisResultsSetup> _analysisResultsSetup;
 
-    // TODO: Add when implemented
-    // private readonly Lazy<IFrameResults> _frameResults;
-    // private readonly Lazy<IAreaResults> _areaResults;
-    // private readonly Lazy<IPointResults> _pointResults;
+    private readonly Lazy<IAnalysisResults> _analysisResults;
+
 
     #endregion
 
@@ -136,6 +136,7 @@ public sealed class ETABSModel
 
         // Initialize Results Managers
         _analysisResultsSetup = new Lazy<IAnalysisResultsSetup>(() => new AnalysisResultsSetupManager(_sapModel, _logger));
+        _analysisResults = new Lazy<IAnalysisResults>(() => new AnalysisResultsManager(_sapModel, _logger));
     }
 
     #endregion
@@ -256,21 +257,10 @@ public sealed class ETABSModel
     /// </summary>
     public IAnalysisResultsSetup AnalysisResultsSetup => _analysisResultsSetup.Value;
 
-    // TODO: Implement these
-    // /// <summary>
-    // /// Frame element results: forces, stresses, displacements.
-    // /// </summary>
-    // public IFrameResults FrameResults => _frameResults.Value;
-
-    // /// <summary>
-    // /// Area element results: forces, stresses.
-    // /// </summary>
-    // public IAreaResults AreaResults => _areaResults.Value;
-
-    // /// <summary>
-    // /// Joint results: reactions, displacements.
-    // /// </summary>
-    // public IPointResults PointResults => _pointResults.Value;
+    /// <summary>
+    /// Analysis results retrieval and post-processing.
+    /// </summary>
+    public IAnalysisResults AnalysisResults => _analysisResults.Value;
 
     #endregion
 

@@ -1,4 +1,4 @@
-﻿namespace EtabSharp.AnalysisResults.Models.AnalysisResultsSetup;
+﻿namespace EtabSharp.AnalysisResultsSetup.Models;
 
 /// <summary>
 /// Summary of analysis results setup configuration.

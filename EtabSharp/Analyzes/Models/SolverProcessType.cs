@@ -1,4 +1,4 @@
-﻿namespace EtabSharp.Analyzes;
+﻿namespace EtabSharp.Analyzes.Models;
 
 /// <summary>
 /// Enumeration for solver process types.

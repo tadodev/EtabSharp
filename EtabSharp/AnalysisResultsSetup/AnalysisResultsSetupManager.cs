@@ -1,10 +1,10 @@
-﻿using EtabSharp.AnalysisResults.Models.AnalysisResultsSetup;
+﻿using EtabSharp.AnalysisResultsSetup.Models;
 using EtabSharp.Exceptions;
 using EtabSharp.Interfaces.AnalysisResults;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
 
-namespace EtabSharp.AnalysisResults;
+namespace EtabSharp.AnalysisResultsSetup;
 
 /// <summary>
 /// Manages analysis results setup in the ETABS model.
