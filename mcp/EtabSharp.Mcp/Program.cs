@@ -13,6 +13,8 @@ builder.Services
     .AddMcpServer()
     .WithStdioServerTransport()
     .WithTools<RandomNumberTools>()
-    .WithTools<BuildingInformationTools>();
+    .WithTools<BuildingInformationTools>()
+    .WithTools<ModelCreationTools>()
+    .WithTools<AnalysisTools>();
 
 await builder.Build().RunAsync();

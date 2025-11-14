@@ -1,0 +1,14 @@
+{
+	"servers": {
+		"EtabSharp.Mcp": {
+			"type": "stdio",
+			"command": "dotnet",
+			"args": [
+				"run",
+				"--project",
+				"D:/Work/EtabSharp/mcp/EtabSharp.Mcp"
+			]
+		}
+	},
+	"inputs": []
+}
