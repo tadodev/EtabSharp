@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36401.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtabSharp", "EtabSharp\EtabSharp.csproj", "{A74B6B74-0E7F-4D92-A41B-9A23A0698F4B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
@@ -14,15 +12,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtabSharp.Test", "EtabSharp.Test\EtabSharp.Test.csproj", "{DDC75713-D699-4276-87CD-16DBA00DE872}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E1550E01-A197-42F6-BD5D-86F838187C93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtabsSharp.VisualTest", "EtabsSharp.VisualTest\EtabsSharp.VisualTest.csproj", "{92FB0F2C-5A02-4629-94B7-F582C2060901}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtabSharp.Mcp", "EtabSharp.Mcp\EtabSharp.Mcp.csproj", "{14C44BA9-1859-821E-4C2F-81D53A7D3356}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mcp", "mcp", "{2F97781D-14B7-4B5D-9D16-CCC55BAA8F24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtabSharp.Mcp", "mcp\EtabSharp.Mcp\EtabSharp.Mcp.csproj", "{956CBC52-9FD8-0D09-05D2-45D6F181E17A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtabSharp", "src\EtabSharp\EtabSharp.csproj", "{93EEF2E8-6164-259B-6179-B84B7B0E71CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtabSharp.Test", "test\EtabSharp.Test\EtabSharp.Test.csproj", "{8A3485D3-87F7-6828-CEC7-ECC619005E87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtabsSharp.VisualTest", "test\EtabsSharp.VisualTest\EtabsSharp.VisualTest.csproj", "{D60950CB-CD46-78C4-9411-608514A883D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,31 +30,31 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A74B6B74-0E7F-4D92-A41B-9A23A0698F4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A74B6B74-0E7F-4D92-A41B-9A23A0698F4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A74B6B74-0E7F-4D92-A41B-9A23A0698F4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A74B6B74-0E7F-4D92-A41B-9A23A0698F4B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DDC75713-D699-4276-87CD-16DBA00DE872}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DDC75713-D699-4276-87CD-16DBA00DE872}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DDC75713-D699-4276-87CD-16DBA00DE872}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DDC75713-D699-4276-87CD-16DBA00DE872}.Release|Any CPU.Build.0 = Release|Any CPU
-		{92FB0F2C-5A02-4629-94B7-F582C2060901}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92FB0F2C-5A02-4629-94B7-F582C2060901}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{92FB0F2C-5A02-4629-94B7-F582C2060901}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{92FB0F2C-5A02-4629-94B7-F582C2060901}.Release|Any CPU.Build.0 = Release|Any CPU
-		{14C44BA9-1859-821E-4C2F-81D53A7D3356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{14C44BA9-1859-821E-4C2F-81D53A7D3356}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{14C44BA9-1859-821E-4C2F-81D53A7D3356}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{14C44BA9-1859-821E-4C2F-81D53A7D3356}.Release|Any CPU.Build.0 = Release|Any CPU
+		{956CBC52-9FD8-0D09-05D2-45D6F181E17A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{956CBC52-9FD8-0D09-05D2-45D6F181E17A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{956CBC52-9FD8-0D09-05D2-45D6F181E17A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{956CBC52-9FD8-0D09-05D2-45D6F181E17A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93EEF2E8-6164-259B-6179-B84B7B0E71CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93EEF2E8-6164-259B-6179-B84B7B0E71CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93EEF2E8-6164-259B-6179-B84B7B0E71CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93EEF2E8-6164-259B-6179-B84B7B0E71CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A3485D3-87F7-6828-CEC7-ECC619005E87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A3485D3-87F7-6828-CEC7-ECC619005E87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A3485D3-87F7-6828-CEC7-ECC619005E87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A3485D3-87F7-6828-CEC7-ECC619005E87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D60950CB-CD46-78C4-9411-608514A883D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D60950CB-CD46-78C4-9411-608514A883D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D60950CB-CD46-78C4-9411-608514A883D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D60950CB-CD46-78C4-9411-608514A883D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{A74B6B74-0E7F-4D92-A41B-9A23A0698F4B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{DDC75713-D699-4276-87CD-16DBA00DE872} = {E1550E01-A197-42F6-BD5D-86F838187C93}
-		{92FB0F2C-5A02-4629-94B7-F582C2060901} = {E1550E01-A197-42F6-BD5D-86F838187C93}
-		{14C44BA9-1859-821E-4C2F-81D53A7D3356} = {2F97781D-14B7-4B5D-9D16-CCC55BAA8F24}
+		{956CBC52-9FD8-0D09-05D2-45D6F181E17A} = {2F97781D-14B7-4B5D-9D16-CCC55BAA8F24}
+		{93EEF2E8-6164-259B-6179-B84B7B0E71CB} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{8A3485D3-87F7-6828-CEC7-ECC619005E87} = {E1550E01-A197-42F6-BD5D-86F838187C93}
+		{D60950CB-CD46-78C4-9411-608514A883D3} = {E1550E01-A197-42F6-BD5D-86F838187C93}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0429E9A4-2308-44D8-8595-9C8B5E1D154C}
