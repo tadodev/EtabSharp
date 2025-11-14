@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <RootNamespace>EtabSharp.Test</RootNamespace>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
 	  <IsPackable>false</IsPackable>
 	  <IsTestProject>true</IsTestProject>
 
@@ -44,10 +44,6 @@
 			<HintPath>C:\Program Files\Computers and Structures\ETABS 22\ETABSv1.dll</HintPath>
 			<!-- <Private>False</Private> -->
 		</Reference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="WrapperTest\" />
 	</ItemGroup>
 
 </Project>
