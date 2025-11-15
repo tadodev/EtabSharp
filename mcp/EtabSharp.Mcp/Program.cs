@@ -15,6 +15,9 @@ builder.Services
     .WithTools<RandomNumberTools>()
     .WithTools<BuildingInformationTools>()
     .WithTools<ModelCreationTools>()
-    .WithTools<AnalysisTools>();
+    .WithTools<ModelBuildingTools>()
+    .WithTools<AnalysisTools>()
+    .WithTools<ModelGeometryTools>()
+    .WithTools<ResultsTools>();
 
 await builder.Build().RunAsync();
