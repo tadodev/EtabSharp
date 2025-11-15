@@ -1,6 +1,8 @@
-﻿using EtabSharp.Core;
+﻿using EtabSharp.AnalysisResults.Models.AnalysisResults.BaseReactions;
+using EtabSharp.Core;
 using EtabSharp.Elements.FrameObj.Models;
 using EtabSharp.Elements.PointObj.Models;
+using EtabSharp.Loads.LoadCases.Models;
 using EtabSharp.Loads.LoadPatterns.Models;
 using EtabSharp.Properties.Frames.Models;
 using EtabSharp.System.Models;
@@ -48,6 +50,124 @@ else
 }
 
 Console.WriteLine($"✓ Connected to ETABS v{etabs.FullVersion}\n");
+try
+{
+    var model = etabs.Model;
+
+    // Run the model
+    model.Analyze.SetAllCasesToRun();
+    model.Analyze.RunCompleteAnalysis();
+    Console.WriteLine("finish run analysis");
+
+    // Setup the results for all load combinations
+    model.AnalysisResultsSetup.DeselectAllCasesAndCombosForOutput();
+    model.AnalysisResultsSetup.SetCaseSelectedForOutput("Dead");
+    Console.WriteLine("finish setup output cases");
+
+    // Get Joint Displacements for joint "14"
+    var displacements = model.AnalysisResults.GetJointDispl("P4", eItemTypeElm.Element);
+    //int numberResults = 0;
+    //string[] obj = Array.Empty<string>();
+    //string[] elm = Array.Empty<string>();
+    //string[] loadCase = Array.Empty<string>();
+    //string[] stepType = Array.Empty<string>();
+    //double[] stepNum = Array.Empty<double>();
+    //double[] u1 = Array.Empty<double>();
+    //double[] u2 = Array.Empty<double>();
+    //double[] u3 = Array.Empty<double>();
+    //double[] r1 = Array.Empty<double>();
+    //double[] r2 = Array.Empty<double>();
+    //double[] r3 = Array.Empty<double>();
+    //var ret = etabs.SapModel.Results.JointDispl("", eItemTypeElm.SelectionElm, ref numberResults, ref obj, ref elm, ref loadCase,
+    //    ref stepType, ref stepNum, ref u1, ref u2, ref u3, ref r1, ref r2, ref r3);
+
+    // Print joint displacement results
+    if (displacements.IsSuccess && displacements.NumberResults > 0)
+    {
+        Console.WriteLine("\n=================================================");
+        Console.WriteLine("  Joint Displacement Results");
+        Console.WriteLine("=================================================\n");
+
+        foreach (var result in displacements.Results)
+        {
+            Console.WriteLine($"Joint: {result.ObjectName}");
+            Console.WriteLine($"  Element: {result.ElementName}");
+            Console.WriteLine($"  Load Case: {result.LoadCase}");
+            Console.WriteLine($"  Step Type: {result.StepType}");
+            Console.WriteLine($"  Step Number: {result.StepNum:F0}");
+            Console.WriteLine($"\n  Translations (Global):");
+            Console.WriteLine($"    U1 (X): {result.U1:F6} in");
+            Console.WriteLine($"    U2 (Y): {result.U2:F6} in");
+            Console.WriteLine($"    U3 (Z): {result.U3:F6} in");
+            Console.WriteLine($"\n  Rotations (Global):");
+            Console.WriteLine($"    R1 (RX): {result.R1:F8} rad");
+            Console.WriteLine($"    R2 (RY): {result.R2:F8} rad");
+            Console.WriteLine($"    R3 (RZ): {result.R3:F8} rad");
+            Console.WriteLine();
+        }
+
+        Console.WriteLine($"Total Results: {displacements.NumberResults}");
+
+        //setup all load case for base reaction retrieval
+        var cases = model.LoadCases.GetAllLoadCases();
+
+        foreach (LoadCase loadCase in cases)
+        {
+            model.AnalysisResultsSetup.SetCaseSelectedForOutput(loadCase.Name);
+        }
+
+        var baseReactionResults = model.AnalysisResults.GetBaseReact();
+
+        var reactions = baseReactionResults.Results.Select(r => new
+        {
+            loadCase = r.LoadCase,
+            stepType = r.StepType,
+            stepNumber = r.StepNum,
+            forces = new { fx = r.FX, fy = r.FY, fz = r.FZ },
+            moments = new { mx = r.MX, my = r.MY, mz = r.MZ }
+        }).ToList();
+
+        if (baseReactionResults.IsSuccess && baseReactionResults.NumberResults > 0)
+        {
+            Console.WriteLine($"Base Reaction Location:");
+            Console.WriteLine($"  Global X: {baseReactionResults.GlobalX:F4}");
+            Console.WriteLine($"  Global Y: {baseReactionResults.GlobalY:F4}");
+            Console.WriteLine($"  Global Z: {baseReactionResults.GlobalZ:F4}\n");
+
+            foreach (var reaction in baseReactionResults.Results)
+            {
+                Console.WriteLine($"Load Case: {reaction.LoadCase}");
+                Console.WriteLine($"  Step Type: {reaction.StepType}");
+                Console.WriteLine($"  Step Number: {reaction.StepNum:F0}");
+                Console.WriteLine($"\n  Forces:");
+                Console.WriteLine($"    FX: {reaction.FX:F4} kip");
+                Console.WriteLine($"    FY: {reaction.FY:F4} kip");
+                Console.WriteLine($"    FZ: {reaction.FZ:F4} kip");
+                Console.WriteLine($"\n  Moments:");
+                Console.WriteLine($"    MX: {reaction.MX:F4} kip-in");
+                Console.WriteLine($"    MY: {reaction.MY:F4} kip-in");
+                Console.WriteLine($"    MZ: {reaction.MZ:F4} kip-in");
+                Console.WriteLine();
+            }
+
+            Console.WriteLine($"Total Reactions: {baseReactionResults.NumberResults}");
+
+        }
+        else if (!displacements.IsSuccess)
+        {
+            Console.WriteLine($"❌ Error retrieving displacement results: {displacements.ErrorMessage}");
+        }
+        else
+        {
+            Console.WriteLine("⚠️ No displacement results found for joint P4");
+        }
+    }
+}
+catch (Exception e)
+{
+    Console.WriteLine(e);
+    throw;
+}
 //
 // try
 // {

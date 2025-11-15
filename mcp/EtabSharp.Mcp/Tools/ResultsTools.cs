@@ -1,8 +1,9 @@
+using EtabSharp.Core;
+using EtabSharp.Loads.LoadCases.Models;
+using ETABSv1;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
-using EtabSharp.Core;
 using System.Text.Json;
-using ETABSv1;
 
 
 namespace EtabSharp.Mcp.Tools;
@@ -29,6 +30,14 @@ public class ResultsTools
             }
 
             var model = etabs.Model;
+            //setup all load case for base reaction retrieval
+            var cases = model.LoadCases.GetAllLoadCases();
+
+            foreach (LoadCase loadCase in cases)
+            {
+                model.AnalysisResultsSetup.SetCaseSelectedForOutput(loadCase.Name);
+            }
+
             var results = model.AnalysisResults.GetBaseReact();
 
             var reactions = results.Results.Select(r => new
