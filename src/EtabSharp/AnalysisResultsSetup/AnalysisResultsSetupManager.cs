@@ -105,21 +105,63 @@ public class AnalysisResultsSetupManager : IAnalysisResultsSetup
     /// Sets whether a load case is selected for output.
     /// Wraps cSapModel.Results.Setup.SetCaseSelectedForOutput.
     /// </summary>
-    public int SetCaseSelectedForOutput(string name, bool selected = true)
+    /// <param name="name">Case name, or "all" to select all cases, or null/empty for all cases</param>
+    /// <param name="selected">True to select, false to deselect</param>
+    /// <returns>0 for success, or count of successfully processed cases when name is "all"</returns>
+    public int SetCaseSelectedForOutput(string name = "all", bool selected = true)
     {
         try
         {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("Case name cannot be null or empty", nameof(name));
+            // Handle "all" or empty/null input
+            if (string.IsNullOrEmpty(name) || name.Equals("all", StringComparison.OrdinalIgnoreCase))
+            {
+                // Get all load case names
+                int numberOfCases = 0;
+                string[] cases = null;
+                int ret = _sapModel.LoadCases.GetNameList(ref numberOfCases, ref cases);
 
-            int ret = _sapModel.Results.Setup.SetCaseSelectedForOutput(name, selected);
+                if (ret != 0)
+                    throw new EtabsException(ret, "GetNameList", "Failed to get list of load cases");
 
-            if (ret != 0)
-                throw new EtabsException(ret, "SetCaseSelectedForOutput", $"Failed to set selection for case '{name}'");
+                if (cases == null || cases.Length == 0)
+                {
+                    _logger.LogWarning("No load cases found to {Action}", selected ? "select" : "deselect");
+                    return 0;
+                }
+
+                // Set selection for all cases
+                int successCount = 0;
+                foreach (var caseName in cases)
+                {
+                    try
+                    {
+                        int caseRet = _sapModel.Results.Setup.SetCaseSelectedForOutput(caseName, selected);
+                        if (caseRet == 0)
+                            successCount++;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning("Failed to set output selection for case {CaseName}: {Error}",
+                            caseName, ex.Message);
+                    }
+                }
+
+                _logger.LogDebug("{Action} {SuccessCount}/{TotalCount} cases for output",
+                    selected ? "Selected" : "Deselected", successCount, cases.Length);
+
+                return successCount;
+            }
+
+            // Handle individual case
+            int result = _sapModel.Results.Setup.SetCaseSelectedForOutput(name, selected);
+
+            if (result != 0)
+                throw new EtabsException(result, "SetCaseSelectedForOutput",
+                    $"Failed to set selection for case '{name}'");
 
             _logger.LogDebug("Set case {Name} output selection: {Selected}", name, selected);
 
-            return ret;
+            return result;
         }
         catch (Exception ex) when (!(ex is EtabsException))
         {
@@ -131,27 +173,113 @@ public class AnalysisResultsSetupManager : IAnalysisResultsSetup
     /// Sets whether a load combination is selected for output.
     /// Wraps cSapModel.Results.Setup.SetComboSelectedForOutput.
     /// </summary>
-    public int SetComboSelectedForOutput(string name, bool selected = true)
+    /// <param name="name">Combo name, or "all" to select all combos, or null/empty for all combos</param>
+    /// <param name="selected">True to select, false to deselect</param>
+    /// <returns>0 for success, or count of successfully processed combos when name is "all"</returns>
+    public int SetComboSelectedForOutput(string name = "all", bool selected = true)
     {
         try
         {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("Combo name cannot be null or empty", nameof(name));
+            // Handle "all" or empty/null input
+            if (string.IsNullOrEmpty(name) || name.Equals("all", StringComparison.OrdinalIgnoreCase))
+            {
+                // Get all combination names
+                int numberOfCombos = 0;
+                string[] combos = null;
+                int ret = _sapModel.RespCombo.GetNameList(ref numberOfCombos, ref combos);
 
-            int ret = _sapModel.Results.Setup.SetComboSelectedForOutput(name, selected);
+                if (ret != 0)
+                    throw new EtabsException(ret, "GetNameList", "Failed to get list of combinations");
 
-            if (ret != 0)
-                throw new EtabsException(ret, "SetComboSelectedForOutput", $"Failed to set selection for combo '{name}'");
+                if (combos == null || combos.Length == 0)
+                {
+                    _logger.LogWarning("No load combinations found to {Action}", selected ? "select" : "deselect");
+                    return 0;
+                }
+
+                // Set selection for all combos
+                int successCount = 0;
+                foreach (var comboName in combos)
+                {
+                    try
+                    {
+                        int comboRet = _sapModel.Results.Setup.SetComboSelectedForOutput(comboName, selected);
+                        if (comboRet == 0)
+                            successCount++;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning("Failed to set output selection for combo {ComboName}: {Error}",
+                            comboName, ex.Message);
+                    }
+                }
+
+                _logger.LogDebug("{Action} {SuccessCount}/{TotalCount} combos for output",
+                    selected ? "Selected" : "Deselected", successCount, combos.Length);
+
+                return successCount;
+            }
+
+            // Handle individual combo
+            int result = _sapModel.Results.Setup.SetComboSelectedForOutput(name, selected);
+
+            if (result != 0)
+                throw new EtabsException(result, "SetComboSelectedForOutput",
+                    $"Failed to set selection for combo '{name}'");
 
             _logger.LogDebug("Set combo {Name} output selection: {Selected}", name, selected);
 
-            return ret;
+            return result;
         }
         catch (Exception ex) when (!(ex is EtabsException))
         {
             throw new EtabsException($"Unexpected error setting combo selection for '{name}': {ex.Message}", ex);
         }
     }
+
+    /// <summary>
+    /// Sets all load cases and combinations for output selection.
+    /// </summary>
+    /// <param name="selected">True to select all, false to deselect all</param>
+    /// <returns>Tuple containing (casesProcessed, combosProcessed)</returns>
+    public (int CasesProcessed, int CombosProcessed) SetAllCasesAndCombosForOutput(bool selected = true)
+    {
+        try
+        {
+            _logger.LogDebug("{Action} all cases and combos for output", selected ? "Selecting" : "Deselecting");
+
+            int casesProcessed = SetCaseSelectedForOutput("all", selected);
+            int combosProcessed = SetComboSelectedForOutput("all", selected);
+
+            _logger.LogInformation("{Action} {CaseCount} cases and {ComboCount} combos for output",
+                selected ? "Selected" : "Deselected", casesProcessed, combosProcessed);
+
+            return (casesProcessed, combosProcessed);
+        }
+        catch (Exception ex) when (!(ex is EtabsException))
+        {
+            throw new EtabsException($"Unexpected error setting all cases and combos for output: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Selects all load cases and combinations for output (convenience method).
+    /// </summary>
+    /// <returns>Tuple containing (casesSelected, combosSelected)</returns>
+    public (int CasesSelected, int CombosSelected) SelectAllForOutput()
+    {
+        return SetAllCasesAndCombosForOutput(true);
+    }
+
+    /// <summary>
+    /// Deselects all load cases and combinations for output (convenience method).
+    /// </summary>
+    /// <returns>Tuple containing (casesDeselected, combosDeselected)</returns>
+    public (int CasesDeselected, int CombosDeselected) DeselectAllForOutput()
+    {
+        return SetAllCasesAndCombosForOutput(false);
+    }
+
 
     #endregion
 
