@@ -5,7 +5,6 @@ using ModelContextProtocol.Server;
 using System.ComponentModel;
 using System.Text.Json;
 
-
 namespace EtabSharp.Mcp.Tools;
 
 /// <summary>
@@ -13,9 +12,46 @@ namespace EtabSharp.Mcp.Tools;
 /// </summary>
 public class ResultsTools
 {
+    /// <summary>
+    /// Ensures cases and combos are selected for output before retrieving results.
+    /// If specific names are provided, selects those; otherwise selects all.
+    /// </summary>
+    private void EnsureOutputSetup(ETABSApplication etabs, string[] caseNames = null, string[] comboNames = null)
+    {
+        var model = etabs.Model;
+
+        // If specific cases provided, select them; otherwise select all
+        if (caseNames != null && caseNames.Length > 0)
+        {
+            foreach (var caseName in caseNames)
+            {
+                model.AnalysisResultsSetup.SetCaseSelectedForOutput(caseName, true);
+            }
+        }
+        else
+        {
+            model.AnalysisResultsSetup.SetCaseSelectedForOutput("all", true);
+        }
+
+        // If specific combos provided, select them; otherwise select all
+        if (comboNames != null && comboNames.Length > 0)
+        {
+            foreach (var comboName in comboNames)
+            {
+                model.AnalysisResultsSetup.SetComboSelectedForOutput(comboName, true);
+            }
+        }
+        else
+        {
+            model.AnalysisResultsSetup.SetComboSelectedForOutput("all", true);
+        }
+    }
+
     [McpServerTool]
     [Description("Get base reactions for all load cases and combinations including forces and moments at the base of the structure")]
-    public string GetBaseReactions()
+    public string GetBaseReactions(
+        [Description("Comma-separated list of specific load case names, or 'all' for all cases")] string cases = "all",
+        [Description("Comma-separated list of specific combo names, or 'all' for all combos")] string combos = "all")
     {
         try
         {
@@ -30,14 +66,25 @@ public class ResultsTools
             }
 
             var model = etabs.Model;
-            //setup all load case for base reaction retrieval
-            var cases = model.LoadCases.GetAllLoadCases();
 
-            foreach (LoadCase loadCase in cases)
+            // Parse input parameters
+            string[] caseNames = null;
+            string[] comboNames = null;
+
+            if (!string.IsNullOrEmpty(cases) && !cases.Equals("all", StringComparison.OrdinalIgnoreCase))
             {
-                model.AnalysisResultsSetup.SetCaseSelectedForOutput(loadCase.Name);
+                caseNames = cases.Split(',').Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToArray();
             }
 
+            if (!string.IsNullOrEmpty(combos) && !combos.Equals("all", StringComparison.OrdinalIgnoreCase))
+            {
+                comboNames = combos.Split(',').Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToArray();
+            }
+
+            // Ensure output setup
+            EnsureOutputSetup(etabs, caseNames, comboNames);
+
+            // Get results
             var results = model.AnalysisResults.GetBaseReact();
 
             var reactions = results.Results.Select(r => new
@@ -63,6 +110,11 @@ public class ResultsTools
             {
                 success = true,
                 count = reactions.Count,
+                setupInfo = new
+                {
+                    casesSelected = caseNames?.Length ?? model.LoadCases.Count(),
+                    combosSelected = comboNames?.Length ?? model.LoadCombinations.Count()
+                },
                 reactions = reactions
             }, new JsonSerializerOptions { WriteIndented = true });
         }
@@ -79,7 +131,9 @@ public class ResultsTools
     [McpServerTool]
     [Description("Get joint displacements for specified points or all points in the model")]
     public string GetJointDisplacements(
-        [Description("Name of specific joint/point, or 'all' for all joints")] string pointName = "all")
+        [Description("Name of specific joint/point, or 'all' for all joints")] string pointName = "all",
+        [Description("Comma-separated list of specific load case names, or 'all' for all cases")] string cases = "all",
+        [Description("Comma-separated list of specific combo names, or 'all' for all combos")] string combos = "all")
     {
         try
         {
@@ -94,6 +148,25 @@ public class ResultsTools
             }
 
             var model = etabs.Model;
+
+            // Parse input parameters
+            string[] caseNames = null;
+            string[] comboNames = null;
+
+            if (!string.IsNullOrEmpty(cases) && !cases.Equals("all", StringComparison.OrdinalIgnoreCase))
+            {
+                caseNames = cases.Split(',').Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToArray();
+            }
+
+            if (!string.IsNullOrEmpty(combos) && !combos.Equals("all", StringComparison.OrdinalIgnoreCase))
+            {
+                comboNames = combos.Split(',').Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToArray();
+            }
+
+            // Ensure output setup
+            EnsureOutputSetup(etabs, caseNames, comboNames);
+
+            // Get results
             var name = pointName.ToLower() == "all" ? "" : pointName;
             var results = model.AnalysisResults.GetJointDispl(name, eItemTypeElm.ObjectElm);
 
@@ -121,6 +194,11 @@ public class ResultsTools
                 totalResults = results.Results.Count,
                 resultsShown = displacements.Count,
                 note = results.Results.Count > 200 ? "Showing first 200 results only" : "All results shown",
+                setupInfo = new
+                {
+                    casesSelected = caseNames?.Length ?? model.LoadCases.Count(),
+                    combosSelected = comboNames?.Length ?? model.LoadCombinations.Count()
+                },
                 displacements = displacements
             }, new JsonSerializerOptions { WriteIndented = true });
         }
@@ -137,7 +215,9 @@ public class ResultsTools
     [McpServerTool]
     [Description("Get frame forces for specified frame elements including axial, shear, and moment values")]
     public string GetFrameForces(
-        [Description("Name of specific frame element, or 'all' for all frames")] string frameName = "all")
+        [Description("Name of specific frame element, or 'all' for all frames")] string frameName = "all",
+        [Description("Comma-separated list of specific load case names, or 'all' for all cases")] string cases = "all",
+        [Description("Comma-separated list of specific combo names, or 'all' for all combos")] string combos = "all")
     {
         try
         {
@@ -152,6 +232,25 @@ public class ResultsTools
             }
 
             var model = etabs.Model;
+
+            // Parse input parameters
+            string[] caseNames = null;
+            string[] comboNames = null;
+
+            if (!string.IsNullOrEmpty(cases) && !cases.Equals("all", StringComparison.OrdinalIgnoreCase))
+            {
+                caseNames = cases.Split(',').Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToArray();
+            }
+
+            if (!string.IsNullOrEmpty(combos) && !combos.Equals("all", StringComparison.OrdinalIgnoreCase))
+            {
+                comboNames = combos.Split(',').Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToArray();
+            }
+
+            // Ensure output setup
+            EnsureOutputSetup(etabs, caseNames, comboNames);
+
+            // Get results
             var name = frameName.ToLower() == "all" ? "" : frameName;
             var results = model.AnalysisResults.GetFrameForce(name, eItemTypeElm.ObjectElm);
 
@@ -180,6 +279,11 @@ public class ResultsTools
                 totalResults = results.Results.Count,
                 resultsShown = forces.Count,
                 note = results.Results.Count > 200 ? "Showing first 200 results only" : "All results shown",
+                setupInfo = new
+                {
+                    casesSelected = caseNames?.Length ?? model.LoadCases.Count(),
+                    combosSelected = comboNames?.Length ?? model.LoadCombinations.Count()
+                },
                 forces = forces
             }, new JsonSerializerOptions { WriteIndented = true });
         }
@@ -195,7 +299,8 @@ public class ResultsTools
 
     [McpServerTool]
     [Description("Get modal analysis results including periods, frequencies, and participation factors")]
-    public string GetModalResults()
+    public string GetModalResults(
+        [Description("Comma-separated list of specific modal case names, or 'all' for all modal cases")] string modalCases = "all")
     {
         try
         {
@@ -210,6 +315,17 @@ public class ResultsTools
             }
 
             var model = etabs.Model;
+
+            // Parse input parameters
+            string[] caseNames = null;
+
+            if (!string.IsNullOrEmpty(modalCases) && !modalCases.Equals("all", StringComparison.OrdinalIgnoreCase))
+            {
+                caseNames = modalCases.Split(',').Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToArray();
+            }
+
+            // Ensure output setup for modal cases only
+            EnsureOutputSetup(etabs, caseNames, null);
 
             // Get modal periods
             var periods = model.AnalysisResults.GetModalPeriod();
@@ -266,6 +382,10 @@ public class ResultsTools
             {
                 success = true,
                 totalModes = modes.Count,
+                setupInfo = new
+                {
+                    modalCasesSelected = caseNames?.Length ?? model.LoadCases.GetLoadCasesByType(eLoadCaseType.Modal).Count
+                },
                 modes = modes,
                 participationFactors = participationFactors,
                 massRatios = massRatiosList
@@ -283,7 +403,9 @@ public class ResultsTools
 
     [McpServerTool]
     [Description("Get story drifts for all stories including maximum drift ratios")]
-    public string GetStoryDrifts()
+    public string GetStoryDrifts(
+        [Description("Comma-separated list of specific load case names, or 'all' for all cases")] string cases = "all",
+        [Description("Comma-separated list of specific combo names, or 'all' for all combos")] string combos = "all")
     {
         try
         {
@@ -298,6 +420,25 @@ public class ResultsTools
             }
 
             var model = etabs.Model;
+
+            // Parse input parameters
+            string[] caseNames = null;
+            string[] comboNames = null;
+
+            if (!string.IsNullOrEmpty(cases) && !cases.Equals("all", StringComparison.OrdinalIgnoreCase))
+            {
+                caseNames = cases.Split(',').Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToArray();
+            }
+
+            if (!string.IsNullOrEmpty(combos) && !combos.Equals("all", StringComparison.OrdinalIgnoreCase))
+            {
+                comboNames = combos.Split(',').Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToArray();
+            }
+
+            // Ensure output setup
+            EnsureOutputSetup(etabs, caseNames, comboNames);
+
+            // Get results
             var results = model.AnalysisResults.GetStoryDrifts();
 
             var drifts = results.Results.Select(r => new
@@ -320,6 +461,11 @@ public class ResultsTools
             {
                 success = true,
                 count = drifts.Count,
+                setupInfo = new
+                {
+                    casesSelected = caseNames?.Length ?? model.LoadCases.Count(),
+                    combosSelected = comboNames?.Length ?? model.LoadCombinations.Count()
+                },
                 drifts = drifts
             }, new JsonSerializerOptions { WriteIndented = true });
         }
@@ -333,4 +479,81 @@ public class ResultsTools
         }
     }
 
+    [McpServerTool]
+    [Description("Set specific load cases and combinations for output or select all if not specified")]
+    public string SetOutputSelection(
+        [Description("Comma-separated list of load case names to select, or 'all' for all cases")] string cases = "all",
+        [Description("Comma-separated list of combo names to select, or 'all' for all combos")] string combos = "all",
+        [Description("Set to false to deselect instead of select")] bool select = true)
+    {
+        try
+        {
+            var etabs = ETABSWrapper.Connect();
+            if (etabs == null)
+            {
+                return JsonSerializer.Serialize(new
+                {
+                    success = false,
+                    error = "No active ETABS instance found."
+                });
+            }
+
+            var model = etabs.Model;
+            int casesProcessed = 0;
+            int combosProcessed = 0;
+
+            // Process cases
+            if (!string.IsNullOrEmpty(cases))
+            {
+                if (cases.Equals("all", StringComparison.OrdinalIgnoreCase))
+                {
+                    casesProcessed = model.AnalysisResultsSetup.SetCaseSelectedForOutput("all", select);
+                }
+                else
+                {
+                    var caseNames = cases.Split(',').Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToArray();
+                    foreach (var caseName in caseNames)
+                    {
+                        var result = model.AnalysisResultsSetup.SetCaseSelectedForOutput(caseName, select);
+                        if (result == 0) casesProcessed++;
+                    }
+                }
+            }
+
+            // Process combos
+            if (!string.IsNullOrEmpty(combos))
+            {
+                if (combos.Equals("all", StringComparison.OrdinalIgnoreCase))
+                {
+                    combosProcessed = model.AnalysisResultsSetup.SetComboSelectedForOutput("all", select);
+                }
+                else
+                {
+                    var comboNames = combos.Split(',').Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToArray();
+                    foreach (var comboName in comboNames)
+                    {
+                        var result = model.AnalysisResultsSetup.SetComboSelectedForOutput(comboName, select);
+                        if (result == 0) combosProcessed++;
+                    }
+                }
+            }
+
+            return JsonSerializer.Serialize(new
+            {
+                success = true,
+                action = select ? "selected" : "deselected",
+                casesProcessed = casesProcessed,
+                combosProcessed = combosProcessed,
+                message = $"Successfully {(select ? "selected" : "deselected")} {casesProcessed} cases and {combosProcessed} combos for output"
+            }, new JsonSerializerOptions { WriteIndented = true });
+        }
+        catch (Exception ex)
+        {
+            return JsonSerializer.Serialize(new
+            {
+                success = false,
+                error = ex.Message
+            });
+        }
+    }
 }

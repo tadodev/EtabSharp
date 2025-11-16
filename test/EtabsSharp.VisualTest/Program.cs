@@ -109,13 +109,7 @@ try
         Console.WriteLine($"Total Results: {displacements.NumberResults}");
 
         //setup all load case for base reaction retrieval
-        var cases = model.LoadCases.GetAllLoadCases();
-
-        foreach (LoadCase loadCase in cases)
-        {
-            model.AnalysisResultsSetup.SetCaseSelectedForOutput(loadCase.Name);
-        }
-
+        model.AnalysisResultsSetup.SetAllCasesAndCombosForOutput();
         var baseReactionResults = model.AnalysisResults.GetBaseReact();
 
         var reactions = baseReactionResults.Results.Select(r => new

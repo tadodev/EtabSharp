@@ -7,7 +7,6 @@ using EtabSharp.Elements.PointObj;
 using EtabSharp.Elements.Selection;
 using EtabSharp.Elements.Story;
 using EtabSharp.Groups;
-using EtabSharp.Interfaces;
 using EtabSharp.Interfaces.AnalysisResults;
 using EtabSharp.Interfaces.Analyzes;
 using EtabSharp.Interfaces.Elements.Objects;

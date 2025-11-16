@@ -1,5 +1,4 @@
 ﻿using EtabSharp.AnalysisResultsSetup;
-using EtabSharp.Interfaces;
 using EtabSharp.Interfaces.AnalysisResults;
 using ETABSv1;
 using Microsoft.Extensions.Logging;

@@ -13,10 +13,9 @@ using EtabSharp.AnalysisResults.Models.AnalysisResults.Piers;
 using EtabSharp.AnalysisResults.Models.AnalysisResults.SectionCuts;
 using EtabSharp.AnalysisResults.Models.AnalysisResults.Spandrels;
 using EtabSharp.AnalysisResults.Models.AnalysisResults.StoryResults;
-using EtabSharp.Interfaces.AnalysisResults;
 using ETABSv1;
 
-namespace EtabSharp.Interfaces;
+namespace EtabSharp.Interfaces.AnalysisResults;
 
 /// <summary>
 /// Interface for retrieving analysis results from ETABS model.

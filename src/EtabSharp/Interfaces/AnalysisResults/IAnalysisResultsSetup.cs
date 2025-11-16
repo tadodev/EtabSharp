@@ -37,19 +37,38 @@ public interface IAnalysisResultsSetup
     /// Sets whether a load case is selected for output.
     /// Wraps cSapModel.Results.Setup.SetCaseSelectedForOutput.
     /// </summary>
-    /// <param name="name">Name of the load case</param>
+    /// <param name="name">Case name, or "all" to select all cases, or null/empty for all cases</param>
     /// <param name="selected">True to select for output, false to deselect</param>
-    /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetCaseSelectedForOutput(string name, bool selected = true);
+    /// <returns>0 for success, or count of successfully processed cases when name is "all"</returns>
+    int SetCaseSelectedForOutput(string name = "all", bool selected = true);
 
     /// <summary>
     /// Sets whether a load combination is selected for output.
     /// Wraps cSapModel.Results.Setup.SetComboSelectedForOutput.
     /// </summary>
-    /// <param name="name">Name of the load combination</param>
+    /// <param name="name">Combo name, or "all" to select all combos, or null/empty for all combos</param>
     /// <param name="selected">True to select for output, false to deselect</param>
-    /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetComboSelectedForOutput(string name, bool selected = true);
+    /// <returns>0 for success, or count of successfully processed combos when name is "all"</returns>
+    int SetComboSelectedForOutput(string name = "all", bool selected = true);
+
+    /// <summary>
+    /// Sets all load cases and combinations for output selection.
+    /// </summary>
+    /// <param name="selected">True to select all, false to deselect all</param>
+    /// <returns>Tuple containing (casesProcessed, combosProcessed)</returns>
+    (int CasesProcessed, int CombosProcessed) SetAllCasesAndCombosForOutput(bool selected = true);
+
+    /// <summary>
+    /// Selects all load cases and combinations for output (convenience method).
+    /// </summary>
+    /// <returns>Tuple containing (casesSelected, combosSelected)</returns>
+    (int CasesSelected, int CombosSelected) SelectAllForOutput();
+
+    /// <summary>
+    /// Deselects all load cases and combinations for output (convenience method).
+    /// </summary>
+    /// <returns>Tuple containing (casesDeselected, combosDeselected)</returns>
+    (int CasesDeselected, int CombosDeselected) DeselectAllForOutput();
 
     #endregion
 
