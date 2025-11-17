@@ -8,11 +8,12 @@ namespace EtabSharp.Mcp.Tools;
 /// <summary>
 /// MCP tools for building ETABS models by adding points, frames, and loads
 /// </summary>
-public class ModelBuildingTools
+[McpServerToolType]
+public static class ModelBuildingTools
 {
     [McpServerTool]
     [Description("Add a point (joint/node) to the model at specified coordinates")]
-    public string AddPoint(
+    public static string AddPoint(
         [Description("X coordinate")] double x,
         [Description("Y coordinate")] double y,
         [Description("Z coordinate")] double z,
@@ -52,7 +53,7 @@ public class ModelBuildingTools
 
     [McpServerTool]
     [Description("Add a frame element (beam, column, brace) between two points")]
-    public string AddFrame(
+    public static string AddFrame(
         [Description("Name of the start point")] string point1,
         [Description("Name of the end point")] string point2,
         [Description("Section name to use (default: 'Default')")] string sectionName = "Default",
@@ -94,7 +95,7 @@ public class ModelBuildingTools
 
     [McpServerTool]
     [Description("Set restraint (support) conditions at a point")]
-    public string SetRestraint(
+    public static string SetRestraint(
         [Description("Name of the point")] string pointName,
         [Description("Restrain translation in X (true/false)")] bool ux = false,
         [Description("Restrain translation in Y (true/false)")] bool uy = false,
@@ -147,7 +148,7 @@ public class ModelBuildingTools
 
     [McpServerTool]
     [Description("Add a point load to a joint")]
-    public string AddPointLoad(
+    public static string AddPointLoad(
         [Description("Name of the point")] string pointName,
         [Description("Load pattern name")] string loadPattern,
         [Description("Force in X direction")] double fx = 0,
@@ -205,7 +206,7 @@ public class ModelBuildingTools
 
     [McpServerTool]
     [Description("Add a distributed load to a frame element")]
-    public string AddFrameDistributedLoad(
+    public static string AddFrameDistributedLoad(
         [Description("Name of the frame")] string frameName,
         [Description("Load pattern name")] string loadPattern,
         [Description("Load value (force per length)")] double loadValue,

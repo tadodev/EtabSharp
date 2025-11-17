@@ -10,13 +10,14 @@ namespace EtabSharp.Mcp.Tools;
 /// <summary>
 /// MCP tools for retrieving analysis results from ETABS
 /// </summary>
-public class ResultsTools
+[McpServerToolType]
+public static class ResultsTools
 {
     /// <summary>
     /// Ensures cases and combos are selected for output before retrieving results.
     /// If specific names are provided, selects those; otherwise selects all.
     /// </summary>
-    private void EnsureOutputSetup(ETABSApplication etabs, string[] caseNames = null, string[] comboNames = null)
+    private static void EnsureOutputSetup(ETABSApplication etabs, string[] caseNames = null, string[] comboNames = null)
     {
         var model = etabs.Model;
 
@@ -49,7 +50,7 @@ public class ResultsTools
 
     [McpServerTool]
     [Description("Get base reactions for all load cases and combinations including forces and moments at the base of the structure")]
-    public string GetBaseReactions(
+    public static string GetBaseReactions(
         [Description("Comma-separated list of specific load case names, or 'all' for all cases")] string cases = "all",
         [Description("Comma-separated list of specific combo names, or 'all' for all combos")] string combos = "all")
     {
@@ -130,7 +131,7 @@ public class ResultsTools
 
     [McpServerTool]
     [Description("Get joint displacements for specified points or all points in the model")]
-    public string GetJointDisplacements(
+    public static string GetJointDisplacements(
         [Description("Name of specific joint/point, or 'all' for all joints")] string pointName = "all",
         [Description("Comma-separated list of specific load case names, or 'all' for all cases")] string cases = "all",
         [Description("Comma-separated list of specific combo names, or 'all' for all combos")] string combos = "all")
@@ -214,7 +215,7 @@ public class ResultsTools
 
     [McpServerTool]
     [Description("Get frame forces for specified frame elements including axial, shear, and moment values")]
-    public string GetFrameForces(
+    public static string GetFrameForces(
         [Description("Name of specific frame element, or 'all' for all frames")] string frameName = "all",
         [Description("Comma-separated list of specific load case names, or 'all' for all cases")] string cases = "all",
         [Description("Comma-separated list of specific combo names, or 'all' for all combos")] string combos = "all")
@@ -299,7 +300,7 @@ public class ResultsTools
 
     [McpServerTool]
     [Description("Get modal analysis results including periods, frequencies, and participation factors")]
-    public string GetModalResults(
+    public static string GetModalResults(
         [Description("Comma-separated list of specific modal case names, or 'all' for all modal cases")] string modalCases = "all")
     {
         try
@@ -403,7 +404,7 @@ public class ResultsTools
 
     [McpServerTool]
     [Description("Get story drifts for all stories including maximum drift ratios")]
-    public string GetStoryDrifts(
+    public static string GetStoryDrifts(
         [Description("Comma-separated list of specific load case names, or 'all' for all cases")] string cases = "all",
         [Description("Comma-separated list of specific combo names, or 'all' for all combos")] string combos = "all")
     {
@@ -481,7 +482,7 @@ public class ResultsTools
 
     [McpServerTool]
     [Description("Set specific load cases and combinations for output or select all if not specified")]
-    public string SetOutputSelection(
+    public static string SetOutputSelection(
         [Description("Comma-separated list of load case names to select, or 'all' for all cases")] string cases = "all",
         [Description("Comma-separated list of combo names to select, or 'all' for all combos")] string combos = "all",
         [Description("Set to false to deselect instead of select")] bool select = true)

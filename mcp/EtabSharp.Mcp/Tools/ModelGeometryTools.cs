@@ -9,11 +9,12 @@ namespace EtabSharp.Mcp.Tools;
 /// <summary>
 /// MCP tools for retrieving model geometry information from ETABS
 /// </summary>
-public class ModelGeometryTools
+[McpServerToolType]
+public static class ModelGeometryTools
 {
     [McpServerTool]
     [Description("Get detailed information about all points (joints/nodes) in the ETABS model including coordinates, restraints, and connectivity")]
-    public string GetPointsInformation()
+    public static string GetPointsInformation()
     {
         try
         {
@@ -92,7 +93,7 @@ public class ModelGeometryTools
 
     [McpServerTool]
     [Description("Get detailed information about frame elements (beams, columns, braces) including sections, materials, end releases, and loads")]
-    public string GetFrameElementsInformation()
+    public static string GetFrameElementsInformation()
     {
         try
         {
@@ -182,7 +183,7 @@ public class ModelGeometryTools
 
     [McpServerTool]
     [Description("Get detailed information about area elements (slabs, walls, ramps) including properties, assignments, and mesh information")]
-    public string GetAreaElementsInformation()
+    public static string GetAreaElementsInformation()
     {
         try
         {
@@ -250,7 +251,7 @@ public class ModelGeometryTools
 
     [McpServerTool]
     [Description("Get elements on a specific story level including frames, areas, and points")]
-    public string GetElementsOnStory(
+    public static string GetElementsOnStory(
         [Description("Name of the story (e.g., 'Story1', 'Story2', 'Roof')")] string storyName)
     {
         try

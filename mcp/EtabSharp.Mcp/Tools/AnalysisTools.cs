@@ -8,11 +8,12 @@ namespace EtabSharp.Mcp.Tools;
 /// <summary>
 /// MCP tools for running analysis and checking analysis status
 /// </summary>
-internal class AnalysisTools
+[McpServerToolType]
+internal static class AnalysisTools
 {
     [McpServerTool]
     [Description("Get the current analysis status for all load cases including which cases have been run and their completion status")]
-    public string GetAnalysisStatus()
+    public static string GetAnalysisStatus()
     {
         try
         {
@@ -70,7 +71,7 @@ internal class AnalysisTools
 
     [McpServerTool]
     [Description("Run the analysis for the ETABS model. This will create the analysis model and run all cases set to run.")]
-    public string RunAnalysis()
+    public static string RunAnalysis()
     {
         try
         {
@@ -134,7 +135,7 @@ internal class AnalysisTools
 
     [McpServerTool]
     [Description("Set which load cases should run during analysis. Provide comma-separated case names, or use 'all' to run all cases.")]
-    public string SetCasesToRun(
+    public static string SetCasesToRun(
         [Description("Comma-separated list of case names to run, or 'all' for all cases")] string caseNames)
     {
         try
@@ -195,7 +196,7 @@ internal class AnalysisTools
 
     [McpServerTool]
     [Description("Delete analysis results for all cases or specific cases")]
-    public string DeleteResults(
+    public static string DeleteResults(
         [Description("Name of specific case to delete results for, or 'all' to delete all results")] string caseName = "all")
     {
         try

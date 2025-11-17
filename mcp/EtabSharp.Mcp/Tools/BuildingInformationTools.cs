@@ -8,11 +8,12 @@ namespace EtabSharp.Mcp.Tools;
 /// <summary>
 /// MCP tools for retrieving building information from ETABS model
 /// </summary>
-internal class BuildingInformationTools
+[McpServerToolType]
+public static class BuildingInformationTools
 {
     [McpServerTool]
     [Description("Get comprehensive building information including story count, heights, materials, sections, load patterns, and load cases from the active ETABS model")]
-    public string GetBuildingInformation()
+    public static string GetBuildingInformation()
     {
         try
         {

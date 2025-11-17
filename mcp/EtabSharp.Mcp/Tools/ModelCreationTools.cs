@@ -9,11 +9,12 @@ namespace EtabSharp.Mcp.Tools;
 /// <summary>
 /// MCP tools for creating and modifying ETABS models
 /// </summary>
-public class ModelCreationTools
+[McpServerToolType]
+public static class ModelCreationTools
 {
     [McpServerTool]
     [Description("Create a new blank ETABS model")]
-    public string CreateBlankModel()
+    public static string CreateBlankModel()
     {
         try
         {
@@ -47,7 +48,7 @@ public class ModelCreationTools
 
     [McpServerTool]
     [Description("Create a new grid-only model with specified parameters")]
-    public string CreateGridOnlyModel(
+    public static string CreateGridOnlyModel(
         [Description("Number of stories")] int numberStories,
         [Description("Typical story height in current units")] double typicalStoryHeight,
         [Description("Bottom story height in current units")] double bottomStoryHeight,
@@ -107,7 +108,7 @@ public class ModelCreationTools
 
     [McpServerTool]
     [Description("Add a concrete material to the model")]
-    public string AddConcreteMaterial(
+    public static string AddConcreteMaterial(
         [Description("Name for the concrete material")] string name,
         [Description("Compressive strength (fc) in current units")] double fc,
         [Description("Modulus of elasticity in current units")] double ec)
@@ -151,7 +152,7 @@ public class ModelCreationTools
 
     [McpServerTool]
     [Description("Add a steel material to the model")]
-    public string AddSteelMaterial(
+    public static string AddSteelMaterial(
         [Description("Name for the steel material")] string name,
         [Description("Yield stress (Fy) in current units")] double fy,
         [Description("Ultimate stress (Fu) in current units")] double fu)
@@ -195,7 +196,7 @@ public class ModelCreationTools
 
     [McpServerTool]
     [Description("Add a rectangular frame section (for beams or columns)")]
-    public string AddRectangularSection(
+    public static string AddRectangularSection(
         [Description("Name for the section")] string name,
         [Description("Material name (must exist in model)")] string materialName,
         [Description("Section depth (local 3-axis) in current units")] double depth,
@@ -246,7 +247,7 @@ public class ModelCreationTools
 
     [McpServerTool]
     [Description("Add a wall section property")]
-    public string AddWallSection(
+    public static string AddWallSection(
         [Description("Name for the wall section")] string name,
         [Description("Material name (must exist in model)")] string materialName,
         [Description("Wall thickness in current units")] double thickness)
@@ -300,7 +301,7 @@ public class ModelCreationTools
 
     [McpServerTool]
     [Description("Add a slab section property")]
-    public string AddSlabSection(
+    public static string AddSlabSection(
         [Description("Name for the slab section")] string name,
         [Description("Material name (must exist in model)")] string materialName,
         [Description("Slab thickness in current units")] double thickness)
@@ -355,7 +356,7 @@ public class ModelCreationTools
 
     [McpServerTool]
     [Description("Add a load pattern to the model")]
-    public string AddLoadPattern(
+    public static string AddLoadPattern(
         [Description("Name for the load pattern")] string name,
         [Description("Type of load: Dead, Live, Wind, Seismic, Snow, etc.")] string loadType,
         [Description("Self-weight multiplier (typically 1.0 for Dead, 0.0 for others)")] double selfWeightMultiplier = 0.0)
@@ -412,7 +413,7 @@ public class ModelCreationTools
 
     [McpServerTool]
     [Description("Save the current model to a file")]
-    public string SaveModel(
+    public static string SaveModel(
         [Description("Full file path to save the model (must end with .edb)")] string filePath)
     {
         try
@@ -450,7 +451,7 @@ public class ModelCreationTools
 
     [McpServerTool]
     [Description("Set the unit system for the model")]
-    public string SetUnits(
+    public static string SetUnits(
         [Description("Unit system: 'US_Kip_Ft', 'US_Kip_In', 'Metric_kN_m', 'Metric_kN_mm', 'Metric_N_m', 'Metric_N_mm'")] string unitSystem)
     {
         try
