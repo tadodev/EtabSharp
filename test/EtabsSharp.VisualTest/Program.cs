@@ -1,5 +1,6 @@
 ﻿using EtabSharp.AnalysisResults.Models.AnalysisResults.BaseReactions;
 using EtabSharp.Core;
+using EtabSharp.DatabaseTables.Models;
 using EtabSharp.Elements.FrameObj.Models;
 using EtabSharp.Elements.PointObj.Models;
 using EtabSharp.Loads.LoadCases.Models;
@@ -54,6 +55,22 @@ try
 {
     var model = etabs.Model;
 
+    // Get the available database tables
+
+    var tables = model.DatabaseTables.GetAvailableTables();
+
+    foreach (var table in tables.Tables)
+    {
+        Console.WriteLine(table.TableName);
+    }
+
+    Console.WriteLine("---------------------------------");
+    var name = model.DatabaseTables.GetAllFieldsInTable("Load Combination Definitions");
+
+    foreach (TableFieldInfo tableFieldInfo in name.Fields)
+    {
+        Console.WriteLine(tableFieldInfo);
+    }
     // Run the model
     model.Analyze.SetAllCasesToRun();
     model.Analyze.RunCompleteAnalysis();
@@ -82,7 +99,7 @@ try
     //    ref stepType, ref stepNum, ref u1, ref u2, ref u3, ref r1, ref r2, ref r3);
 
     // Print joint displacement results
-    if (displacements.IsSuccess && displacements.NumberResults > 0)
+    if (displacements is { IsSuccess: true, NumberResults: > 0 })
     {
         Console.WriteLine("\n=================================================");
         Console.WriteLine("  Joint Displacement Results");
@@ -121,7 +138,7 @@ try
             moments = new { mx = r.MX, my = r.MY, mz = r.MZ }
         }).ToList();
 
-        if (baseReactionResults.IsSuccess && baseReactionResults.NumberResults > 0)
+        if (baseReactionResults is { IsSuccess: true, NumberResults: > 0 })
         {
             Console.WriteLine($"Base Reaction Location:");
             Console.WriteLine($"  Global X: {baseReactionResults.GlobalX:F4}");

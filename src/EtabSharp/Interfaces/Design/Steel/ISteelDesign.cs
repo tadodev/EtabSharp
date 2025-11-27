@@ -2,5 +2,5 @@
 
 public class ISteelDesign
 {
-    
+    //placeholder for future steel design management code
 }

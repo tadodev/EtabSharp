@@ -1,6 +1,7 @@
 ﻿using EtabSharp.AnalysisResults;
 using EtabSharp.AnalysisResultsSetup;
 using EtabSharp.Analyzes;
+using EtabSharp.DatabaseTables;
 using EtabSharp.Elements.AreaObj;
 using EtabSharp.Elements.FrameObj;
 using EtabSharp.Elements.PointObj;
@@ -9,6 +10,7 @@ using EtabSharp.Elements.Story;
 using EtabSharp.Groups;
 using EtabSharp.Interfaces.AnalysisResults;
 using EtabSharp.Interfaces.Analyzes;
+using EtabSharp.Interfaces.DatabaseTable;
 using EtabSharp.Interfaces.Elements.Objects;
 using EtabSharp.Interfaces.Elements.Selection;
 using EtabSharp.Interfaces.Elements.Stories;
@@ -37,6 +39,7 @@ namespace EtabSharp.Core;
 /// - Elements: Model objects and their operations (Points, Frames, Areas, Stories,Selection)
 /// - Analysis: Analysis settings and execution
 /// - Results: Result extraction and post-processing
+/// - Designs: Design of structural elements (Steel, Concrete,Composite etc.)
 /// </summary>
 public sealed class ETABSModel
 {
@@ -100,6 +103,20 @@ public sealed class ETABSModel
 
     #endregion
 
+    #region DatabaseTables Manager
+
+    private readonly Lazy<IDatabaseTables> _databaseTables;
+
+    #endregion
+
+    #region Design Managers
+
+    //TODO: Steel Design Manager
+    //TODO: Concrete Design Manager
+    //TODO: Composite Design Manager
+
+    #endregion
+
     #region Constructor
 
     internal ETABSModel(cSapModel sapModel, ILogger logger)
@@ -136,6 +153,11 @@ public sealed class ETABSModel
         // Initialize Results Managers
         _analysisResultsSetup = new Lazy<IAnalysisResultsSetup>(() => new AnalysisResultsSetupManager(_sapModel, _logger));
         _analysisResults = new Lazy<IAnalysisResults>(() => new AnalysisResultsManager(_sapModel, _logger));
+
+        // Initialize DatabaseTables Manager
+        _databaseTables = new Lazy<IDatabaseTables>(() => new DatabaseTablesManager(_sapModel, _logger));
+
+        // TODO: Initialize Design Managers
     }
 
     #endregion
@@ -260,6 +282,23 @@ public sealed class ETABSModel
     /// Analysis results retrieval and post-processing.
     /// </summary>
     public IAnalysisResults AnalysisResults => _analysisResults.Value;
+
+    #endregion
+
+    #region DatabaseTables Properties
+
+    /// <summary>
+    /// Gets and Sets the collection of database tables associated with the current Etabs model.
+    /// </summary>
+    public IDatabaseTables DatabaseTables => _databaseTables.Value;
+
+    #endregion
+
+    #region Design Properties
+
+    //TODO: Implement Design Managers steel
+    //TODO: Implement Design Managers concrete
+    //TODO: Implement Design Managers composite
 
     #endregion
 
