@@ -60,9 +60,4 @@
 		</Reference>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Design\Steel\Models\" />
-	  <Folder Include="Interfaces\Design\Steel\" />
-	</ItemGroup>
-
 </Project>

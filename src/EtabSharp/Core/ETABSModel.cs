@@ -2,6 +2,7 @@
 using EtabSharp.AnalysisResultsSetup;
 using EtabSharp.Analyzes;
 using EtabSharp.DatabaseTables;
+using EtabSharp.Design.Steel;
 using EtabSharp.Elements.AreaObj;
 using EtabSharp.Elements.FrameObj;
 using EtabSharp.Elements.PointObj;
@@ -11,6 +12,7 @@ using EtabSharp.Groups;
 using EtabSharp.Interfaces.AnalysisResults;
 using EtabSharp.Interfaces.Analyzes;
 using EtabSharp.Interfaces.DatabaseTable;
+using EtabSharp.Interfaces.Design.Steel;
 using EtabSharp.Interfaces.Elements.Objects;
 using EtabSharp.Interfaces.Elements.Selection;
 using EtabSharp.Interfaces.Elements.Stories;
@@ -74,7 +76,6 @@ public sealed class ETABSModel
     private readonly Lazy<IArea> _areas;
     private readonly Lazy<IGroup> _groups;
 
-    // TODO: Add when implemented
 
     #endregion
 
@@ -112,6 +113,8 @@ public sealed class ETABSModel
     #region Design Managers
 
     //TODO: Steel Design Manager
+    private readonly Lazy<ISteelDesign> _steelDesign;
+
     //TODO: Concrete Design Manager
     //TODO: Composite Design Manager
 
@@ -158,6 +161,7 @@ public sealed class ETABSModel
         _databaseTables = new Lazy<IDatabaseTables>(() => new DatabaseTablesManager(_sapModel, _logger));
 
         // TODO: Initialize Design Managers
+        _steelDesign = new Lazy<ISteelDesign>(() => new SteelDesignManager(_sapModel, _logger));
     }
 
     #endregion
@@ -297,6 +301,12 @@ public sealed class ETABSModel
     #region Design Properties
 
     //TODO: Implement Design Managers steel
+
+    /// <summary>
+    /// Gets and Sets the steel design function with specific code
+    /// </summary>
+    public ISteelDesign SteelDesign => _steelDesign.Value;
+
     //TODO: Implement Design Managers concrete
     //TODO: Implement Design Managers composite
 
