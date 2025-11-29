@@ -2,6 +2,7 @@
 using EtabSharp.AnalysisResultsSetup;
 using EtabSharp.Analyzes;
 using EtabSharp.DatabaseTables;
+using EtabSharp.Design.Concrete;
 using EtabSharp.Design.Steel;
 using EtabSharp.Elements.AreaObj;
 using EtabSharp.Elements.FrameObj;
@@ -12,6 +13,7 @@ using EtabSharp.Groups;
 using EtabSharp.Interfaces.AnalysisResults;
 using EtabSharp.Interfaces.Analyzes;
 using EtabSharp.Interfaces.DatabaseTable;
+using EtabSharp.Interfaces.Design.Concrete;
 using EtabSharp.Interfaces.Design.Steel;
 using EtabSharp.Interfaces.Elements.Objects;
 using EtabSharp.Interfaces.Elements.Selection;
@@ -114,6 +116,7 @@ public sealed class ETABSModel
 
     //TODO: Steel Design Manager
     private readonly Lazy<ISteelDesign> _steelDesign;
+    private readonly Lazy<IConcreteDesign> _concreteDesign;
 
     //TODO: Concrete Design Manager
     //TODO: Composite Design Manager
@@ -162,6 +165,7 @@ public sealed class ETABSModel
 
         // TODO: Initialize Design Managers
         _steelDesign = new Lazy<ISteelDesign>(() => new SteelDesignManager(_sapModel, _logger));
+        _concreteDesign = new Lazy<IConcreteDesign>(() => new ConcreteDesignManager(_sapModel, _logger));
     }
 
     #endregion
@@ -308,6 +312,12 @@ public sealed class ETABSModel
     public ISteelDesign SteelDesign => _steelDesign.Value;
 
     //TODO: Implement Design Managers concrete
+
+    /// <summary>
+    /// Gets and Sets the concrete design manager for the current context.
+    /// </summary>
+    public IConcreteDesign ConcreteDesign => _concreteDesign.Value;
+
     //TODO: Implement Design Managers composite
 
     #endregion

@@ -88,20 +88,6 @@ try
 
     // Get Joint Displacements for joint "14"
     var displacements = model.AnalysisResults.GetJointDispl("4", eItemTypeElm.Element);
-    int numberResults = 0;
-    string[] obj = Array.Empty<string>();
-    string[] elm = Array.Empty<string>();
-    string[] loadCase = Array.Empty<string>();
-    string[] stepType = Array.Empty<string>();
-    double[] stepNum = Array.Empty<double>();
-    double[] u1 = Array.Empty<double>();
-    double[] u2 = Array.Empty<double>();
-    double[] u3 = Array.Empty<double>();
-    double[] r1 = Array.Empty<double>();
-    double[] r2 = Array.Empty<double>();
-    double[] r3 = Array.Empty<double>();
-    var ret = etabs.SapModel.Results.JointDispl("", eItemTypeElm.SelectionElm, ref numberResults, ref obj, ref elm, ref loadCase,
-        ref stepType, ref stepNum, ref u1, ref u2, ref u3, ref r1, ref r2, ref r3);
 
     // Print joint displacement results
     if (displacements is { IsSuccess: true, NumberResults: > 0 })
@@ -181,15 +167,26 @@ try
 
 
     // START THE DESIGN PART
-    model.SteelDesign.StartDesign();
-    var results = model.SteelDesign.GetSummaryResults_3("All", eItemType.Group);
+    //model.SteelDesign.StartDesign();
+    //var results = model.SteelDesign.GetSummaryResults_3("All", eItemType.Group);
 
-    foreach (var steelDesignSummaryResult in results.Results)
+    //foreach (var steelDesignSummaryResult in results.Results)
+    //{
+    //    Console.WriteLine($"Frame:{steelDesignSummaryResult.FrameName} with DCR:{steelDesignSummaryResult.ControllingRatio}");
+    //}
+
+    model.ConcreteDesign.StartDesign();
+
+    var results = model.ConcreteDesign.GetSummaryResultsColumn("All", eItemType.Group);
+
+    foreach (var concreteColumnDesignResult in results.Results)
     {
-        Console.WriteLine($"Frame:{steelDesignSummaryResult.FrameName} with DCR:{steelDesignSummaryResult.ControllingRatio}");
+        Console.WriteLine($"Frame: {concreteColumnDesignResult.FrameName} with DCR: {concreteColumnDesignResult.PMMRatio}");
     }
 
+    var totals = model.ConcreteDesign.GetRebarPrefsColumn(52);
 
+    
 }
 catch (Exception e)
 {
