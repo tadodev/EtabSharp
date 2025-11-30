@@ -1,0 +1,63 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags like v1.0.0, v0.1.0-beta
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          
+      - name: Restore dependencies
+        run: dotnet restore
+        
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+        
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build
+        
+      - name: Extract version from tag
+        id: version
+        run: |
+          $tag = "${{ github.ref }}" -replace "refs/tags/v", ""
+          echo "version=$tag" >> $env:GITHUB_OUTPUT
+          
+          # Check if it's a prerelease
+          if ($tag -match "-") {
+            echo "is_prerelease=true" >> $env:GITHUB_OUTPUT
+          } else {
+            echo "is_prerelease=false" >> $env:GITHUB_OUTPUT
+          }
+        
+      - name: Update project version
+        run: |
+          $version = "${{ steps.version.outputs.version }}"
+          $csprojPath = "src\EtabSharp\EtabSharp.csproj"
+          $xml = [xml](Get-Content $csprojPath)
+          $xml.Project.PropertyGroup[0].Version = $version
+          $xml.Save($csprojPath)
+        
+      - name: Pack NuGet package
+        run: dotnet pack src/EtabSharp/EtabSharp.csproj --configuration Release --output nuget
+        
+      - name: Publish to NuGet
+        run: dotnet nuget push "nuget\EtabSharp.${{ steps.version.outputs.version }}.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+        
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: nuget/EtabSharp.${{ steps.version.outputs.version }}.nupkg
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: false
+          prerelease: ${{ steps.version.outputs.is_prerelease == 'true' }}
