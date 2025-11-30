@@ -209,7 +209,7 @@ public partial class FrameObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "SetColumnSpliceOverwrite", $"Failed to set column splice overwrite for frame '{frameName}'");
 
-            _logger.LogDebug("Set column splice overwrite for frame {FrameName}: Option={Option}, Height={Height}", 
+            _logger.LogDebug("Set column splice overwrite for frame {FrameName}: Option={Option}, Height={Height}",
                 frameName, spliceOption, height);
             return ret;
         }
@@ -262,7 +262,7 @@ public partial class FrameObjectManager
     /// <param name="limitTension">Tension limit value</param>
     /// <param name="itemType">Item type for assignment</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetTCLimits(string frameName, bool limitCompressionExists, double limitCompression, 
+    public int SetTCLimits(string frameName, bool limitCompressionExists, double limitCompression,
         bool limitTensionExists, double limitTension, eItemType itemType = eItemType.Objects)
     {
         try
@@ -270,13 +270,13 @@ public partial class FrameObjectManager
             if (string.IsNullOrEmpty(frameName))
                 throw new ArgumentException("Frame name cannot be null or empty", nameof(frameName));
 
-            int ret = _sapModel.FrameObj.SetTCLimits(frameName, limitCompressionExists, limitCompression, 
+            int ret = _sapModel.FrameObj.SetTCLimits(frameName, limitCompressionExists, limitCompression,
                 limitTensionExists, limitTension, itemType);
 
             if (ret != 0)
                 throw new EtabsException(ret, "SetTCLimits", $"Failed to set T/C limits for frame '{frameName}'");
 
-            _logger.LogDebug("Set T/C limits for frame {FrameName}: Compression={CompExists}({CompLimit}), Tension={TenExists}({TenLimit})", 
+            _logger.LogDebug("Set T/C limits for frame {FrameName}: Compression={CompExists}({CompLimit}), Tension={TenExists}({TenLimit})",
                 frameName, limitCompressionExists, limitCompression, limitTensionExists, limitTension);
             return ret;
         }
@@ -302,7 +302,7 @@ public partial class FrameObjectManager
             bool limitCompressionExists = false, limitTensionExists = false;
             double limitCompression = 0, limitTension = 0;
 
-            int ret = _sapModel.FrameObj.GetTCLimits(frameName, ref limitCompressionExists, ref limitCompression, 
+            int ret = _sapModel.FrameObj.GetTCLimits(frameName, ref limitCompressionExists, ref limitCompression,
                 ref limitTensionExists, ref limitTension);
 
             if (ret != 0)
@@ -487,7 +487,7 @@ public partial class FrameObjectManager
     /// <param name="noOutputAtPointLoads">True to suppress output at point loads</param>
     /// <param name="itemType">Item type for assignment</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetOutputStations(string frameName, int stationType, double maxSegmentSize, int minStations, 
+    public int SetOutputStations(string frameName, int stationType, double maxSegmentSize, int minStations,
         bool noOutputAtElementEnds = false, bool noOutputAtPointLoads = false, eItemType itemType = eItemType.Objects)
     {
         try
@@ -495,13 +495,13 @@ public partial class FrameObjectManager
             if (string.IsNullOrEmpty(frameName))
                 throw new ArgumentException("Frame name cannot be null or empty", nameof(frameName));
 
-            int ret = _sapModel.FrameObj.SetOutputStations(frameName, stationType, maxSegmentSize, minStations, 
+            int ret = _sapModel.FrameObj.SetOutputStations(frameName, stationType, maxSegmentSize, minStations,
                 noOutputAtElementEnds, noOutputAtPointLoads, itemType);
 
             if (ret != 0)
                 throw new EtabsException(ret, "SetOutputStations", $"Failed to set output stations for frame '{frameName}'");
 
-            _logger.LogDebug("Set output stations for frame {FrameName}: Type={Type}, MaxSeg={MaxSeg}, MinSta={MinSta}", 
+            _logger.LogDebug("Set output stations for frame {FrameName}: Type={Type}, MaxSeg={MaxSeg}, MinSta={MinSta}",
                 frameName, stationType, maxSegmentSize, minStations);
             return ret;
         }
@@ -528,7 +528,7 @@ public partial class FrameObjectManager
             double maxSegmentSize = 0;
             bool noOutputAtElementEnds = false, noOutputAtPointLoads = false;
 
-            int ret = _sapModel.FrameObj.GetOutputStations(frameName, ref stationType, ref maxSegmentSize, 
+            int ret = _sapModel.FrameObj.GetOutputStations(frameName, ref stationType, ref maxSegmentSize,
                 ref minStations, ref noOutputAtElementEnds, ref noOutputAtPointLoads);
 
             if (ret != 0)
@@ -587,7 +587,7 @@ public partial class FrameObjectManager
     /// <param name="bracingLocation"></param>
     /// <param name="itemType">Item type for assignment</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetFullLateralBracing(string frameName,BracingType bracingType, BracingLocation bracingLocation, eItemType itemType = eItemType.Objects)
+    public int SetFullLateralBracing(string frameName, BracingType bracingType, BracingLocation bracingLocation, eItemType itemType = eItemType.Objects)
     {
         return SetLateralBracing(frameName, bracingType, bracingLocation, 0.0, 1.0, true, itemType); // 2 = Uniform bracing
     }
@@ -613,7 +613,7 @@ public partial class FrameObjectManager
     /// <param name="bracingType"></param>
     /// <param name="itemType">Item type for assignment</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int ClearLateralBracing(string frameName,BracingType bracingType, eItemType itemType = eItemType.Objects)
+    public int ClearLateralBracing(string frameName, BracingType bracingType, eItemType itemType = eItemType.Objects)
     {
         return DeleteLateralBracing(frameName, bracingType, itemType); // 3 = Clear all
     }

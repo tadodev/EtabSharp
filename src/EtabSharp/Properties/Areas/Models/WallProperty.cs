@@ -42,8 +42,8 @@ public class WallProperty : AreaProperty
     /// <param name="thickness">Wall thickness</param>
     /// <param name="wallPropType">Wall property type</param>
     /// <param name="shellType">Shell type</param>
-    public WallProperty(string name, string materialProperty, double thickness, 
-                       eWallPropType wallPropType = eWallPropType.Specified, 
+    public WallProperty(string name, string materialProperty, double thickness,
+                       eWallPropType wallPropType = eWallPropType.Specified,
                        eShellType shellType = eShellType.ShellThin)
     {
         Name = name;
@@ -75,7 +75,7 @@ public class WallProperty : AreaProperty
     /// <param name="thickness">Wall thickness</param>
     /// <param name="shellType">Shell type</param>
     /// <returns>WallProperty instance</returns>
-    public static WallProperty CreateStandard(string name, string materialProperty, double thickness, 
+    public static WallProperty CreateStandard(string name, string materialProperty, double thickness,
                                              eShellType shellType = eShellType.ShellThin)
     {
         return new WallProperty(name, materialProperty, thickness, eWallPropType.Specified, shellType);
@@ -88,7 +88,7 @@ public class WallProperty : AreaProperty
     /// <param name="autoSelectList">Array of property names for auto selection</param>
     /// <param name="startingProperty">Starting property for auto selection</param>
     /// <returns>WallProperty instance</returns>
-    public static WallProperty CreateAutoSelect(string name, string[] autoSelectList, 
+    public static WallProperty CreateAutoSelect(string name, string[] autoSelectList,
                                                string startingProperty = "Median")
     {
         return new WallProperty
@@ -147,12 +147,12 @@ public class WallProperty : AreaProperty
     {
         var baseString = base.ToString();
         var wallTypeString = GetWallPropTypeDescription();
-        
+
         if (WallPropType == eWallPropType.AutoSelectList)
         {
             return $"{baseString} | Type: {wallTypeString} | Auto Select: {AutoSelectList.Length} options";
         }
-        
+
         return $"{baseString} | Type: {wallTypeString}";
     }
 

@@ -46,13 +46,13 @@ public class FrameLoads
     public List<string> GetLoadPatterns()
     {
         var patterns = new HashSet<string>();
-        
+
         foreach (var load in DistributedLoads)
             patterns.Add(load.LoadPattern);
-        
+
         foreach (var load in PointLoads)
             patterns.Add(load.LoadPattern);
-        
+
         foreach (var load in TemperatureLoads)
             patterns.Add(load.LoadPattern);
 
@@ -83,7 +83,7 @@ public class FrameLoads
     public int RemoveLoadsForPattern(string loadPattern)
     {
         int removed = 0;
-        
+
         removed += DistributedLoads.RemoveAll(l => l.LoadPattern == loadPattern);
         removed += PointLoads.RemoveAll(l => l.LoadPattern == loadPattern);
         removed += TemperatureLoads.RemoveAll(l => l.LoadPattern == loadPattern);

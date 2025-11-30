@@ -167,7 +167,7 @@ public interface IStory
     /// <exception cref="ArgumentException">If story name is invalid.</exception>
     /// <exception cref="ArgumentOutOfRangeException">If splice height is negative.</exception>
     /// <exception cref="EtabSharp.Exceptions.EtabsException">If ETABS API fails.</exception>
-    int SetSplice(string storyName,bool spliceAbove, double spliceHeight);
+    int SetSplice(string storyName, bool spliceAbove, double spliceHeight);
 
     #endregion
 

@@ -206,8 +206,8 @@ public class Area
     /// <returns>True if design assignments exist</returns>
     public bool HasDesignAssignments()
     {
-        return !string.IsNullOrEmpty(PierName) || 
-               !string.IsNullOrEmpty(SpandrelName) || 
+        return !string.IsNullOrEmpty(PierName) ||
+               !string.IsNullOrEmpty(SpandrelName) ||
                !string.IsNullOrEmpty(DiaphragmName);
     }
 }

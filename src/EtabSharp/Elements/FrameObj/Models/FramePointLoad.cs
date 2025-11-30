@@ -1,5 +1,4 @@
-﻿using EtabSharp.Elements.AreaObj.Models;
-using ETABSv1;
+﻿using ETABSv1;
 
 namespace EtabSharp.Elements.FrameObj.Models;
 

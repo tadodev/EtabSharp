@@ -22,7 +22,6 @@ using EtabSharp.Interfaces.Groups;
 using EtabSharp.Interfaces.Loads;
 using EtabSharp.Interfaces.Properties;
 using EtabSharp.Interfaces.System;
-using EtabSharp.Loads;
 using EtabSharp.Loads.LoadCases;
 using EtabSharp.Loads.LoadCombos;
 using EtabSharp.Loads.LoadPatterns;

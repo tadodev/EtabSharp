@@ -1,6 +1,4 @@
-﻿using ETABSv1;
-
-namespace EtabSharp.Elements.AreaObj.Models;
+﻿namespace EtabSharp.Elements.AreaObj.Models;
 
 /// <summary>
 /// Represents a uniform load applied to an area object.
@@ -113,7 +111,7 @@ public class AreaUniformLoad
         return Direction switch
         {
             1 => "Local 1 axis",
-            2 => "Local 2 axis", 
+            2 => "Local 2 axis",
             3 => "Local 3 axis",
             4 => "Global X direction",
             5 => "Global Y direction",

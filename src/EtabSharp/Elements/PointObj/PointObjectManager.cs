@@ -54,7 +54,7 @@ public partial class PointObjectManager : IPoint
             if (ret != 0)
                 throw new EtabsException(ret, "AddCartesian", $"Failed to add point at ({x}, {y}, {z})");
 
-            _logger.LogDebug("Added point {PointName} at ({X}, {Y}, {Z}) in {CoordSys}", 
+            _logger.LogDebug("Added point {PointName} at ({X}, {Y}, {Z}) in {CoordSys}",
                 pointName, x, y, z, csys);
 
             return pointName;
@@ -194,7 +194,7 @@ public partial class PointObjectManager : IPoint
                 throw new EtabsException(ret, "GetAllPoints", "Failed to get all points");
 
             var points = new List<Point>();
-            
+
             for (int i = 0; i < numberNames && i < (names?.Length ?? 0); i++)
             {
                 var point = new Point

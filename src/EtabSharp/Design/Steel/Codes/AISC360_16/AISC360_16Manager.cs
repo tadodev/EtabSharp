@@ -10,7 +10,7 @@ namespace EtabSharp.Design.Steel.Codes.AISC360_16;
 /// Implementation of AISC 360-16 specific steel design operations.
 /// Implements IAISC360_16 interface - code-specific overwrites and preferences only.
 /// </summary>
-public class AISC360_16Manager: IAISC360_16
+public class AISC360_16Manager : IAISC360_16
 {
     private readonly cSapModel _sapModel;
     private readonly ILogger _logger;

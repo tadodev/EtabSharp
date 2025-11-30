@@ -656,7 +656,7 @@ public partial class AreaObjectManager
             int[] numPoints = null;
             double[] gx = null, gy = null, gz = null;
 
-            int ret = _sapModel.AreaObj.GetCurvedEdges(areaName, ref numEdges, ref curveType, ref tension, 
+            int ret = _sapModel.AreaObj.GetCurvedEdges(areaName, ref numEdges, ref curveType, ref tension,
                 ref numPoints, ref gx, ref gy, ref gz);
 
             if (ret != 0)

@@ -37,8 +37,8 @@ public partial class AreaObjectManager
             double[] endZoneThickness = null;
             double[] endZoneOffset = null;
 
-            int ret = _sapModel.AreaObj.GetRebarDataPier(areaName, ref numberRebarLayers, ref layerID, 
-                ref layerType, ref clearCover, ref barSizeName, ref barArea, ref barSpacing, ref numberBars, 
+            int ret = _sapModel.AreaObj.GetRebarDataPier(areaName, ref numberRebarLayers, ref layerID,
+                ref layerType, ref clearCover, ref barSizeName, ref barArea, ref barSpacing, ref numberBars,
                 ref confined, ref endZoneLength, ref endZoneThickness, ref endZoneOffset);
 
             if (ret != 0)
@@ -67,7 +67,7 @@ public partial class AreaObjectManager
                 rebarData.Layers.Add(layer);
             }
 
-            _logger.LogDebug("Retrieved pier rebar data for area {AreaName}: {LayerCount} layers", 
+            _logger.LogDebug("Retrieved pier rebar data for area {AreaName}: {LayerCount} layers",
                 areaName, numberRebarLayers);
 
             return rebarData;
@@ -99,7 +99,7 @@ public partial class AreaObjectManager
             int[] numberBars = null;
             bool[] confined = null;
 
-            int ret = _sapModel.AreaObj.GetRebarDataSpandrel(areaName, ref numberRebarLayers, ref layerID, 
+            int ret = _sapModel.AreaObj.GetRebarDataSpandrel(areaName, ref numberRebarLayers, ref layerID,
                 ref layerType, ref clearCover, ref barSizeIndex, ref barArea, ref barSpacing, ref numberBars, ref confined);
 
             if (ret != 0)
@@ -128,7 +128,7 @@ public partial class AreaObjectManager
                 rebarData.Layers.Add(layer);
             }
 
-            _logger.LogDebug("Retrieved spandrel rebar data for area {AreaName}: {LayerCount} layers", 
+            _logger.LogDebug("Retrieved spandrel rebar data for area {AreaName}: {LayerCount} layers",
                 areaName, numberRebarLayers);
 
             return rebarData;

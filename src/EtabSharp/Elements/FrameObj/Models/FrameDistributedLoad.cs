@@ -168,7 +168,7 @@ public class FrameDistributedLoad
         return new FrameDistributedLoad(frameName, loadPattern, loadValue, loadValue, eLoadType.Force, direction, startDistance, endDistance, coordinateSystem, isRelative);
     }
 
-    
+
 
     /// <summary>
     /// Checks if this is a uniform load (StartLoad = EndLoad).
@@ -225,7 +225,7 @@ public class FrameDistributedLoad
         string loadDesc = IsUniform()
             ? $"Uniform: {StartLoad:F2}"
             : $"Triangular: {StartLoad:F2} → {EndLoad:F2}";
-        
+
         string distanceDesc = IsRelativeDistance
             ? $"({StartDistance:F2}-{EndDistance:F2} rel)"
             : $"({StartDistance:F2}-{EndDistance:F2} abs)";

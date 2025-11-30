@@ -104,17 +104,17 @@ public enum eAreaPropertyType
     /// Wall property
     /// </summary>
     Wall = 1,
-    
+
     /// <summary>
     /// Slab property
     /// </summary>
     Slab = 2,
-    
+
     /// <summary>
     /// Deck property
     /// </summary>
     Deck = 3,
-    
+
     /// <summary>
     /// Shell property
     /// </summary>

@@ -1,5 +1,3 @@
-using ETABSv1;
-
 namespace EtabSharp.Elements.PointObj.Models;
 
 /// <summary>
@@ -43,12 +41,12 @@ public class PointDiaphragm
     /// <summary>
     /// Creates a diaphragm assignment with a named diaphragm
     /// </summary>
-    public static PointDiaphragm WithDiaphragm(string pointName, string diaphragmName) => 
+    public static PointDiaphragm WithDiaphragm(string pointName, string diaphragmName) =>
         new(pointName, 1, diaphragmName);
 
     public override string ToString()
     {
-        return DiaphragmOption == 0 
+        return DiaphragmOption == 0
             ? $"Point {PointName}: No diaphragm"
             : $"Point {PointName}: Diaphragm '{DiaphragmName}'";
     }

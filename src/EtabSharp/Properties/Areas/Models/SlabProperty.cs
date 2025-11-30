@@ -42,8 +42,8 @@ public class SlabProperty : AreaProperty
     /// <param name="thickness">Slab thickness</param>
     /// <param name="slabType">Slab type</param>
     /// <param name="shellType">Shell type</param>
-    public SlabProperty(string name, string materialProperty, double thickness, 
-                       eSlabType slabType = eSlabType.Slab, 
+    public SlabProperty(string name, string materialProperty, double thickness,
+                       eSlabType slabType = eSlabType.Slab,
                        eShellType shellType = eShellType.ShellThin)
     {
         Name = name;
@@ -79,7 +79,7 @@ public class SlabProperty : AreaProperty
     /// <param name="thickness">Slab thickness</param>
     /// <param name="shellType">Shell type</param>
     /// <returns>SlabProperty instance</returns>
-    public static SlabProperty CreateFlat(string name, string materialProperty, double thickness, 
+    public static SlabProperty CreateFlat(string name, string materialProperty, double thickness,
                                          eShellType shellType = eShellType.ShellThin)
     {
         return new SlabProperty(name, materialProperty, thickness, eSlabType.Slab, shellType);
@@ -93,7 +93,7 @@ public class SlabProperty : AreaProperty
     /// <param name="ribbedData">Ribbed slab parameters</param>
     /// <param name="shellType">Shell type</param>
     /// <returns>SlabProperty instance</returns>
-    public static SlabProperty CreateRibbed(string name, string materialProperty, RibbedSlabData ribbedData, 
+    public static SlabProperty CreateRibbed(string name, string materialProperty, RibbedSlabData ribbedData,
                                            eShellType shellType = eShellType.ShellThin)
     {
         return new SlabProperty
@@ -115,7 +115,7 @@ public class SlabProperty : AreaProperty
     /// <param name="waffleData">Waffle slab parameters</param>
     /// <param name="shellType">Shell type</param>
     /// <returns>SlabProperty instance</returns>
-    public static SlabProperty CreateWaffle(string name, string materialProperty, WaffleSlabData waffleData, 
+    public static SlabProperty CreateWaffle(string name, string materialProperty, WaffleSlabData waffleData,
                                            eShellType shellType = eShellType.ShellThin)
     {
         return new SlabProperty
@@ -176,7 +176,7 @@ public class SlabProperty : AreaProperty
     {
         var baseString = base.ToString();
         var slabTypeString = GetSlabTypeDescription();
-        
+
         return $"{baseString} | Type: {slabTypeString}";
     }
 

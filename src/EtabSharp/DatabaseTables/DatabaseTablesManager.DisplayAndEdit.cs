@@ -766,6 +766,6 @@ public partial class DatabaseTablesManager
         }
     }
 
-#endregion
+    #endregion
 }
 

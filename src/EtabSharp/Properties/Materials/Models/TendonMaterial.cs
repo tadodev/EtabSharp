@@ -5,7 +5,7 @@ namespace EtabSharp.Properties.Materials.Models;
 /// <summary>
 /// Tendon material properties
 /// </summary>
-public class TendonMaterial: MaterialProperty
+public class TendonMaterial : MaterialProperty
 {
     public override eMatType MaterialType => eMatType.Tendon;
 

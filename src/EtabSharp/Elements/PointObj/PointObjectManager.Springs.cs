@@ -85,7 +85,7 @@ public partial class PointObjectManager
             // First check if there's a named spring property assignment
             string springProperty = "";
             int ret = _sapModel.PointObj.GetSpringAssignment(pointName, ref springProperty);
-            
+
             if (ret == 0 && !string.IsNullOrEmpty(springProperty))
             {
                 return new PointSpring
@@ -97,7 +97,7 @@ public partial class PointObjectManager
             // Check if it's a coupled spring
             bool isCoupled = false;
             ret = _sapModel.PointObj.IsSpringCoupled(pointName, ref isCoupled);
-            
+
             if (ret != 0)
             {
                 // No spring assignment found
@@ -114,7 +114,7 @@ public partial class PointObjectManager
                 // Get coupled spring matrix
                 double[] coupledMatrix = new double[21]; // 6x6 symmetric matrix upper triangle
                 ret = _sapModel.PointObj.GetSpringCoupled(pointName, ref coupledMatrix);
-                
+
                 if (ret == 0)
                 {
                     spring.CoupledMatrix = coupledMatrix;
@@ -125,7 +125,7 @@ public partial class PointObjectManager
                 // Get uncoupled spring values
                 double[] springArray = new double[6];
                 ret = _sapModel.PointObj.GetSpring(pointName, ref springArray);
-                
+
                 if (ret == 0)
                 {
                     spring.Kx = springArray[0];

@@ -10,7 +10,7 @@ namespace EtabSharp.Loads.LoadPatterns;
 /// Manages load patterns in the ETABS model.
 /// Implements the ILoadPatterns interface by wrapping cSapModel.LoadPatterns operations.
 /// </summary>
-public class LoadPatternsManager: ILoadPatterns
+public class LoadPatternsManager : ILoadPatterns
 {
     private readonly cSapModel _sapModel;
     private readonly ILogger _logger;
