@@ -60,7 +60,7 @@ public partial class AreaObjectManager : IArea
             if (ret != 0)
                 throw new EtabsException(ret, "AddByCoord", $"Failed to add area with {numberPoints} points");
 
-            _logger.LogDebug("Added area {AreaName} with {PointCount} points using property {PropertyName}", 
+            _logger.LogDebug("Added area {AreaName} with {PointCount} points using property {PropertyName}",
                 areaName, numberPoints, propertyName);
 
             return areaName;
@@ -96,7 +96,7 @@ public partial class AreaObjectManager : IArea
             if (ret != 0)
                 throw new EtabsException(ret, "AddByPoint", $"Failed to add area using points: {string.Join(", ", pointNames)}");
 
-            _logger.LogDebug("Added area {AreaName} using points [{Points}] with property {PropertyName}", 
+            _logger.LogDebug("Added area {AreaName} using points [{Points}] with property {PropertyName}",
                 areaName, string.Join(", ", pointNames), propertyName);
 
             return areaName;

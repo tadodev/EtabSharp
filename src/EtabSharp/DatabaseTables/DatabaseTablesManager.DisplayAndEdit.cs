@@ -481,6 +481,7 @@ public partial class DatabaseTablesManager
 
     #region Set Load Case for display
 
+    /// <summary>
     /// Sets load cases selected for display.
     /// Wraps cSapModel.DatabaseTables.SetLoadCasesSelectedForDisplay.
     /// </summary>
@@ -765,6 +766,6 @@ public partial class DatabaseTablesManager
         }
     }
 
-#endregion
+    #endregion
 }
 

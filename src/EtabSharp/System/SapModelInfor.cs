@@ -117,7 +117,9 @@ public class SapModelInfor : ISapModelInfor
 
             var info = new ProgramInfo
             {
-                ProgramName = programName, ProgramVersion = programVersion, ProgramLevel = programLevel
+                ProgramName = programName,
+                ProgramVersion = programVersion,
+                ProgramLevel = programLevel
             };
 
             _logger.LogDebug("Program info: {ProgramInfo}", info);

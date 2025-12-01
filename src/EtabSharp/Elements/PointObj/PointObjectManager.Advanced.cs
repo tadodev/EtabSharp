@@ -33,7 +33,7 @@ public partial class PointObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "GetCoordCylindrical", $"Failed to get cylindrical coordinates for point '{pointName}'");
 
-            _logger.LogDebug("Retrieved cylindrical coordinates for point {PointName}: R={R}, Theta={Theta}, Z={Z}", 
+            _logger.LogDebug("Retrieved cylindrical coordinates for point {PointName}: R={R}, Theta={Theta}, Z={Z}",
                 pointName, r, theta, z);
 
             return (r, theta, z);
@@ -64,7 +64,7 @@ public partial class PointObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "GetCoordSpherical", $"Failed to get spherical coordinates for point '{pointName}'");
 
-            _logger.LogDebug("Retrieved spherical coordinates for point {PointName}: R={R}, A={A}, B={B}", 
+            _logger.LogDebug("Retrieved spherical coordinates for point {PointName}: R={R}, A={A}, B={B}",
                 pointName, r, a, b);
 
             return (r, a, b);
@@ -104,7 +104,7 @@ public partial class PointObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "GetLocalAxes", $"Failed to get local axes for point '{pointName}'");
 
-            _logger.LogDebug("Retrieved local axes for point {PointName}: A={A}°, B={B}°, C={C}°, Advanced={Advanced}", 
+            _logger.LogDebug("Retrieved local axes for point {PointName}: A={A}°, B={B}°, C={C}°, Advanced={Advanced}",
                 pointName, a, b, c, advanced);
 
             return (a, b, c, advanced);
@@ -135,7 +135,7 @@ public partial class PointObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "GetTransformationMatrix", $"Failed to get transformation matrix for point '{pointName}'");
 
-            _logger.LogDebug("Retrieved transformation matrix for point {PointName} (IsGlobal={IsGlobal})", 
+            _logger.LogDebug("Retrieved transformation matrix for point {PointName} (IsGlobal={IsGlobal})",
                 pointName, isGlobal);
 
             return matrix;
@@ -169,7 +169,7 @@ public partial class PointObjectManager
             int connectivity = 0, localAxisFrom = 0;
             double localAxisAngle = 0;
 
-            int ret = _sapModel.PointObj.GetPanelZone(pointName, ref propType, ref thickness, ref k1, ref k2, 
+            int ret = _sapModel.PointObj.GetPanelZone(pointName, ref propType, ref thickness, ref k1, ref k2,
                 ref linkProp, ref connectivity, ref localAxisFrom, ref localAxisAngle);
 
             if (ret != 0)
@@ -302,7 +302,7 @@ public partial class PointObjectManager
     /// <param name="itemType">Item type for assignment</param>
     /// <param name="replace">If true, replaces existing; if false, adds to existing</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetMassByVolume(string pointName, string materialProperty, PointMass mass, 
+    public int SetMassByVolume(string pointName, string materialProperty, PointMass mass,
         eItemType itemType = eItemType.Objects, bool replace = false)
     {
         try
@@ -315,13 +315,13 @@ public partial class PointObjectManager
                 throw new ArgumentNullException(nameof(mass));
 
             double[] massArray = mass.ToArray();
-            int ret = _sapModel.PointObj.SetMassByVolume(pointName, materialProperty, ref massArray, 
+            int ret = _sapModel.PointObj.SetMassByVolume(pointName, materialProperty, ref massArray,
                 itemType, mass.IsLocalCSys, replace);
 
             if (ret != 0)
                 throw new EtabsException(ret, "SetMassByVolume", $"Failed to set mass by volume for point '{pointName}'");
 
-            _logger.LogDebug("Set mass by volume for point {PointName} using material {Material}", 
+            _logger.LogDebug("Set mass by volume for point {PointName} using material {Material}",
                 pointName, materialProperty);
 
             return ret;
@@ -341,7 +341,7 @@ public partial class PointObjectManager
     /// <param name="itemType">Item type for assignment</param>
     /// <param name="replace">If true, replisting; if false, adds to existing</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetMassByWeight(string pointName, PointMass mass, 
+    public int SetMassByWeight(string pointName, PointMass mass,
         eItemType itemType = eItemType.Objects, bool replace = false)
     {
         try

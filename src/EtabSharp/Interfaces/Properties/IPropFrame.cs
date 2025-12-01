@@ -1,6 +1,5 @@
 ﻿using EtabSharp.Properties.Frames.Models;
 using ETABSv1;
-using System.Data.Common;
 
 namespace EtabSharp.Interfaces.Properties;
 

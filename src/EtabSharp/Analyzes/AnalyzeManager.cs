@@ -10,7 +10,7 @@ namespace EtabSharp.Analyzes;
 /// Manages analysis operations in the ETABS model.
 /// Implements the IAnalyze interface by wrapping cSapModel.Analyze operations.
 /// </summary>
-public class AnalyzeManager: IAnalyze
+public class AnalyzeManager : IAnalyze
 {
     private readonly cSapModel _sapModel;
     private readonly ILogger _logger;

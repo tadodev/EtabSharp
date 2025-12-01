@@ -38,13 +38,13 @@ public partial class AreaObjectManager
             if (load.Direction < 1 || load.Direction > 11)
                 throw new ArgumentException("Direction must be between 1 and 11", nameof(load));
 
-            int ret = _sapModel.AreaObj.SetLoadUniform(areaName, load.LoadPattern, load.LoadValue, 
+            int ret = _sapModel.AreaObj.SetLoadUniform(areaName, load.LoadPattern, load.LoadValue,
                 load.Direction, replace, load.CoordinateSystem, itemType);
 
             if (ret != 0)
                 throw new EtabsException(ret, "SetLoadUniform", $"Failed to set uniform load for area '{areaName}' in pattern '{load.LoadPattern}'");
 
-            _logger.LogDebug("Set uniform load for area {AreaName} in pattern {LoadPattern}: {Load} (ItemType: {ItemType})", 
+            _logger.LogDebug("Set uniform load for area {AreaName} in pattern {LoadPattern}: {Load} (ItemType: {ItemType})",
                 areaName, load.LoadPattern, load.ToString(), itemType);
 
             return ret;
@@ -67,7 +67,7 @@ public partial class AreaObjectManager
     /// <param name="coordinateSystem">Coordinate system name ("Local" or coordinate system name)</param>
     /// <param name="itemType">Item type for assignment (Objects, Group, or SelectedObjects)</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetLoadUniform(string name, string loadPattern, double value, int direction, 
+    public int SetLoadUniform(string name, string loadPattern, double value, int direction,
         bool replace = true, string coordinateSystem = "Global", eItemType itemType = eItemType.Objects)
     {
         try
@@ -78,7 +78,7 @@ public partial class AreaObjectManager
                 throw new ArgumentException("Load pattern cannot be null or empty", nameof(loadPattern));
             if (string.IsNullOrEmpty(coordinateSystem))
                 throw new ArgumentException("Coordinate system cannot be null or empty", nameof(coordinateSystem));
-            
+
             // Validate direction according to ETABS API (1-11)
             if (direction < 1 || direction > 11)
                 throw new ArgumentException("Direction must be between 1 and 11", nameof(direction));
@@ -88,7 +88,7 @@ public partial class AreaObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "SetLoadUniform", $"Failed to set uniform load for '{name}' in pattern '{loadPattern}'");
 
-            _logger.LogDebug("Set uniform load for {Name} in pattern {LoadPattern}: Value={Value}, Dir={Direction}, CSys={CoordinateSystem}, ItemType={ItemType}", 
+            _logger.LogDebug("Set uniform load for {Name} in pattern {LoadPattern}: Value={Value}, Dir={Direction}, CSys={CoordinateSystem}, ItemType={ItemType}",
                 name, loadPattern, value, direction, coordinateSystem, itemType);
 
             return ret;
@@ -120,7 +120,7 @@ public partial class AreaObjectManager
             int[] directions = null;
             double[] values = null;
 
-            int ret = _sapModel.AreaObj.GetLoadUniform(areaName, ref numberItems, ref areaNames, 
+            int ret = _sapModel.AreaObj.GetLoadUniform(areaName, ref numberItems, ref areaNames,
                 ref loadPatterns, ref csys, ref directions, ref values);
 
             if (ret != 0)
@@ -208,13 +208,13 @@ public partial class AreaObjectManager
             if (string.IsNullOrEmpty(load.LoadPattern))
                 throw new ArgumentException("Load pattern cannot be null or empty", nameof(load));
 
-            int ret = _sapModel.AreaObj.SetLoadUniformToFrame(areaName, load.LoadPattern, load.Value, 
+            int ret = _sapModel.AreaObj.SetLoadUniformToFrame(areaName, load.LoadPattern, load.Value,
                 load.Direction, load.DistributionType, replace, load.CoordinateSystem);
 
             if (ret != 0)
                 throw new EtabsException(ret, "SetLoadUniformToFrame", $"Failed to set uniform to frame load for area '{areaName}' in pattern '{load.LoadPattern}'");
 
-            _logger.LogDebug("Set uniform to frame load for area {AreaName} in pattern {LoadPattern}: {Load}", 
+            _logger.LogDebug("Set uniform to frame load for area {AreaName} in pattern {LoadPattern}: {Load}",
                 areaName, load.LoadPattern, load.ToString());
 
             return ret;
@@ -247,7 +247,7 @@ public partial class AreaObjectManager
             double[] values = null;
             int[] distTypes = null;
 
-            int ret = _sapModel.AreaObj.GetLoadUniformToFrame(areaName, ref numberItems, ref areaNames, 
+            int ret = _sapModel.AreaObj.GetLoadUniformToFrame(areaName, ref numberItems, ref areaNames,
                 ref loadPatterns, ref csys, ref directions, ref values, ref distTypes);
 
             if (ret != 0)
@@ -340,7 +340,7 @@ public partial class AreaObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "SetLoadWindPressure", $"Failed to set wind pressure load for area '{areaName}' in pattern '{load.LoadPattern}'");
 
-            _logger.LogDebug("Set wind pressure load for area {AreaName} in pattern {LoadPattern}: {Load}", 
+            _logger.LogDebug("Set wind pressure load for area {AreaName} in pattern {LoadPattern}: {Load}",
                 areaName, load.LoadPattern, load.ToString());
 
             return ret;
@@ -371,7 +371,7 @@ public partial class AreaObjectManager
             int[] loadTypes = null;
             double[] pressureCoefficients = null;
 
-            int ret = _sapModel.AreaObj.GetLoadWindPressure(areaName, ref numberItems, ref areaNames, 
+            int ret = _sapModel.AreaObj.GetLoadWindPressure(areaName, ref numberItems, ref areaNames,
                 ref loadPatterns, ref loadTypes, ref pressureCoefficients);
 
             if (ret != 0)
@@ -458,13 +458,13 @@ public partial class AreaObjectManager
             if (string.IsNullOrEmpty(load.LoadPattern))
                 throw new ArgumentException("Load pattern cannot be null or empty", nameof(load));
 
-            int ret = _sapModel.AreaObj.SetLoadTemperature(areaName, load.LoadPattern, load.TemperatureType, 
+            int ret = _sapModel.AreaObj.SetLoadTemperature(areaName, load.LoadPattern, load.TemperatureType,
                 load.Value, load.PatternName, replace);
 
             if (ret != 0)
                 throw new EtabsException(ret, "SetLoadTemperature", $"Failed to set temperature load for area '{areaName}' in pattern '{load.LoadPattern}'");
 
-            _logger.LogDebug("Set temperature load for area {AreaName} in pattern {LoadPattern}: {Load}", 
+            _logger.LogDebug("Set temperature load for area {AreaName} in pattern {LoadPattern}: {Load}",
                 areaName, load.LoadPattern, load.ToString());
 
             return ret;
@@ -493,7 +493,7 @@ public partial class AreaObjectManager
             double[] values = null;
             string[] patternNames = null;
 
-            int ret = _sapModel.AreaObj.GetLoadTemperature(areaName, ref numberItems, ref areaNames, 
+            int ret = _sapModel.AreaObj.GetLoadTemperature(areaName, ref numberItems, ref areaNames,
                 ref loadPatterns, ref loadTypes, ref values, ref patternNames, itemType);
 
             if (ret != 0)

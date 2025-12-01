@@ -11,4 +11,4 @@ public enum SolverType
     Advanced = 1,
     /// <summary>Multi-threaded solver</summary>
     MultiThreaded = 2
-} 
+}

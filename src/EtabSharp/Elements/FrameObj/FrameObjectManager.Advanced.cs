@@ -33,7 +33,7 @@ public partial class FrameObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "GetTransformationMatrix", $"Failed to get transformation matrix for frame '{frameName}'");
 
-            _logger.LogDebug("Retrieved transformation matrix for frame {FrameName} (IsGlobal={IsGlobal})", 
+            _logger.LogDebug("Retrieved transformation matrix for frame {FrameName} (IsGlobal={IsGlobal})",
                 frameName, isGlobal);
 
             return matrix;
@@ -71,7 +71,7 @@ public partial class FrameObjectManager
             double[] rd = null;
             double[] ad = null;
 
-            int ret = _sapModel.FrameObj.GetHingeAssigns_1(frameName, ref numberHinges, ref hingeNum, 
+            int ret = _sapModel.FrameObj.GetHingeAssigns_1(frameName, ref numberHinges, ref hingeNum,
                 ref prop, ref myType, ref behavior, ref source, ref locType, ref rd, ref ad);
 
             if (ret != 0)
@@ -125,13 +125,13 @@ public partial class FrameObjectManager
             string supportName2 = "";
             eObjType supportType2 = eObjType.Point;
 
-            int ret = _sapModel.FrameObj.GetSupports(frameName, ref supportName1, ref supportType1, 
+            int ret = _sapModel.FrameObj.GetSupports(frameName, ref supportName1, ref supportType1,
                 ref supportName2, ref supportType2);
 
             if (ret != 0)
                 throw new EtabsException(ret, "GetSupports", $"Failed to get supports for frame '{frameName}'");
 
-            _logger.LogDebug("Retrieved supports for frame {FrameName}: {Support1} ({Type1}), {Support2} ({Type2})", 
+            _logger.LogDebug("Retrieved supports for frame {FrameName}: {Support1} ({Type1}), {Support2} ({Type2})",
                 frameName, supportName1, supportType1, supportName2, supportType2);
 
             return (supportName1, supportType1, supportName2, supportType2);
@@ -194,7 +194,7 @@ public partial class FrameObjectManager
             double[] gy = null;
             double[] gz = null;
 
-            int ret = _sapModel.FrameObj.GetCurved_2(frameName, ref curveType, ref tension, 
+            int ret = _sapModel.FrameObj.GetCurved_2(frameName, ref curveType, ref tension,
                 ref numPoints, ref gx, ref gy, ref gz);
 
             if (ret != 0)
@@ -211,7 +211,7 @@ public partial class FrameObjectManager
                 GlobalZ = gz ?? Array.Empty<double>()
             };
 
-            _logger.LogDebug("Retrieved curve data for frame {FrameName}: Type={CurveType}, Points={NumPoints}", 
+            _logger.LogDebug("Retrieved curve data for frame {FrameName}: Type={CurveType}, Points={NumPoints}",
                 frameName, curveData.CurveType, numPoints);
 
             return curveData;
@@ -247,7 +247,7 @@ public partial class FrameObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "SetMass", $"Failed to set mass for frame '{frameName}'");
 
-            _logger.LogDebug("Set mass for frame {FrameName}: {MassPerLength} (Replace={Replace})", 
+            _logger.LogDebug("Set mass for frame {FrameName}: {MassPerLength} (Replace={Replace})",
                 frameName, massPerLength, replace);
 
             return ret;
@@ -432,7 +432,7 @@ public partial class FrameObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "SetGroupAssign", $"Failed to {(remove ? "remove" : "assign")} frame '{frameName}' {(remove ? "from" : "to")} group '{groupName}'");
 
-            _logger.LogDebug("{Action} frame {FrameName} {Preposition} group {GroupName}", 
+            _logger.LogDebug("{Action} frame {FrameName} {Preposition} group {GroupName}",
                 remove ? "Removed" : "Assigned", frameName, remove ? "from" : "to", groupName);
 
             return ret;

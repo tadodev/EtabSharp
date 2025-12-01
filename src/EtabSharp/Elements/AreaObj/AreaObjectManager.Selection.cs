@@ -155,7 +155,7 @@ public partial class AreaObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "SetGroupAssign", $"Failed to {(remove ? "remove" : "assign")} area '{areaName}' {(remove ? "from" : "to")} group '{groupName}'");
 
-            _logger.LogDebug("{Action} area {AreaName} {Preposition} group {GroupName}", 
+            _logger.LogDebug("{Action} area {AreaName} {Preposition} group {GroupName}",
                 remove ? "Removed" : "Assigned", areaName, remove ? "from" : "to", groupName);
 
             return ret;
@@ -366,7 +366,7 @@ public partial class AreaObjectManager
         try
         {
             var areasOnStory = GetAreasOnStory(storyName);
-            
+
             foreach (var areaName in areasOnStory)
             {
                 SetSelected(areaName, true);
@@ -466,12 +466,12 @@ public partial class AreaObjectManager
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning("Failed to {Action} area {AreaName} {Preposition} group {GroupName}: {Error}", 
+                    _logger.LogWarning("Failed to {Action} area {AreaName} {Preposition} group {GroupName}: {Error}",
                         remove ? "remove" : "assign", areaName, remove ? "from" : "to", groupName, ex.Message);
                 }
             }
 
-            _logger.LogDebug("{Action} {SuccessCount}/{TotalCount} areas {Preposition} group {GroupName}", 
+            _logger.LogDebug("{Action} {SuccessCount}/{TotalCount} areas {Preposition} group {GroupName}",
                 remove ? "Removed" : "Assigned", successCount, areaNames.Length, remove ? "from" : "to", groupName);
 
             return successCount;
@@ -492,7 +492,7 @@ public partial class AreaObjectManager
         try
         {
             var area = GetArea(areaName);
-            
+
             // Add additional properties
             area.IsOpening = GetOpening(areaName);
             area.HasEdgeConstraints = GetEdgeConstraint(areaName);

@@ -1,4 +1,3 @@
-using EtabSharp.Elements.AreaObj.Models;
 using EtabSharp.Exceptions;
 using ETABSv1;
 using Microsoft.Extensions.Logging;
@@ -429,8 +428,8 @@ public partial class AreaObjectManager
             string spandrel = GetSpandrel(areaName);
             string diaphragm = GetDiaphragm(areaName);
 
-            return !string.IsNullOrEmpty(pier) || 
-                   !string.IsNullOrEmpty(spandrel) || 
+            return !string.IsNullOrEmpty(pier) ||
+                   !string.IsNullOrEmpty(spandrel) ||
                    !string.IsNullOrEmpty(diaphragm);
         }
         catch

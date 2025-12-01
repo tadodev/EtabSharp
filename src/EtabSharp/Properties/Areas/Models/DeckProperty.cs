@@ -57,8 +57,8 @@ public class DeckProperty : AreaProperty
     /// <param name="thickness">Deck thickness</param>
     /// <param name="deckType">Deck type</param>
     /// <param name="shellType">Shell type</param>
-    public DeckProperty(string name, string materialProperty, double thickness, 
-                       eDeckType deckType = eDeckType.Filled, 
+    public DeckProperty(string name, string materialProperty, double thickness,
+                       eDeckType deckType = eDeckType.Filled,
                        eShellType shellType = eShellType.ShellThin)
     {
         Name = name;
@@ -92,7 +92,7 @@ public class DeckProperty : AreaProperty
     /// <param name="filledData">Filled deck parameters</param>
     /// <param name="shellType">Shell type</param>
     /// <returns>DeckProperty instance</returns>
-    public static DeckProperty CreateFilled(string name, string slabFillMaterial, string deckMaterial, 
+    public static DeckProperty CreateFilled(string name, string slabFillMaterial, string deckMaterial,
                                            FilledDeckData filledData, eShellType shellType = eShellType.ShellThin)
     {
         return new DeckProperty
@@ -115,7 +115,7 @@ public class DeckProperty : AreaProperty
     /// <param name="unfilledData">Unfilled deck parameters</param>
     /// <param name="shellType">Shell type</param>
     /// <returns>DeckProperty instance</returns>
-    public static DeckProperty CreateUnfilled(string name, string deckMaterial, UnfilledDeckData unfilledData, 
+    public static DeckProperty CreateUnfilled(string name, string deckMaterial, UnfilledDeckData unfilledData,
                                              eShellType shellType = eShellType.ShellThin)
     {
         return new DeckProperty
@@ -137,7 +137,7 @@ public class DeckProperty : AreaProperty
     /// <param name="solidSlabData">Solid slab deck parameters</param>
     /// <param name="shellType">Shell type</param>
     /// <returns>DeckProperty instance</returns>
-    public static DeckProperty CreateSolidSlab(string name, string slabMaterial, SolidSlabDeckData solidSlabData, 
+    public static DeckProperty CreateSolidSlab(string name, string slabMaterial, SolidSlabDeckData solidSlabData,
                                               eShellType shellType = eShellType.ShellThin)
     {
         return new DeckProperty
@@ -162,12 +162,12 @@ public class DeckProperty : AreaProperty
 
         return DeckType switch
         {
-            eDeckType.Filled => FilledData != null && FilledData.IsValid() && 
-                               !string.IsNullOrEmpty(SlabFillMaterialProperty) && 
+            eDeckType.Filled => FilledData != null && FilledData.IsValid() &&
+                               !string.IsNullOrEmpty(SlabFillMaterialProperty) &&
                                !string.IsNullOrEmpty(DeckMaterialProperty),
-            eDeckType.Unfilled => UnfilledData != null && UnfilledData.IsValid() && 
+            eDeckType.Unfilled => UnfilledData != null && UnfilledData.IsValid() &&
                                  !string.IsNullOrEmpty(DeckMaterialProperty),
-            eDeckType.SolidSlab => SolidSlabData != null && SolidSlabData.IsValid() && 
+            eDeckType.SolidSlab => SolidSlabData != null && SolidSlabData.IsValid() &&
                                   !string.IsNullOrEmpty(SlabFillMaterialProperty),
             _ => false
         };
@@ -206,7 +206,7 @@ public class DeckProperty : AreaProperty
     {
         var baseString = base.ToString();
         var deckTypeString = GetDeckTypeDescription();
-        
+
         return $"{baseString} | Type: {deckTypeString}";
     }
 

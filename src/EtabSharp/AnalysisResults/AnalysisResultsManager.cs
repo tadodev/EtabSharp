@@ -10,7 +10,7 @@ namespace EtabSharp.AnalysisResults;
 /// Implements the IAnalysisResults interface by wrapping cSapModel.Results operations.
 /// This is a partial class with implementations split across multiple files by result type.
 /// </summary>
-public partial class AnalysisResultsManager: IAnalysisResults
+public partial class AnalysisResultsManager : IAnalysisResults
 {
     private readonly cSapModel _sapModel;
     private readonly ILogger _logger;

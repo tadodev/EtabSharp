@@ -9,7 +9,7 @@ namespace EtabSharp.Elements.Story;
 /// <summary>
 /// Handles ETABS story management (creation, modification, retrieval).
 /// </summary>
-public class Story: IStory
+public class Story : IStory
 {
     private readonly cSapModel _sapModel;
     private readonly ILogger _logger;
@@ -425,7 +425,7 @@ public class Story: IStory
         {
             double spliceHeight = 0;
             bool spliceAbove = false;
-            int ret = _sapModel.Story.GetSplice(storyName,ref spliceAbove, ref spliceHeight);
+            int ret = _sapModel.Story.GetSplice(storyName, ref spliceAbove, ref spliceHeight);
 
             if (ret != 0)
             {
@@ -457,7 +457,7 @@ public class Story: IStory
         {
             _logger.LogInformation("Setting splice for story '{StoryName}' to {SpliceHeight}",
                 storyName, spliceHeight);
-            int ret = _sapModel.Story.SetSplice(storyName,spliceAbove, spliceHeight);
+            int ret = _sapModel.Story.SetSplice(storyName, spliceAbove, spliceHeight);
 
             if (ret != 0)
             {
@@ -577,7 +577,7 @@ public class Story: IStory
         }
     }
 
-   
+
 
     #endregion
 }

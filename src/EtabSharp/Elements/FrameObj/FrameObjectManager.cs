@@ -55,7 +55,7 @@ public partial class FrameObjectManager : IFrame
             if (ret != 0)
                 throw new EtabsException(ret, "AddByPoint", $"Failed to add frame between points '{point1}' and '{point2}'");
 
-            _logger.LogDebug("Added frame {FrameName} between points {Point1} and {Point2} with section {Section}", 
+            _logger.LogDebug("Added frame {FrameName} between points {Point1} and {Point2} with section {Section}",
                 frameName, point1, point2, sectionName);
 
             return frameName;
@@ -96,7 +96,7 @@ public partial class FrameObjectManager : IFrame
             if (ret != 0)
                 throw new EtabsException(ret, "AddByCoord", $"Failed to add frame from ({xi}, {yi}, {zi}) to ({xj}, {yj}, {zj})");
 
-            _logger.LogDebug("Added frame {FrameName} from ({Xi}, {Yi}, {Zi}) to ({Xj}, {Yj}, {Zj}) with section {Section}", 
+            _logger.LogDebug("Added frame {FrameName} from ({Xi}, {Yi}, {Zi}) to ({Xj}, {Yj}, {Zj}) with section {Section}",
                 frameName, xi, yi, zi, xj, yj, zj, sectionName);
 
             return frameName;

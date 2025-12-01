@@ -1,6 +1,5 @@
 using EtabSharp.Elements.PointObj.Models;
 using EtabSharp.Exceptions;
-using ETABSv1;
 using Microsoft.Extensions.Logging;
 
 namespace EtabSharp.Elements.PointObj;
@@ -37,7 +36,7 @@ public partial class PointObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "SetLoadForce", $"Failed to set force load for point '{pointName}' in pattern '{load.LoadPattern}'");
 
-            _logger.LogDebug("Set force load for point {PointName} in pattern {LoadPattern}: {Load}", 
+            _logger.LogDebug("Set force load for point {PointName} in pattern {LoadPattern}: {Load}",
                 pointName, load.LoadPattern, load.ToString());
 
             return ret;
@@ -71,7 +70,7 @@ public partial class PointObjectManager
             string[] csys = null;
             double[] f1 = null, f2 = null, f3 = null, m1 = null, m2 = null, m3 = null;
 
-            int ret = _sapModel.PointObj.GetLoadForce(pointName, ref numberItems, ref pointNames, ref loadPatterns, 
+            int ret = _sapModel.PointObj.GetLoadForce(pointName, ref numberItems, ref pointNames, ref loadPatterns,
                 ref lcSteps, ref csys, ref f1, ref f2, ref f3, ref m1, ref m2, ref m3);
 
             if (ret != 0)
@@ -96,7 +95,7 @@ public partial class PointObjectManager
                         CoordinateSystem = csys[i]
                     };
 
-                    _logger.LogDebug("Retrieved force load for point {PointName} in pattern {LoadPattern}: {Load}", 
+                    _logger.LogDebug("Retrieved force load for point {PointName} in pattern {LoadPattern}: {Load}",
                         pointName, loadPattern, load.ToString());
 
                     return load;
@@ -167,13 +166,13 @@ public partial class PointObjectManager
                 throw new ArgumentException("Load pattern cannot be null or empty", nameof(displacement));
 
             double[] displacementArray = displacement.ToArray();
-            int ret = _sapModel.PointObj.SetLoadDispl(pointName, displacement.LoadPattern, ref displacementArray, 
+            int ret = _sapModel.PointObj.SetLoadDispl(pointName, displacement.LoadPattern, ref displacementArray,
                 replace, displacement.CoordinateSystem);
 
             if (ret != 0)
                 throw new EtabsException(ret, "SetLoadDispl", $"Failed to set displacement load for point '{pointName}' in pattern '{displacement.LoadPattern}'");
 
-            _logger.LogDebug("Set displacement load for point {PointName} in pattern {LoadPattern}: {Displacement}", 
+            _logger.LogDebug("Set displacement load for point {PointName} in pattern {LoadPattern}: {Displacement}",
                 pointName, displacement.LoadPattern, displacement.ToString());
 
             return ret;
@@ -207,7 +206,7 @@ public partial class PointObjectManager
             string[] csys = null;
             double[] u1 = null, u2 = null, u3 = null, r1 = null, r2 = null, r3 = null;
 
-            int ret = _sapModel.PointObj.GetLoadDispl(pointName, ref numberItems, ref pointNames, ref loadPatterns, 
+            int ret = _sapModel.PointObj.GetLoadDispl(pointName, ref numberItems, ref pointNames, ref loadPatterns,
                 ref lcSteps, ref csys, ref u1, ref u2, ref u3, ref r1, ref r2, ref r3);
 
             if (ret != 0)
@@ -232,7 +231,7 @@ public partial class PointObjectManager
                         CoordinateSystem = csys[i]
                     };
 
-                    _logger.LogDebug("Retrieved displacement load for point {PointName} in pattern {LoadPattern}: {Displacement}", 
+                    _logger.LogDebug("Retrieved displacement load for point {PointName} in pattern {LoadPattern}: {Displacement}",
                         pointName, loadPattern, displacement.ToString());
 
                     return displacement;
@@ -390,7 +389,7 @@ public partial class PointObjectManager
             string[] csys = null;
             double[] f1 = null, f2 = null, f3 = null, m1 = null, m2 = null, m3 = null;
 
-            int ret = _sapModel.PointObj.GetLoadForce(pointName, ref numberItems, ref pointNames, ref loadPatterns, 
+            int ret = _sapModel.PointObj.GetLoadForce(pointName, ref numberItems, ref pointNames, ref loadPatterns,
                 ref lcSteps, ref csys, ref f1, ref f2, ref f3, ref m1, ref m2, ref m3);
 
             if (ret != 0)
@@ -444,7 +443,7 @@ public partial class PointObjectManager
             string[] csys = null;
             double[] u1 = null, u2 = null, u3 = null, r1 = null, r2 = null, r3 = null;
 
-            int ret = _sapModel.PointObj.GetLoadDispl(pointName, ref numberItems, ref pointNames, ref loadPatterns, 
+            int ret = _sapModel.PointObj.GetLoadDispl(pointName, ref numberItems, ref pointNames, ref loadPatterns,
                 ref lcSteps, ref csys, ref u1, ref u2, ref u3, ref r1, ref r2, ref r3);
 
             if (ret != 0)

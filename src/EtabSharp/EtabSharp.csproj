@@ -8,7 +8,7 @@
 		<!-- Package Identity -->
 		<Title>EtabSharp</Title>
 		<PackageId>EtabSharp</PackageId>
-		<Version>0.0.1</Version>
+		<Version>0.1.0-beta</Version>
 		<Copyright>Copyright © Thanh Tu 2025</Copyright>
 		<Authors>Thanh Tu</Authors>
 
@@ -29,27 +29,26 @@
 
 		<!-- Package Release Notes -->
 		<PackageReleaseNotes>
-			Initial release supporting ETABS v22+
+			v0.1.0-beta - Initial beta release supporting ETABS v22+
 			- Material property management (Concrete, Rebar, Steel)
+			- Support for model generation and modification
 			- Automatic version detection and compatibility checking
 			- Strongly-typed API with IntelliSense support
 			- Comprehensive error handling
+			- Analysis results retrieval (Joint displacements, Base reactions)
+			- Concrete and steel design integration
 		</PackageReleaseNotes>
-	</PropertyGroup>
 
-	<ItemGroup>
-	  <Compile Remove="AnalysisResultsSetup\NewFolder\**" />
-	  <Compile Remove="Analyzes\NewFolder\**" />
-	  <EmbeddedResource Remove="AnalysisResultsSetup\NewFolder\**" />
-	  <EmbeddedResource Remove="Analyzes\NewFolder\**" />
-	  <None Remove="AnalysisResultsSetup\NewFolder\**" />
-	  <None Remove="Analyzes\NewFolder\**" />
-	</ItemGroup>
+		<!-- CI/CD Settings -->
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-
+		<PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -58,11 +57,6 @@
 			<Private>True</Private>
 			<SpecificVersion>False</SpecificVersion>
 		</Reference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Design\Steel\Models\" />
-	  <Folder Include="Interfaces\Design\Steel\" />
 	</ItemGroup>
 
 </Project>

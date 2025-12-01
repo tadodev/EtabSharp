@@ -543,7 +543,7 @@ public interface IPoint
     /// <param name="itemType">Item type for assignment</param>
     /// <param name="replace">If true, replaces existing; if false, adds to existing</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetMassByVolume(string pointName, string materialProperty, PointMass mass, 
+    int SetMassByVolume(string pointName, string materialProperty, PointMass mass,
         eItemType itemType = eItemType.Objects, bool replace = false);
 
     /// <summary>
@@ -554,7 +554,7 @@ public interface IPoint
     /// <param name="itemType">Item type for assignment</param>
     /// <param name="replace">If true, replaces existing; if false, adds to existing</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    int SetMassByWeight(string pointName, PointMass mass, 
+    int SetMassByWeight(string pointName, PointMass mass,
         eItemType itemType = eItemType.Objects, bool replace = false);
 
     #endregion

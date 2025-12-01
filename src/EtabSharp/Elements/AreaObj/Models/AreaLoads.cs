@@ -28,7 +28,7 @@ public class AreaLoads
     /// <summary>
     /// Gets the total number of loads applied to the area.
     /// </summary>
-    public int TotalLoadCount => UniformLoads.Count + UniformToFrameLoads.Count + 
+    public int TotalLoadCount => UniformLoads.Count + UniformToFrameLoads.Count +
                                 WindPressureLoads.Count + TemperatureLoads.Count;
 
     /// <summary>
@@ -47,16 +47,16 @@ public class AreaLoads
     public List<string> GetLoadPatterns()
     {
         var patterns = new HashSet<string>();
-        
+
         foreach (var load in UniformLoads)
             patterns.Add(load.LoadPattern);
-        
+
         foreach (var load in UniformToFrameLoads)
             patterns.Add(load.LoadPattern);
-        
+
         foreach (var load in WindPressureLoads)
             patterns.Add(load.LoadPattern);
-        
+
         foreach (var load in TemperatureLoads)
             patterns.Add(load.LoadPattern);
 
@@ -87,7 +87,7 @@ public class AreaLoads
     public int RemoveLoadsForPattern(string loadPattern)
     {
         int removed = 0;
-        
+
         removed += UniformLoads.RemoveAll(l => l.LoadPattern == loadPattern);
         removed += UniformToFrameLoads.RemoveAll(l => l.LoadPattern == loadPattern);
         removed += WindPressureLoads.RemoveAll(l => l.LoadPattern == loadPattern);

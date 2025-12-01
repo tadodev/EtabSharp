@@ -20,7 +20,7 @@ public partial class PointObjectManager
     /// <param name="diaphragmOption"></param>
     /// <param name="diaphragmName">Name of the diaphragm (empty string to remove assignment)</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetDiaphragm(string pointName,eDiaphragmOption diaphragmOption, string diaphragmName)
+    public int SetDiaphragm(string pointName, eDiaphragmOption diaphragmOption, string diaphragmName)
     {
         try
         {
@@ -373,7 +373,7 @@ public partial class PointObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "SetGroupAssign", $"Failed to {(remove ? "remove" : "assign")} point '{pointName}' {(remove ? "from" : "to")} group '{groupName}'");
 
-            _logger.LogDebug("{Action} point {PointName} {Preposition} group {GroupName}", 
+            _logger.LogDebug("{Action} point {PointName} {Preposition} group {GroupName}",
                 remove ? "Removed" : "Assigned", pointName, remove ? "from" : "to", groupName);
 
             return ret;
@@ -602,7 +602,7 @@ public partial class PointObjectManager
         try
         {
             var point = GetPoint(pointName);
-            
+
             // Add restraint information
             var restraint = GetRestraint(pointName);
             if (restraint != null)

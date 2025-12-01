@@ -22,7 +22,7 @@ public partial class FrameObjectManager
     /// <param name="sVarRelStartLoc">Relative start location for non-prismatic sections</param>
     /// <param name="sVarTotalLength">Total length for non-prismatic sections</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetSection(string frameName, string sectionName, eItemType itemType = eItemType.Objects, 
+    public int SetSection(string frameName, string sectionName, eItemType itemType = eItemType.Objects,
         double sVarRelStartLoc = 0, double sVarTotalLength = 0)
     {
         try
@@ -476,7 +476,7 @@ public partial class FrameObjectManager
     /// <param name="rz">Rigid zone factor</param>
     /// <param name="itemType">Item type for assignment</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetEndLengthOffset(string frameName, bool autoOffset, double length1, double length2, 
+    public int SetEndLengthOffset(string frameName, bool autoOffset, double length1, double length2,
         double rz, eItemType itemType = eItemType.Objects)
     {
         try
@@ -489,7 +489,7 @@ public partial class FrameObjectManager
             if (ret != 0)
                 throw new EtabsException(ret, "SetEndLengthOffset", $"Failed to set end length offset for frame '{frameName}'");
 
-            _logger.LogDebug("Set end length offset for frame {FrameName}: Auto={Auto}, L1={L1}, L2={L2}, RZ={RZ}", 
+            _logger.LogDebug("Set end length offset for frame {FrameName}: Auto={Auto}, L1={L1}, L2={L2}, RZ={RZ}",
                 frameName, autoOffset, length1, length2, rz);
             return ret;
         }

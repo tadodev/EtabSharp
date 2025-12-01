@@ -1,5 +1,4 @@
 ﻿using EtabSharp.Analyzes.Models;
-using System.Threading.Tasks;
 
 namespace EtabSharp.Interfaces.Analyzes;
 

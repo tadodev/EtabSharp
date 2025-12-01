@@ -1,4 +1,3 @@
-using EtabSharp.Elements.AreaObj.Models;
 using EtabSharp.Elements.FrameObj.Models;
 using EtabSharp.Exceptions;
 using ETABSv1;
@@ -243,16 +242,16 @@ public partial class FrameObjectManager
             if (string.IsNullOrEmpty(load.LoadPattern))
                 throw new ArgumentException("Load pattern cannot be null or empty", nameof(load));
 
-            int ret = _sapModel.FrameObj.SetLoadPoint(frameName, load.LoadPattern, (int)load.LoadType, 
-                (int)load.Direction, 
-                load.IsRelativeDistance ? load.RelativeDistance:load.AbsoluteDistance,
-                load.LoadValue, load.CoordinateSystem, 
-                load.IsRelativeDistance, replace,itemType);
+            int ret = _sapModel.FrameObj.SetLoadPoint(frameName, load.LoadPattern, (int)load.LoadType,
+                (int)load.Direction,
+                load.IsRelativeDistance ? load.RelativeDistance : load.AbsoluteDistance,
+                load.LoadValue, load.CoordinateSystem,
+                load.IsRelativeDistance, replace, itemType);
 
             if (ret != 0)
                 throw new EtabsException(ret, "SetLoadPoint", $"Failed to set point load for frame '{frameName}' in pattern '{load.LoadPattern}'");
 
-            _logger.LogDebug("Set point load for frame {FrameName} in pattern {LoadPattern}: {Load}", 
+            _logger.LogDebug("Set point load for frame {FrameName} in pattern {LoadPattern}: {Load}",
                 frameName, load.LoadPattern, load.ToString());
 
             return ret;
@@ -381,7 +380,7 @@ public partial class FrameObjectManager
     /// <param name="replace">If true, replaces existing; if false, adds to existing</param>
     /// <param name="itemType">Item type for assignment</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetLoadTemperature(string frameName, string loadPattern, int loadType, double value, 
+    public int SetLoadTemperature(string frameName, string loadPattern, int loadType, double value,
         string patternName = "", bool replace = true, eItemType itemType = eItemType.Objects)
     {
         try
@@ -391,13 +390,13 @@ public partial class FrameObjectManager
             if (string.IsNullOrEmpty(loadPattern))
                 throw new ArgumentException("Load pattern cannot be null or empty", nameof(loadPattern));
 
-            int ret = _sapModel.FrameObj.SetLoadTemperature(frameName, loadPattern, loadType, value, 
+            int ret = _sapModel.FrameObj.SetLoadTemperature(frameName, loadPattern, loadType, value,
                 patternName, replace, itemType);
 
             if (ret != 0)
                 throw new EtabsException(ret, "SetLoadTemperature", $"Failed to set temperature load for frame '{frameName}' in pattern '{loadPattern}'");
 
-            _logger.LogDebug("Set temperature load for frame {FrameName} in pattern {LoadPattern}: Type={Type}, Value={Value}", 
+            _logger.LogDebug("Set temperature load for frame {FrameName} in pattern {LoadPattern}: Type={Type}, Value={Value}",
                 frameName, loadPattern, loadType, value);
 
             return ret;
@@ -426,7 +425,7 @@ public partial class FrameObjectManager
             double[] values = null;
             string[] patternNames = null;
 
-            int ret = _sapModel.FrameObj.GetLoadTemperature(frameName, ref numberItems, ref frameNames, 
+            int ret = _sapModel.FrameObj.GetLoadTemperature(frameName, ref numberItems, ref frameNames,
                 ref loadPatterns, ref loadTypes, ref values, ref patternNames, itemType);
 
             if (ret != 0)
@@ -500,8 +499,8 @@ public partial class FrameObjectManager
     /// <param name="coordinateSystem">Coordinate system</param>
     /// <param name="replace">If true, replaces existing loads</param>
     /// <returns>0 if successful, non-zero otherwise</returns>
-    public int SetUniformLoad(string frameName, string loadPattern, double loadValue, 
-        eFrameLoadDirection  direction = eFrameLoadDirection.Gravity, string coordinateSystem = "Global", bool replace = true)
+    public int SetUniformLoad(string frameName, string loadPattern, double loadValue,
+        eFrameLoadDirection direction = eFrameLoadDirection.Gravity, string coordinateSystem = "Global", bool replace = true)
     {
         var load = new FrameDistributedLoad
         {
