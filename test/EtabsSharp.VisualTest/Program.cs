@@ -1,12 +1,5 @@
-﻿using EtabSharp.AnalysisResults.Models.AnalysisResults.BaseReactions;
-using EtabSharp.Core;
+﻿using EtabSharp.Core;
 using EtabSharp.DatabaseTables.Models;
-using EtabSharp.Elements.FrameObj.Models;
-using EtabSharp.Elements.PointObj.Models;
-using EtabSharp.Loads.LoadCases.Models;
-using EtabSharp.Loads.LoadPatterns.Models;
-using EtabSharp.Properties.Frames.Models;
-using EtabSharp.System.Models;
 using ETABSv1;
 
 
@@ -15,7 +8,7 @@ Console.WriteLine("  EtabSharp Example - Frame Analysis with Rebar");
 Console.WriteLine("=================================================\n");
 
 // Configuration
-bool attachToInstance = true;
+bool attachToInstance = false;
 string apiPath = @"C:\CSi_ETABS_API_Example";
 string modelPath = Path.Combine(apiPath, "EtabSharp_Example.edb");
 
