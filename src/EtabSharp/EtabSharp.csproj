@@ -18,7 +18,7 @@
 
 		<!-- Repository & Documentation -->
 		<PackageProjectUrl>https://github.com/tadodev/EtabSharp</PackageProjectUrl>
-		<!-- <PackageReadmeFile>README.md</PackageReadmeFile> -->
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/tadodev/EtabSharp</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -54,7 +54,7 @@
 	<ItemGroup>
 		<Reference Include="ETABSv1">
 			<HintPath>C:\Program Files\Computers and Structures\ETABS 22\ETABSv1.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 			<SpecificVersion>False</SpecificVersion>
 		</Reference>
 	</ItemGroup>

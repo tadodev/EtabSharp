@@ -8,7 +8,7 @@ Console.WriteLine("  EtabSharp Example - Frame Analysis with Rebar");
 Console.WriteLine("=================================================\n");
 
 // Configuration
-bool attachToInstance = false;
+bool attachToInstance = true;
 string apiPath = @"C:\CSi_ETABS_API_Example";
 string modelPath = Path.Combine(apiPath, "EtabSharp_Example.edb");
 

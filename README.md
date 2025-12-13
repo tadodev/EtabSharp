@@ -1,4 +1,92 @@
 # EtabSharp
+
+A modern, strongly-typed .NET wrapper for ETABS API (v22 and later).
+
+## Features
+
+- 🎯 **Strongly-typed API** with full IntelliSense support
+- 🔄 **Automatic version detection** and compatibility checking
+- 📊 **Comprehensive coverage** of ETABS functionality
+- 🛡️ **Type-safe** property management and operations
+- 📝 **Extensive documentation** with XML comments
+- ⚡ **Performance optimized** with lazy loading
+
+## Requirements
+
+- **ETABS v22 or later** must be installed on your machine
+- **.NET 10.0** or later
+- **Windows OS** (ETABS is Windows-only)
+
+## Installation
+
+```bash
+dotnet add package EtabSharp
+```
+
+## Quick Start
+
+```csharp
+using EtabSharp.Core;
+
+// Connect to running ETABS instance
+using var etabs = ETABSWrapper.Connect();
+
+if (etabs == null)
+{
+    Console.WriteLine("No ETABS instance found. Please start ETABS first.");
+    return;
+}
+
+// Access model components
+var model = etabs.Model;
+
+// Create a concrete material
+var concrete = model.Materials.AddConcreteMaterial("C30", fc: 30, ec: 25000);
+
+// Create a rectangular column
+var column = model.PropFrame.AddRectangularSection("COL-400x400", "C30", 400, 400);
+
+// Add a frame between two points
+var frame = model.Frames.AddFrame("1", "2", "COL-400x400");
+
+// Run analysis
+model.Analyze.CreateAnalysisModel();
+model.Analyze.RunAnalysis();
+
+// Get results
+var displacements = model.AnalysisResults.GetJointDispl("", eItemTypeElm.Objects);
+```
+
+## Documentation
+
+Full documentation available at [GitHub Wiki](https://github.com/tadodev/EtabSharp/wiki)
+
+## Important Notes
+
+### ETABSv1.dll Reference
+This package does **NOT** include `ETABSv1.dll`. You must have ETABS installed on your machine. The wrapper will automatically locate the DLL from your ETABS installation.
+
+### Supported ETABS Versions
+- ETABS v22.x ✅
+- ETABS v23.x ✅
+- Earlier versions ❌ (not supported)
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+Contributions welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) first.
+
+## Support
+
+- 📖 [Documentation](https://github.com/tadodev/EtabSharp/wiki)
+- 🐛 [Issue Tracker](https://github.com/tadodev/EtabSharp/issues)
+- 💬 [Discussions](https://github.com/tadodev/EtabSharp/discussions)
+
+
+# EtabSharp
 ```csharp
 EtabSharp/
 ├── Core/                           # Application & Model wrappers
