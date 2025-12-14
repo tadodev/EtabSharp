@@ -17,8 +17,8 @@
 		<PackageTags>etabs;structural-engineering;civil-engineering;structural-analysis;csi;etabs-api;building-design;structural-design</PackageTags>
 
 		<!-- Repository & Documentation -->
+		<packageReadmeFile>README.md</packageReadmeFile>
 		<PackageProjectUrl>https://github.com/tadodev/EtabSharp</PackageProjectUrl>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/tadodev/EtabSharp</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -52,11 +52,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="ETABSv1">
-			<HintPath>C:\Program Files\Computers and Structures\ETABS 22\ETABSv1.dll</HintPath>
-			<Private>False</Private>
-			<SpecificVersion>False</SpecificVersion>
-		</Reference>
+	  <Reference Include="ETABSv1">
+	    <HintPath>..\..\lib\ETABSv1.dll</HintPath>
+		  <Private>True</Private>
+	  </Reference>
 	</ItemGroup>
+
+	<!-- Include README and icon in package -->
+	<ItemGroup>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	
 
 </Project>
