@@ -21,9 +21,9 @@
     <!-- Set recommended package metadata -->
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageId>SampleMcpServer</PackageId>
-    <PackageVersion>0.1.0-beta</PackageVersion>
+    <PackageVersion>0.2.0-beta</PackageVersion>
     <PackageTags>AI; MCP; server; stdio</PackageTags>
-    <Description>An MCP server using the MCP C# SDK.</Description>
+    <Description>An MCP server for Etabs using EtabSharp.</Description>
   </PropertyGroup>
 
   <!-- Include additional files for browsing the MCP server. -->
@@ -40,13 +40,32 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\EtabSharp\EtabSharp.csproj" />
   </ItemGroup>
+
+  <!-- 
+	ETABS Reference for MCP Server (Self-Contained Executable)
 	
-  <ItemGroup>
+	Since this is a self-contained, single-file executable, we need ETABSv1.dll
+	to be included in the publish output. We use Private=True here.
+	
+	Note: For self-contained apps, we still manually reference because the
+	.targets file won't apply to the published single-file output.
+	-->
+  <PropertyGroup>
+	  <EtabsPath Condition="Exists('C:\Program Files\Computers and Structures\ETABS 22\ETABSv1.dll')">C:\Program Files\Computers and Structures\ETABS 22\ETABSv1.dll</EtabsPath>
+	  <EtabsPath Condition="'$(EtabsPath)' == '' AND Exists('C:\Program Files (x86)\Computers and Structures\ETABS 22\ETABSv1.dll')">C:\Program Files (x86)\Computers and Structures\ETABS 22\ETABSv1.dll</EtabsPath>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(EtabsPath)' != ''">
 	  <Reference Include="ETABSv1">
-		  <HintPath>C:\Program Files\Computers and Structures\ETABS 22\ETABSv1.dll</HintPath>
+		  <HintPath>$(EtabsPath)</HintPath>
 		  <Private>True</Private>
 		  <SpecificVersion>False</SpecificVersion>
 	  </Reference>
   </ItemGroup>
+
+  <Target Name="ShowEtabsPathMcp" BeforeTargets="Build">
+	  <Message Text="[EtabSharp.Mcp] ETABS path: $(EtabsPath)" Importance="high" Condition="'$(EtabsPath)' != ''" />
+	  <Warning Text="[EtabSharp.Mcp] ETABS not found - build will fail" Condition="'$(EtabsPath)' == ''" />
+  </Target>
 
 </Project>
