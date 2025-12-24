@@ -17,16 +17,64 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-          
-      # IMPORTANT: Add step to handle ETABSv1.dll reference
-      - name: Create dummy ETABSv1.dll reference
+      
+      # SOLUTION 1: Create minimal stub assembly
+      - name: Create stub ETABSv1.dll
         run: |
-          # Create a minimal reference assembly for build
-          # This allows the package to build without ETABS installed
-          $dllPath = "C:\Program Files\Computers and Structures\ETABS 22"
-          if (-not (Test-Path $dllPath)) {
-            New-Item -ItemType Directory -Force -Path $dllPath
-            # Copy from a known location or skip if not needed for build
+          # Create directory for ETABS DLL
+          $etabsPath = "C:\Program Files\Computers and Structures\ETABS 22"
+          New-Item -ItemType Directory -Force -Path $etabsPath | Out-Null
+          
+          # Create minimal IL code for stub assembly
+          $ilCode = @'
+.assembly extern mscorlib {}
+.assembly extern System.Runtime { .ver 4:0:0:0 }
+
+.assembly ETABSv1
+{
+  .ver 1:0:0:0
+  .hash algorithm 0x00008004
+}
+
+.module ETABSv1.dll
+
+// Minimal type to make assembly valid
+.class public auto ansi beforefieldinit ETABSv1.Helper
+       extends [mscorlib]System.Object
+{
+  .method public hidebysig specialname rtspecialname 
+          instance void .ctor() cil managed
+  {
+    .maxstack 8
+    ldarg.0
+    call instance void [mscorlib]System.Object::.ctor()
+    ret
+  }
+}
+'@
+          
+          # Save IL code to file
+          $ilFile = Join-Path $env:TEMP "ETABSv1.il"
+          $ilCode | Out-File -FilePath $ilFile -Encoding ASCII
+          
+          # Find ilasm.exe
+          $ilasmPath = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\ilasm.exe"
+          
+          if (Test-Path $ilasmPath) {
+            # Compile to DLL
+            $dllPath = Join-Path $etabsPath "ETABSv1.dll"
+            & $ilasmPath /DLL /QUIET /OUTPUT="$dllPath" $ilFile
+            
+            if (Test-Path $dllPath) {
+              Write-Host "✓ Stub ETABSv1.dll created successfully at: $dllPath"
+              Write-Host "  File size: $((Get-Item $dllPath).Length) bytes"
+            } else {
+              Write-Error "Failed to create ETABSv1.dll"
+              exit 1
+            }
+          } else {
+            Write-Error "ilasm.exe not found at: $ilasmPath"
+            exit 1
           }
         shell: pwsh
           
@@ -37,8 +85,8 @@ jobs:
         run: dotnet build --configuration Release --no-restore
         
       - name: Run tests
-        run: dotnet test --configuration Release --no-build
-        continue-on-error: true  # Tests might fail without ETABS
+        run: dotnet test --configuration Release --no-build --verbosity normal
+        continue-on-error: true  # Tests may fail without actual ETABS
         
       - name: Extract version from tag
         id: version
@@ -57,9 +105,16 @@ jobs:
         run: |
           $version = "${{ steps.version.outputs.version }}"
           $csprojPath = "src\EtabSharp\EtabSharp.csproj"
-          $xml = [xml](Get-Content $csprojPath)
-          $xml.Project.PropertyGroup[0].Version = $version
-          $xml.Save($csprojPath)
+          
+          if (Test-Path $csprojPath) {
+            $xml = [xml](Get-Content $csprojPath)
+            $xml.Project.PropertyGroup[0].Version = $version
+            $xml.Save($csprojPath)
+            Write-Host "✓ Updated version to $version in $csprojPath"
+          } else {
+            Write-Error "Project file not found: $csprojPath"
+            exit 1
+          }
         
       - name: Pack NuGet package
         run: dotnet pack src/EtabSharp/EtabSharp.csproj --configuration Release --output nuget --no-build
@@ -75,3 +130,5 @@ jobs:
           draft: false
           prerelease: ${{ steps.version.outputs.is_prerelease == 'true' }}
           generateReleaseNotes: true
+
+---

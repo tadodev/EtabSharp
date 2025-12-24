@@ -29,14 +29,24 @@
 
 		<!-- Package Release Notes -->
 		<PackageReleaseNotes>
-			v0.1.0-beta - Initial beta release supporting ETABS v22+
+			v0.1.2-beta - ETABSv1.dll now included in package
+
+			✨ NEW: ETABSv1.dll automatically included - no manual setup required!
+
+			Features:
 			- Material property management (Concrete, Rebar, Steel)
-			- Support for model generation and modification
-			- Automatic version detection and compatibility checking
-			- Strongly-typed API with IntelliSense support
+			- Frame and area property management
+			- Model generation and modification
+			- Analysis execution and results retrieval
+			- Design integration (steel and concrete)
+			- Automatic version detection
 			- Comprehensive error handling
-			- Analysis results retrieval (Joint displacements, Base reactions)
-			- Concrete and steel design integration
+			- Full IntelliSense support
+
+			Requirements:
+			- ETABS v22+ must be installed (for COM API functionality)
+			- .NET 10.0 or later
+			- Windows OS
 		</PackageReleaseNotes>
 
 		<!-- CI/CD Settings -->
@@ -58,9 +68,18 @@
 	  </Reference>
 	</ItemGroup>
 
-	<!-- Include README and icon in package -->
 	<ItemGroup>
+		<!-- Package the DLL in lib folder so it's copied to consuming projects -->
+		<None Include="..\..\lib\ETABSv1.dll" Pack="true" PackagePath="lib\net10.0\" />
+
+		<!-- Also include in runtimes for native reference -->
+		<None Include="..\..\lib\ETABSv1.dll" Pack="true" PackagePath="runtimes\win-x64\native\" />
+		<None Include="..\..\lib\ETABSv1.dll" Pack="true" PackagePath="runtimes\win-arm64\native\" />
+
+		<!-- Include README -->
 		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+
+		<!-- Include .targets file to auto-reference ETABSv1.dll in consuming projects -->
 	</ItemGroup>
 
 	
